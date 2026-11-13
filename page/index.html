@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fafaf9">
+
+  <title>Page — Your writing space</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header class="topbar">
+
+    <a href="#" class="brand">Page</a>
+
+    <div class="top-actions">
+
+      <!-- New note -->
+      <button class="icon-btn plus-btn" id="newNoteBtn"
+        aria-label="New note" title="New note">
+        <svg viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="1.7"
+          stroke-linecap="round">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+      </button>
+
+      <!-- Spellcheck -->
+      <button class="icon-btn" id="spellToggle"
+        aria-label="Toggle spellcheck" title="Spellcheck: On">
+        <svg viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="1.7"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19 9 5l5 14M6 14h7"/>
+          <path d="m16 15 2 2 4-5"/>
+        </svg>
+      </button>
+
+      <!-- Theme -->
+      <button class="icon-btn" id="themeToggle"
+        aria-label="Toggle theme" title="Toggle theme">
+        <svg id="themeIcon" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="1.7">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42
+          m11.3 11.3 1.42 1.42M2 12h2m16 0h2
+          M4.93 19.07l1.42-1.42m11.3-11.3
+          1.42-1.42"/>
+        </svg>
+      </button>
+
+      <!-- Notes -->
+      <button class="icon-btn" id="menuToggle"
+        aria-label="Open notes" title="Notes">
+        <svg viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="1.7"
+          stroke-linecap="round">
+          <path d="M4 7h16M4 12h16M4 17h16"/>
+        </svg>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- Main writing area -->
+  <main class="editor">
+
+    <div class="editor-meta">
+      <span id="currentDate"></span>
+      <span class="time-display" id="timeDisplay">00:00:00</span>
+    </div>
+
+    <input
+      type="text"
+      id="noteTitle"
+      class="title-input"
+      placeholder="Give your thoughts a title..."
+      maxlength="120"
+      autocomplete="off"
+      spellcheck="false"
+    >
+
+    <textarea
+      id="noteContent"
+      class="content-input"
+      placeholder="Start writing..."
+      spellcheck="true"
+    ></textarea>
+
+    <div class="editor-footer">
+      <span id="wordCount">0 words</span>
+      <span id="saveStatus">Saved</span>
+    </div>
+
+  </main>
+
+  <!-- Drawer overlay -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Notes drawer -->
+  <aside class="drawer" id="drawer" aria-hidden="true">
+
+    <div class="drawer-header">
+      <div>
+        <h2>Notes <span id="noteCount">0</span></h2>
+      </div>
+
+      <button class="icon-btn" id="closeDrawer"
+        aria-label="Close notes">
+        <svg viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="1.7">
+          <path d="m18 6-12 12M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="notes-list" id="notesList"></div>
+
+    <div class="drawer-footer">
+      Saved on this device
+    </div>
+
+  </aside>
+
+  <!-- Delete confirmation modal -->
+  <div class="modal-overlay" id="deleteModal" aria-hidden="true">
+
+    <div class="confirm-modal">
+
+      <div class="delete-icon">
+        <svg viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="1.7"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 7h16M10 11v6m4-6v6"/>
+          <path d="m5 7 1 14h12l1-14M9 7V4h6v3"/>
+        </svg>
+      </div>
+
+      <h3>Delete this note?</h3>
+
+      <p>
+        This note will be permanently deleted.
+        You won't be able to recover it.
+      </p>
+
+      <div class="confirm-actions">
+        <button class="cancel-btn" id="cancelDelete">
+          Cancel
+        </button>
+
+        <button class="delete-btn" id="confirmDelete">
+          Delete
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
