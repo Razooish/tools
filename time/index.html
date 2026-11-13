@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f8f6">
+  <title>TIME — Date & Stopwatch</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/nepali-date-converter/dist/nepali-date-converter.umd.js"></script>
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <div class="app-shell">
+
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="TIME home">
+        <span class="brand-icon">T</span>
+        <span>TIME</span>
+      </a>
+
+      <nav class="navigation">
+        <button class="nav-btn active" data-screen="today">Today</button>
+        <button class="nav-btn" data-screen="converter">Converter</button>
+        <button class="nav-btn" data-screen="stopwatch">Stopwatch</button>
+      </nav>
+
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+        <span id="themeIcon">☾</span>
+      </button>
+    </header>
+
+    <main class="main-content">
+
+      <!-- TODAY -->
+      <section class="screen active" id="today">
+        <div class="date-layout">
+
+          <div class="date-heading">
+            <span class="eyebrow">TODAY</span>
+            <div class="live-time" id="liveClock">--:--:--</div>
+            <div class="timezone">KATHMANDU · NEPAL</div>
+          </div>
+
+          <div class="date-grid">
+            <div class="date-card bs-card">
+              <div class="date-card-top">
+                <span>BIKRAM SAMBAT</span>
+                <span class="date-tag">BS</span>
+              </div>
+              <div class="date-value" id="bsDate">Loading...</div>
+              <div class="date-day" id="bsWeekday"></div>
+            </div>
+
+            <div class="date-card ad-card">
+              <div class="date-card-top">
+                <span>GREGORIAN</span>
+                <span class="date-tag">AD</span>
+              </div>
+              <div class="date-value" id="adDate">Loading...</div>
+              <div class="date-day" id="adWeekday"></div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- CONVERTER -->
+      <section class="screen" id="converter">
+        <div class="tool-layout">
+          <div class="tool-heading">
+            <span class="eyebrow">DATE CONVERSION</span>
+            <h1>AD <span>to</span> BS</h1>
+          </div>
+
+          <div class="tool-card converter-card">
+            <label for="adInput">English date</label>
+            <input type="date" id="adInput">
+
+            <button class="primary-btn" id="convertBtn">
+              Convert date <span>→</span>
+            </button>
+
+            <div class="conversion-result">
+              <div class="result-label">BIKRAM SAMBAT</div>
+              <div class="result-date" id="convertedDate">—</div>
+              <div class="result-weekday" id="convertedWeekday"></div>
+              <div class="result-ad" id="convertedAd"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STOPWATCH -->
+      <section class="screen" id="stopwatch">
+        <div class="tool-layout stopwatch-layout">
+          <div class="tool-heading">
+            <span class="eyebrow">TIME TRACKING</span>
+            <h1>Stopwatch</h1>
+          </div>
+
+          <div class="tool-card stopwatch-card">
+            <div class="stopwatch-display" id="stopwatchDisplay">00:00.00</div>
+            <div class="stopwatch-status" id="stopwatchStatus">Ready</div>
+
+            <div class="stopwatch-actions">
+              <button class="secondary-btn" id="resetBtn" disabled>Reset</button>
+              <button class="primary-btn start-btn" id="startBtn">Start</button>
+              <button class="secondary-btn" id="lapBtn" disabled>Lap</button>
+            </div>
+
+            <div class="laps-section">
+              <div class="laps-heading">
+                <span>LAP</span>
+                <span>TIME</span>
+                <span>TOTAL</span>
+              </div>
+              <div class="laps-list" id="lapsList">
+                <div class="empty-laps">No laps recorded</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="footer">
+      <span>TIME</span>
+      <span id="footerDate"></span>
+    </footer>
+
+  </div>
+</body>
+</html>
