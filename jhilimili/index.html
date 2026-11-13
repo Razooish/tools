@@ -1,0 +1,789 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Jhilimili</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      body {
+        background: white;
+        transition: background-color 250ms ease;
+        font-family: Arial, sans-serif;
+      }
+
+      /* Color name */
+      #colorName {
+        position: fixed;
+        top: 15px;
+        right: 18px;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        pointer-events: none;
+        user-select: none;
+        display: none;
+        z-index: 10;
+      }
+
+      /* Information modal overlay */
+      #infoOverlay {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.58);
+        backdrop-filter: blur(8px);
+      }
+
+      #infoModal {
+        width: 100%;
+        max-width: 540px;
+        max-height: 85vh;
+        overflow-y: auto;
+        padding: 28px;
+        border-radius: 18px;
+        background: #fff;
+        color: #222;
+        font-family: Arial, sans-serif;
+        box-shadow: 0 20px 70px rgba(0, 0, 0, 0.25);
+        animation: modalAppear 0.2s ease;
+      }
+
+      #infoModal h2 {
+        font-size: 23px;
+        margin-bottom: 8px;
+      }
+
+      #infoModal .subtitle {
+        color: #777;
+        font-size: 13px;
+        margin-bottom: 22px;
+      }
+
+      #infoModal h3 {
+        font-size: 14px;
+        margin: 19px 0 8px;
+        color: #333;
+      }
+
+      #infoModal p,
+      #infoModal li {
+        font-size: 13px;
+        line-height: 1.7;
+        color: #555;
+      }
+
+      #infoModal ul {
+        padding-left: 19px;
+      }
+
+      #infoModal kbd {
+        display: inline-block;
+        background: #eee;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 2px 6px;
+        font-size: 11px;
+        font-weight: bold;
+        color: #222;
+      }
+
+      #infoModal .info-footer {
+        margin-top: 22px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+        color: #888;
+        font-size: 11px;
+        text-align: center;
+      }
+
+      @keyframes modalAppear {
+        from {
+          opacity: 0;
+          transform: translateY(10px) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @media (max-width: 480px) {
+        #infoModal {
+          padding: 22px;
+          max-height: 90vh;
+        }
+
+        #infoModal h2 {
+          font-size: 21px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="colorName"></div>
+
+    <!-- Information modal -->
+    <div id="infoOverlay">
+      <div id="infoModal">
+        <h2>Jhilimili</h2>
+
+        <p class="subtitle">Explore colors. Experiment with light. Have fun.</p>
+
+        <p>
+          Jhilimili is a keyboard-controlled color playground. Change your
+          screen background using alphabet shortcuts, CSS color names, and
+          special commands.
+        </p>
+
+        <h3>01. Alphabet Color Shortcuts</h3>
+
+        <p>
+          Press any letter from <kbd>A</kbd> to <kbd>Z</kbd>
+          to cycle through its assigned color palette. Repeated presses move to
+          the next color.
+        </p>
+
+        <h3>02. Type Color Names</h3>
+
+        <p>Type any valid CSS named color to apply it directly. Examples:</p>
+
+        <ul>
+          <li>Red</li>
+          <li>DarkSlateBlue</li>
+          <li>MediumVioletRed</li>
+          <li>RebeccaPurple</li>
+          <li>LightGoldenRodYellow</li>
+        </ul>
+
+        <h3>03. Special Commands</h3>
+
+        <ul>
+          <li>
+            <kbd>show</kbd> – Display the current color name at the top-right.
+          </li>
+          <li><kbd>hide</kbd> – Hide the color name.</li>
+          <li><kbd>info</kbd> – Open this information window.</li>
+          <li><kbd>jhilimili</kbd> – Start the random disco effect.</li>
+          <li><kbd>stop</kbd> – Stop disco and keep the current color.</li>
+        </ul>
+
+        <h3>04. Disco Mode</h3>
+
+        <p>
+          Type <kbd>jhilimili</kbd> to continuously display randomly selected
+          CSS colors.
+        </p>
+
+        <p>While disco is running, press:</p>
+
+        <ul>
+          <li><kbd>1</kbd> – Slowest speed</li>
+          <li><kbd>2</kbd> to <kbd>8</kbd> – Increasing speed</li>
+          <li><kbd>9</kbd> – Fastest speed</li>
+        </ul>
+
+        <h3>05. Reset</h3>
+
+        <p>
+          Press <kbd>Esc</kbd> to stop disco, reset the background to white, and
+          clear the current command.
+        </p>
+
+        <div class="info-footer">
+          Press any key or click outside this window to close.
+          <br /><br />
+          JHILIMILI · A LITTLE WORLD OF COLORS
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ==========================================
+      // 1. CSS COLORS
+      // ==========================================
+
+      const cssColors = [
+        "AliceBlue",
+        "AntiqueWhite",
+        "Aqua",
+        "Aquamarine",
+        "Azure",
+        "Beige",
+        "Bisque",
+        "Black",
+        "BlanchedAlmond",
+        "Blue",
+        "BlueViolet",
+        "Brown",
+        "BurlyWood",
+        "CadetBlue",
+        "Chartreuse",
+        "Chocolate",
+        "Coral",
+        "CornflowerBlue",
+        "Cornsilk",
+        "Crimson",
+        "Cyan",
+        "DarkBlue",
+        "DarkCyan",
+        "DarkGoldenRod",
+        "DarkGray",
+        "DarkGrey",
+        "DarkGreen",
+        "DarkKhaki",
+        "DarkMagenta",
+        "DarkOliveGreen",
+        "DarkOrange",
+        "DarkOrchid",
+        "DarkRed",
+        "DarkSalmon",
+        "DarkSeaGreen",
+        "DarkSlateBlue",
+        "DarkSlateGray",
+        "DarkSlateGrey",
+        "DarkTurquoise",
+        "DarkViolet",
+        "DeepPink",
+        "DeepSkyBlue",
+        "DimGray",
+        "DimGrey",
+        "DodgerBlue",
+        "FireBrick",
+        "FloralWhite",
+        "ForestGreen",
+        "Fuchsia",
+        "Gainsboro",
+        "GhostWhite",
+        "Gold",
+        "GoldenRod",
+        "Gray",
+        "Grey",
+        "Green",
+        "GreenYellow",
+        "HoneyDew",
+        "HotPink",
+        "IndianRed",
+        "Indigo",
+        "Ivory",
+        "Khaki",
+        "Lavender",
+        "LavenderBlush",
+        "LawnGreen",
+        "LemonChiffon",
+        "LightBlue",
+        "LightCoral",
+        "LightCyan",
+        "LightGoldenRodYellow",
+        "LightGray",
+        "LightGrey",
+        "LightGreen",
+        "LightPink",
+        "LightSalmon",
+        "LightSeaGreen",
+        "LightSkyBlue",
+        "LightSlateGray",
+        "LightSlateGrey",
+        "LightSteelBlue",
+        "LightYellow",
+        "Lime",
+        "LimeGreen",
+        "Linen",
+        "Magenta",
+        "Maroon",
+        "MediumAquaMarine",
+        "MediumBlue",
+        "MediumOrchid",
+        "MediumPurple",
+        "MediumSeaGreen",
+        "MediumSlateBlue",
+        "MediumSpringGreen",
+        "MediumTurquoise",
+        "MediumVioletRed",
+        "MidnightBlue",
+        "MintCream",
+        "MistyRose",
+        "Moccasin",
+        "NavajoWhite",
+        "Navy",
+        "OldLace",
+        "Olive",
+        "OliveDrab",
+        "Orange",
+        "OrangeRed",
+        "Orchid",
+        "PaleGoldenRod",
+        "PaleGreen",
+        "PaleTurquoise",
+        "PaleVioletRed",
+        "PapayaWhip",
+        "PeachPuff",
+        "Peru",
+        "Pink",
+        "Plum",
+        "PowderBlue",
+        "Purple",
+        "RebeccaPurple",
+        "Red",
+        "RosyBrown",
+        "RoyalBlue",
+        "SaddleBrown",
+        "Salmon",
+        "SandyBrown",
+        "SeaGreen",
+        "SeaShell",
+        "Sienna",
+        "Silver",
+        "SkyBlue",
+        "SlateBlue",
+        "SlateGray",
+        "SlateGrey",
+        "Snow",
+        "SpringGreen",
+        "SteelBlue",
+        "Tan",
+        "Teal",
+        "Thistle",
+        "Tomato",
+        "Turquoise",
+        "Violet",
+        "Wheat",
+        "White",
+        "WhiteSmoke",
+        "Yellow",
+        "YellowGreen",
+      ];
+
+      // ==========================================
+      // 2. ALPHABET COLOR PALETTES
+      // ==========================================
+
+      const palettes = {
+        A: [
+          "Amber",
+          "Aquamarine",
+          "Azure",
+          "AliceBlue",
+          "Aqua",
+          "AntiqueWhite",
+        ],
+        B: ["Black", "Blue", "Brown", "Beige", "Bisque", "BlueViolet"],
+        C: [
+          "Cyan",
+          "Chartreuse",
+          "Crimson",
+          "Coral",
+          "Chocolate",
+          "CornflowerBlue",
+        ],
+        D: [
+          "DarkSlateGray",
+          "DarkViolet",
+          "DarkSlateBlue",
+          "DarkOrange",
+          "DodgerBlue",
+        ],
+        E: ["SeaGreen", "Green", "HoneyDew", "Emerald"],
+        F: ["Fuchsia", "FloralWhite", "ForestGreen", "FireBrick"],
+        G: ["Green", "Gold", "Gray", "GoldenRod", "Gainsboro"],
+        H: ["HotPink", "HoneyDew", "IndianRed"],
+        I: ["Indigo", "Ivory", "IndianRed"],
+        J: ["MediumPurple", "Plum"],
+        K: ["Khaki"],
+        L: ["Lime", "Lavender", "LightBlue", "LightPink", "LimeGreen"],
+        M: ["Magenta", "Maroon", "MintCream", "MidnightBlue", "Moccasin"],
+        N: ["Navy", "NavajoWhite", "MistyRose"],
+        O: ["Orange", "Olive", "Orchid", "OrangeRed", "OldLace"],
+        P: ["Purple", "Pink", "Peru", "Plum", "PowderBlue"],
+        Q: ["RebeccaPurple", "MediumPurple"],
+        R: ["Red", "RosyBrown", "RoyalBlue"],
+        S: ["Silver", "Salmon", "SeaGreen", "SkyBlue", "SlateBlue"],
+        T: ["Teal", "Turquoise", "Thistle", "Tomato", "Tan"],
+        U: ["BlueViolet", "MediumVioletRed"],
+        V: ["Violet", "MediumVioletRed"],
+        W: ["White", "Wheat", "WhiteSmoke"],
+        X: ["MediumSlateBlue"],
+        Y: ["Yellow", "YellowGreen"],
+        Z: ["DarkSlateGray"],
+      };
+
+      // ==========================================
+      // 3. ELEMENTS AND VARIABLES
+      // ==========================================
+
+      const colorNameElement = document.getElementById("colorName");
+      const infoOverlay = document.getElementById("infoOverlay");
+
+      const positions = {};
+
+      let typedText = "";
+      let typingTimer = null;
+      let discoTimer = null;
+
+      let discoMode = false;
+      let discoSpeed = 5;
+
+      let showColorName = false;
+      let infoOpen = false;
+
+      let currentColor = "white";
+
+      const speedDelays = {
+        1: 3000,
+        2: 2200,
+        3: 1600,
+        4: 1100,
+        5: 750,
+        6: 500,
+        7: 300,
+        8: 180,
+        9: 80,
+      };
+
+      // ==========================================
+      // 4. CHANGE BACKGROUND COLOR
+      // ==========================================
+
+      function changeColor(color) {
+        const test = document.createElement("div");
+
+        test.style.color = "";
+
+        test.style.color = color;
+
+        if (!test.style.color) return;
+
+        currentColor = color;
+
+        document.body.style.backgroundColor = color;
+
+        document
+          .querySelector('meta[name="theme-color"]')
+          .setAttribute("content", color);
+
+        updateColorName();
+      }
+
+      // ==========================================
+      // 5. COLOR NAME DISPLAY
+      // ==========================================
+
+      function updateColorName() {
+        if (!showColorName) return;
+
+        colorNameElement.textContent = currentColor;
+
+        colorNameElement.style.display = "block";
+
+        const probe = document.createElement("div");
+
+        probe.style.color = currentColor;
+
+        document.body.appendChild(probe);
+
+        const rgb = getComputedStyle(probe).color.match(/\d+/g);
+
+        probe.remove();
+
+        if (rgb && rgb.length >= 3) {
+          const brightness =
+            (Number(rgb[0]) * 299 +
+              Number(rgb[1]) * 587 +
+              Number(rgb[2]) * 114) /
+            1000;
+
+          colorNameElement.style.color = brightness > 140 ? "black" : "white";
+
+          colorNameElement.style.textShadow =
+            brightness > 140 ? "0 0 2px white" : "0 0 2px black";
+        }
+      }
+
+      // ==========================================
+      // 6. ALPHABET COLOR CYCLING
+      // ==========================================
+
+      function cycleColor(letter) {
+        const colors = palettes[letter];
+
+        if (!colors) return;
+
+        if (positions[letter] === undefined) {
+          positions[letter] = 0;
+        }
+
+        const color = colors[positions[letter]];
+
+        changeColor(color);
+
+        positions[letter] = (positions[letter] + 1) % colors.length;
+      }
+
+      // ==========================================
+      // 7. DISCO MODE
+      // ==========================================
+
+      function stopDisco() {
+        discoMode = false;
+
+        if (discoTimer) {
+          clearTimeout(discoTimer);
+          discoTimer = null;
+        }
+      }
+
+      function randomDiscoColor() {
+        if (!discoMode) return;
+
+        const randomIndex = Math.floor(Math.random() * cssColors.length);
+
+        changeColor(cssColors[randomIndex]);
+
+        discoTimer = setTimeout(randomDiscoColor, speedDelays[discoSpeed]);
+      }
+
+      function startDisco() {
+        stopDisco();
+
+        discoMode = true;
+
+        randomDiscoColor();
+      }
+
+      // ==========================================
+      // 8. INFORMATION MODAL
+      // ==========================================
+
+      function openInfo() {
+        stopTyping();
+
+        infoOpen = true;
+
+        typedText = "";
+
+        infoOverlay.style.display = "flex";
+      }
+
+      function closeInfo() {
+        infoOpen = false;
+
+        infoOverlay.style.display = "none";
+
+        typedText = "";
+      }
+
+      function stopTyping() {
+        clearTimeout(typingTimer);
+
+        typingTimer = null;
+      }
+
+      infoOverlay.addEventListener("click", (event) => {
+        if (event.target === infoOverlay) {
+          closeInfo();
+        }
+      });
+
+      // ==========================================
+      // 9. COMMAND DETECTION
+      // ==========================================
+
+      function detectTypedCommand() {
+        const word = typedText.toLowerCase();
+
+        // INFO
+        if (word.endsWith("info")) {
+          openInfo();
+          return true;
+        }
+
+        // SHOW
+        if (word.endsWith("show")) {
+          showColorName = true;
+
+          updateColorName();
+
+          typedText = "";
+
+          return true;
+        }
+
+        // HIDE
+        if (word.endsWith("hide")) {
+          showColorName = false;
+
+          colorNameElement.style.display = "none";
+
+          typedText = "";
+
+          return true;
+        }
+
+        // JHILIMILI
+        if (word.endsWith("jhilimili")) {
+          startDisco();
+
+          typedText = "";
+
+          return true;
+        }
+
+        // STOP
+        if (word.endsWith("stop")) {
+          stopDisco();
+
+          typedText = "";
+
+          return true;
+        }
+
+        // DIRECT CSS COLOR NAME
+        const normalized = word.replace(/\s+/g, "");
+
+        const matchedColor = cssColors.find(
+          (color) => color.toLowerCase() === normalized,
+        );
+
+        if (matchedColor) {
+          changeColor(matchedColor);
+
+          typedText = "";
+
+          return true;
+        }
+
+        return false;
+      }
+
+      // ==========================================
+      // 10. KEYBOARD HANDLING
+      // ==========================================
+
+      document.addEventListener("keydown", (event) => {
+        if (event.ctrlKey || event.altKey || event.metaKey) return;
+
+        // While modal is open, ANY key closes it.
+        if (infoOpen) {
+          event.preventDefault();
+
+          closeInfo();
+
+          return;
+        }
+
+        // ESCAPE RESET
+        if (event.key === "Escape") {
+          stopDisco();
+
+          changeColor("white");
+
+          typedText = "";
+
+          stopTyping();
+
+          return;
+        }
+
+        // DISCO SPEED CONTROL
+        if (/^[1-9]$/.test(event.key) && discoMode) {
+          discoSpeed = Number(event.key);
+
+          clearTimeout(discoTimer);
+
+          randomDiscoColor();
+
+          return;
+        }
+
+        // SPACE / ENTER
+        if (event.key === " " || event.key === "Enter") {
+          typedText = "";
+
+          stopTyping();
+
+          return;
+        }
+
+        // BACKSPACE
+        if (event.key === "Backspace") {
+          typedText = typedText.slice(0, -1);
+
+          return;
+        }
+
+        // IGNORE NON-CHARACTER KEYS
+        if (event.key.length !== 1) return;
+
+        if (!/^[a-z]$/i.test(event.key)) return;
+
+        // ========================================
+        // COMMAND TYPING
+        // ========================================
+
+        typedText += event.key.toLowerCase();
+
+        stopTyping();
+
+        typingTimer = setTimeout(() => {
+          typedText = "";
+        }, 1800);
+
+        // Check commands first.
+        const commandDetected = detectTypedCommand();
+
+        // ========================================
+        // ALPHABET SHORTCUTS
+        // ========================================
+
+        // Avoid triggering alphabet shortcuts when
+        // the current sequence could be a command
+        // or a directly typed color name.
+
+        if (!commandDetected) {
+          const possibleCommand = ["show", "hide", "info", "stop", "jhilimili"];
+
+          const possibleColor = cssColors.some((color) =>
+            color.toLowerCase().startsWith(typedText),
+          );
+
+          const possibleSpecial = possibleCommand.some((command) =>
+            command.startsWith(typedText),
+          );
+
+          // Only cycle if the current sequence cannot
+          // be part of a command or a color name.
+          if (!possibleColor && !possibleSpecial) {
+            cycleColor(event.key.toUpperCase());
+
+            typedText = event.key.toLowerCase();
+
+            stopTyping();
+
+            typingTimer = setTimeout(() => {
+              typedText = "";
+            }, 1800);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
