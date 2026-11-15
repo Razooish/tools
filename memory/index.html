@@ -346,6 +346,45 @@ body {
  .play-btn { width:42px; height:42px; flex-basis:42px; }
 }
 
+
+/* GAME SELECTOR + ASSOCIATION MODE */
+.game-choice-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin:34px auto 12px; max-width:720px; }
+.game-choice { min-height:230px; display:flex; flex-direction:column; align-items:flex-start; text-align:left; gap:13px; padding:24px; border-radius:18px; border:1px solid #35435d; background:linear-gradient(145deg,#1b2638,#141c2a); color:#fff; cursor:pointer; transition:transform .2s,border-color .2s,background .2s; }
+.game-choice:hover { transform:translateY(-4px); border-color:#8298ff; background:linear-gradient(145deg,#24334c,#182235); }
+.choice-icon { width:44px; height:44px; display:grid; place-items:center; border-radius:13px; background:#2a3854; color:#a9bcff; font-size:28px; }
+.game-choice strong { font-size:19px; }
+.game-choice > span:not(.choice-icon):not(.choice-arrow) { color:#9eabc0; line-height:1.5; font-size:14px; }
+.choice-arrow { margin-top:auto; color:#a9bcff; font-size:14px; font-weight:800; }
+.back-link { border:0; background:transparent; color:#a9bcff; font-size:14px; font-weight:700; cursor:pointer; margin:0 0 18px; }
+.association-settings { display:grid; grid-template-columns:1fr 1fr; gap:14px; max-width:720px; margin:26px auto 18px; }
+.association-settings .setting:last-child { grid-column:1/-1; }
+.toggle-options,.direction-options { display:flex; flex-wrap:wrap; gap:9px; }
+.toggle-option,.direction-option { display:flex !important; align-items:center; justify-content:center !important; gap:8px !important; padding:11px 13px; border-radius:10px; border:1px solid #3b4962; background:#202b3d; color:#dce4f2 !important; cursor:pointer; margin:0 !important; }
+.toggle-option input,.direction-option input { accent-color:#8298ff; }
+.setting-hint { color:#8592a8; font-size:12px; margin-top:12px; }
+.association-topline { display:flex; justify-content:space-between; gap:12px; color:#9eabc0; font-size:13px; margin:25px auto; max-width:650px; }
+.association-prompt { min-height:180px; display:flex; align-items:center; justify-content:center; gap:18px; flex-wrap:wrap; padding:25px; border:1px solid #35435d; border-radius:18px; background:#192435; max-width:650px; margin:auto; }
+.association-name { font-size:clamp(24px,4vw,36px); font-weight:800; }
+.association-image { font-size:clamp(58px,10vw,88px); line-height:1.2; }
+.association-number { font-size:clamp(36px,7vw,56px); font-weight:900; letter-spacing:5px; color:#a9bcff; }
+.association-answer { max-width:460px; margin:22px auto 0; }
+.association-answer .answer-input { margin-bottom:10px; }
+.choice-answer-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; max-width:560px; margin:22px auto 0; }
+.choice-answer { min-height:100px; border:1px solid #3b4962; border-radius:13px; background:#1a2536; color:white; padding:13px; display:flex; align-items:center; justify-content:center; gap:9px; flex-direction:column; cursor:pointer; }
+.choice-answer.selected { border-color:#91a4ff; background:#293958; box-shadow:0 0 0 2px #718cff33; }
+.choice-answer .association-image { font-size:34px; }
+.choice-answer .association-name { font-size:16px; }
+.choice-answer:disabled { cursor:default; opacity:.7; }
+@media(max-width:650px) {
+ .game-choice-grid { grid-template-columns:1fr; margin-top:22px; }
+ .game-choice { min-height:170px; padding:19px; }
+ .association-settings { grid-template-columns:1fr; }
+ .association-settings .setting:last-child { grid-column:auto; }
+ .association-topline { margin:18px auto; }
+ .association-prompt { min-height:150px; padding:18px 10px; }
+ .choice-answer-grid { gap:8px; }
+}
+
 </style>
 </head>
 
@@ -412,10 +451,30 @@ body {
 <div class="game-overlay" id="gameOverlay" aria-hidden="true">
   <section class="game-panel">
     <button class="game-close" onclick="closeGame()" aria-label="Close game">&times;</button>
-    <h2 class="game-heading">Memory Challenge</h2>
-    <p class="game-subtitle">Observe the numbers. Remember them. Recall them accurately.</p>
 
-    <div id="gameSetup">
+    <div id="gameChooser">
+      <h2 class="game-heading">Choose a game</h2>
+      <p class="game-subtitle">Train your memory in two different ways.</p>
+      <div class="game-choice-grid">
+        <button class="game-choice" onclick="chooseGame('memory')">
+          <span class="choice-icon">⌁</span>
+          <strong>Number Sequence</strong>
+          <span>Memorize a row of numbers and recall them in order.</span>
+          <span class="choice-arrow">Play game →</span>
+        </button>
+        <button class="game-choice" onclick="chooseGame('association')">
+          <span class="choice-icon">◈</span>
+          <strong>Number Association</strong>
+          <span>Connect numbers with their memory words and images.</span>
+          <span class="choice-arrow">Play game →</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="gameSetup" hidden>
+      <button class="back-link" onclick="showGameSection('chooser')">← All games</button>
+      <h2 class="game-heading">Number Sequence</h2>
+      <p class="game-subtitle">Observe the numbers. Remember them. Recall them accurately.</p>
       <div class="game-settings">
         <div class="setting">
           <label for="digitRange">Digits per number <output id="digitValue">4</output></label>
@@ -456,6 +515,52 @@ body {
       <p class="game-status" id="scoreMessage"></p>
       <div class="result-list" id="resultList"></div>
       <button class="game-action" onclick="resetMemoryGame()">Play again</button>
+    </div>
+
+    <div id="associationSetup" hidden>
+      <button class="back-link" onclick="showGameSection('chooser')">← All games</button>
+      <h2 class="game-heading">Number Association</h2>
+      <p class="game-subtitle">Choose what to see and which way you want to recall it.</p>
+
+      <div class="association-settings">
+        <div class="setting">
+          <label>Clue appearance</label>
+          <div class="toggle-options">
+            <label class="toggle-option"><input type="checkbox" id="showName" checked> <span>Name</span></label>
+            <label class="toggle-option"><input type="checkbox" id="showImage" checked> <span>Image</span></label>
+          </div>
+          <p class="setting-hint">Choose name, image, or both.</p>
+        </div>
+        <div class="setting">
+          <label>Recall direction</label>
+          <div class="direction-options">
+            <label class="direction-option"><input type="radio" name="associationDirection" value="clueToNumber" checked><span>Clue <b>→</b> Number</span></label>
+            <label class="direction-option"><input type="radio" name="associationDirection" value="numberToClue"><span>Number <b>→</b> Clue</span></label>
+          </div>
+        </div>
+        <div class="setting">
+          <label for="associationCount">Questions <output id="associationCountValue">10</output></label>
+          <input id="associationCount" type="range" min="5" max="30" step="1" value="10" oninput="document.getElementById('associationCountValue').textContent=this.value">
+        </div>
+      </div>
+      <p class="game-status" id="associationSetupHint">You will see a name and image, then enter its two-digit number.</p>
+      <button class="game-action" onclick="startAssociationGame()">Start game</button>
+    </div>
+
+    <div id="associationPlay" hidden>
+      <div class="association-topline"><span id="associationProgress">Question 1 of 10</span><span id="associationScoreLive">0 correct</span></div>
+      <div class="association-prompt" id="associationPrompt"></div>
+      <div class="association-answer" id="associationAnswer"></div>
+      <p class="answer-feedback" id="associationFeedback"></p>
+      <button class="game-action" id="associationSubmit" onclick="submitAssociationAnswer()">Submit answer</button>
+    </div>
+
+    <div id="associationResults" hidden>
+      <h3 class="game-heading">Association complete</h3>
+      <div class="score-display" id="associationScore">0 / 10</div>
+      <p class="game-status" id="associationMessage"></p>
+      <div class="result-list" id="associationResultList"></div>
+      <button class="game-action" onclick="showGameSection('associationSetup')">Play again</button>
     </div>
   </section>
 </div>
@@ -772,7 +877,7 @@ function openGame() {
     challengeActive = false;
     gameOverlay.classList.add('active');
     gameOverlay.setAttribute('aria-hidden', 'false');
-    showGameSection('setup');
+    showGameSection('chooser');
     updateGameSettings();
 }
 
@@ -783,11 +888,33 @@ function closeGame() {
     gameOverlay.setAttribute('aria-hidden', 'true');
 }
 
+const gameSections = [
+    'gameChooser', 'gameSetup', 'gameMemorize', 'gameRecall', 'gameResults',
+    'associationSetup', 'associationPlay', 'associationResults'
+];
+
 function showGameSection(section) {
-    gameSetup.hidden = section !== 'setup';
-    gameMemorize.hidden = section !== 'memorize';
-    gameRecall.hidden = section !== 'recall';
-    gameResults.hidden = section !== 'results';
+    const ids = {
+        chooser: 'gameChooser',
+        setup: 'gameSetup',
+        memorize: 'gameMemorize',
+        recall: 'gameRecall',
+        results: 'gameResults'
+    };
+    const activeId = ids[section] || section;
+    gameSections.forEach(id => {
+        document.getElementById(id).hidden = id !== activeId;
+    });
+}
+
+function chooseGame(mode) {
+    if (mode === 'memory') {
+        showGameSection('setup');
+        updateGameSettings();
+    } else {
+        showGameSection('associationSetup');
+        updateAssociationHint();
+    }
 }
 
 function updateGameSettings() {
@@ -908,6 +1035,178 @@ answerInput.addEventListener('keydown', event => {
 document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && gameOverlay.classList.contains('active')) closeGame();
 });
+
+
+// =====================================
+// NUMBER ASSOCIATION GAME
+// =====================================
+let associationQuestions = [];
+let associationIndex = 0;
+let associationCorrect = 0;
+let associationAnswers = [];
+let selectedAssociationOption = null;
+
+const associationPrompt = document.getElementById('associationPrompt');
+const associationAnswer = document.getElementById('associationAnswer');
+
+function getAssociationPreferences() {
+    const showName = document.getElementById('showName').checked;
+    const showImage = document.getElementById('showImage').checked;
+    const direction = document.querySelector('input[name="associationDirection"]:checked').value;
+    return { showName, showImage, direction };
+}
+
+function updateAssociationHint() {
+    const prefs = getAssociationPreferences();
+    const hint = document.getElementById('associationSetupHint');
+    if (!prefs.showName && !prefs.showImage) {
+        hint.textContent = 'Select at least Name or Image to continue.';
+    } else if (prefs.direction === 'clueToNumber') {
+        hint.textContent = `You will see ${prefs.showName && prefs.showImage ? 'a name and image' : prefs.showName ? 'a name' : 'an image'}, then enter its two-digit number.`;
+    } else {
+        hint.textContent = `You will see a number, then choose the matching ${prefs.showName && prefs.showImage ? 'name and image' : prefs.showName ? 'name' : 'image'}.`;
+    }
+}
+
+document.getElementById('showName').addEventListener('change', updateAssociationHint);
+document.getElementById('showImage').addEventListener('change', updateAssociationHint);
+document.querySelectorAll('input[name="associationDirection"]').forEach(radio => radio.addEventListener('change', updateAssociationHint));
+
+function renderAssociationClue(item, includeName, includeImage) {
+    let html = '';
+    if (includeName) html += `<div class="association-name">${item.name}</div>`;
+    if (includeImage) html += `<div class="association-image">${item.image}</div>`;
+    return html;
+}
+
+function startAssociationGame() {
+    const prefs = getAssociationPreferences();
+    if (!prefs.showName && !prefs.showImage) {
+        updateAssociationHint();
+        return;
+    }
+
+    const count = Number(document.getElementById('associationCount').value);
+    const indexes = Array.from({length: words.length}, (_, i) => i)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, count);
+
+    associationQuestions = indexes.map(index => ({
+        number: String(index).padStart(2, '0'),
+        name: words[index][0],
+        image: words[index][1]
+    }));
+    associationIndex = 0;
+    associationCorrect = 0;
+    associationAnswers = [];
+    showGameSection('associationPlay');
+    renderAssociationQuestion();
+}
+
+function renderAssociationQuestion() {
+    const prefs = getAssociationPreferences();
+    const question = associationQuestions[associationIndex];
+    selectedAssociationOption = null;
+
+    document.getElementById('associationProgress').textContent =
+        `Question ${associationIndex + 1} of ${associationQuestions.length}`;
+    document.getElementById('associationScoreLive').textContent = `${associationCorrect} correct`;
+    document.getElementById('associationFeedback').textContent = '';
+
+    if (prefs.direction === 'clueToNumber') {
+        associationPrompt.innerHTML = renderAssociationClue(question, prefs.showName, prefs.showImage);
+        associationAnswer.innerHTML = `
+            <input class="answer-input" id="associationNumberInput" type="text" inputmode="numeric"
+              maxlength="2" autocomplete="off" placeholder="00" aria-label="Enter the associated number">
+        `;
+        const input = document.getElementById('associationNumberInput');
+        input.addEventListener('keydown', event => {
+            if (event.key === 'Enter') submitAssociationAnswer();
+        });
+        input.focus();
+        document.getElementById('associationSubmit').hidden = false;
+        document.getElementById('associationSubmit').textContent =
+            associationIndex === associationQuestions.length - 1 ? 'Finish game' : 'Submit';
+    } else {
+        associationPrompt.innerHTML = `<div class="association-number">${question.number}</div>`;
+        const distractors = associationQuestions
+            .filter((_, index) => index !== associationIndex)
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 3);
+        const options = [question, ...distractors].sort(() => Math.random() - 0.5);
+        associationAnswer.innerHTML = '<div class="choice-answer-grid"></div>';
+        const grid = associationAnswer.firstElementChild;
+        options.forEach(option => {
+            const button = document.createElement('button');
+            button.className = 'choice-answer';
+            button.type = 'button';
+            button.innerHTML = renderAssociationClue(option, prefs.showName, prefs.showImage);
+            button.addEventListener('click', () => {
+                selectedAssociationOption = option.number;
+                grid.querySelectorAll('button').forEach(btn => btn.classList.remove('selected'));
+                button.classList.add('selected');
+            });
+            grid.appendChild(button);
+        });
+        document.getElementById('associationSubmit').hidden = false;
+        document.getElementById('associationSubmit').textContent =
+            associationIndex === associationQuestions.length - 1 ? 'Finish game' : 'Submit';
+    }
+}
+
+function submitAssociationAnswer() {
+    const prefs = getAssociationPreferences();
+    const question = associationQuestions[associationIndex];
+    let answer = '';
+
+    if (prefs.direction === 'clueToNumber') {
+        const input = document.getElementById('associationNumberInput');
+        answer = input ? input.value.trim() : '';
+        if (!/^\d{2}$/.test(answer)) {
+            document.getElementById('associationFeedback').textContent = 'Enter a two-digit number (00–99).';
+            return;
+        }
+    } else {
+        answer = selectedAssociationOption || '';
+        if (!answer) {
+            document.getElementById('associationFeedback').textContent = 'Choose an answer first.';
+            return;
+        }
+    }
+
+    const correct = answer === question.number;
+    if (correct) associationCorrect++;
+    associationAnswers.push({ question, answer, correct });
+    associationIndex++;
+
+    if (associationIndex >= associationQuestions.length) {
+        finishAssociationGame();
+    } else {
+        renderAssociationQuestion();
+    }
+}
+
+function finishAssociationGame() {
+    showGameSection('associationResults');
+    document.getElementById('associationScore').textContent =
+        `${associationCorrect} / ${associationQuestions.length}`;
+    document.getElementById('associationMessage').textContent =
+        `${Math.round(associationCorrect / associationQuestions.length * 100)}% accuracy`;
+    const list = document.getElementById('associationResultList');
+    list.innerHTML = '';
+    associationAnswers.forEach((entry, index) => {
+        const row = document.createElement('div');
+        row.className = `result-item ${entry.correct ? 'correct' : 'wrong'}`;
+        const label = document.createElement('span');
+        label.className = 'result-label';
+        label.textContent = `Q${index + 1} · ${entry.question.name}`;
+        const value = document.createElement('strong');
+        value.textContent = `${entry.correct ? '✓' : '✕'} ${entry.question.number}`;
+        row.append(label, value);
+        list.appendChild(row);
+    });
+}
+
 
 </script>
 
