@@ -18,7 +18,10 @@ body {
     color: #ffffff;
     font-family: Arial, sans-serif;
     padding: 22px;
+    padding-bottom: 110px;
 }
+
+/* MAIN GRID */
 
 .grid {
     display: grid;
@@ -27,6 +30,8 @@ body {
     max-width: 1600px;
     margin: auto;
 }
+
+/* CARD DESIGN */
 
 .card {
     min-height: 175px;
@@ -65,9 +70,168 @@ body {
     line-height: 1.2;
 }
 
+/* FIXED BOTTOM INPUT BAR */
+
+.input-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background: rgba(9, 11, 16, 0.96);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid #292f3d;
+    z-index: 100;
+}
+
+.input-bar input {
+    width: min(350px, 65vw);
+    padding: 13px;
+    border-radius: 10px;
+    border: 1px solid #394255;
+    background: #151923;
+    color: white;
+    font-size: 17px;
+    text-align: center;
+    outline: none;
+}
+
+.input-bar input:focus {
+    border-color: #718cff;
+}
+
+.input-bar button {
+    padding: 13px 24px;
+    border: none;
+    border-radius: 10px;
+    background: #637cff;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.input-bar button:hover {
+    background: #4865ed;
+}
+
+/* ERROR MESSAGE */
+
+.error-message {
+    position: absolute;
+    bottom: 75px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: #ff7777;
+    font-size: 13px;
+    display: none;
+}
+
+/* MODAL BACKGROUND */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(7px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 200;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+/* MODAL */
+
+.modal {
+    position: relative;
+    width: 100%;
+    max-width: 650px;
+    max-height: 85vh;
+    overflow-y: auto;
+    background: #101520;
+    border: 1px solid #343d50;
+    border-radius: 22px;
+    padding: 30px 22px;
+    box-shadow: 0 20px 70px rgba(0,0,0,0.6);
+    animation: popup 0.25s ease;
+}
+
+@keyframes popup {
+    from {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-title {
+    text-align: center;
+    color: #8b95a9;
+    font-size: 14px;
+    margin-bottom: 22px;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: transparent;
+    color: #aab4c8;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: white;
+}
+
+/* MODAL CARD GRID */
+
+.modal-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.modal-grid .card {
+    min-height: 160px;
+    padding: 12px;
+    background: #1a2231;
+    border: 1px solid #39465e;
+}
+
+.modal-grid .word {
+    font-size: 21px;
+}
+
+.modal-grid .emoji {
+    font-size: 42px;
+}
+
+/* MOBILE RESPONSIVE */
+
 @media (max-width: 600px) {
+
     body {
         padding: 12px;
+        padding-bottom: 100px;
     }
 
     .grid {
@@ -87,124 +251,247 @@ body {
     .emoji {
         font-size: 42px;
     }
+
+    .input-bar {
+        padding: 13px 10px;
+    }
+
+    .input-bar input {
+        font-size: 15px;
+        min-width: 0;
+    }
+
+    .input-bar button {
+        padding: 13px 18px;
+    }
+
+    .modal {
+        padding: 30px 14px;
+        max-height: 80vh;
+    }
+
+    .modal-grid {
+        gap: 8px;
+    }
+
+    .modal-grid .card {
+        min-height: 140px;
+    }
+
+    .modal-grid .word {
+        font-size: 18px;
+    }
+
+    .modal-grid .emoji {
+        font-size: 36px;
+    }
 }
+
 </style>
 </head>
 
 <body>
 
+<!-- MAIN MEMORY CARD GRID -->
+
 <div class="grid" id="grid"></div>
 
+
+<!-- FIXED BOTTOM INPUT -->
+
+<div class="input-bar">
+
+    <input
+        type="text"
+        inputmode="numeric"
+        id="numberInput"
+        placeholder="Enter even-digit number"
+        autocomplete="off"
+        aria-label="Enter an even-digit number"
+    >
+
+    <button onclick="submitNumber()">
+        Submit
+    </button>
+
+    <div class="error-message" id="errorMessage">
+        Please enter an even number of digits (minimum 2).
+    </div>
+
+</div>
+
+
+<!-- POPUP MODAL -->
+
+<div class="modal-overlay" id="modalOverlay">
+
+    <div class="modal">
+
+        <button
+            class="close-btn"
+            onclick="closeModal()"
+            aria-label="Close popup"
+        >
+            &times;
+        </button>
+
+        <div class="modal-title">
+            YOUR MEMORY CARDS
+        </div>
+
+        <div id="modalContent"></div>
+
+    </div>
+
+</div>
+
+
 <script>
+
+// =====================================
+// MEMORY WORDS DATABASE (00–99)
+// =====================================
+
 const words = [
-["Sauce","🥫"],
-["Suit","🤵"],
-["Sun","☀️"],
-["Sumo doll","🤼"],
-["Sari","👘"],
-["Seal","🦭"],
-["Sash","🎀"],
-["Sack","🛍️"],
-["Sofa","🛋️"],
-["Soap","🧼"],
-["Toss-up toy","🪀"],
-["Totem","🗿"],
-["Tin","🥫"],
-["Tomb","⚰️"],
-["Tire","🛞"],
-["Towel","🧖"],
-["Dish","🍽️"],
-["Tack","📌"],
-["Taffy","🍬"],
-["Tub","🛁"],
-["Nose ring","💍"],
-["Net","🥅"],
-["Nun doll","🪆"],
-["Gnome","🧙"],
-["Nori","🍙"],
-["Nail","🔩"],
-["Notch","🪵"],
-["Neck","🦒"],
-["Knife","🔪"],
-["Knob","🚪"],
-["Mouse","🐭"],
-["Mat","🧘"],
-["Mane","🦁"],
-["Mummy","🧟"],
-["Mirror","🪞"],
-["Mail","✉️"],
-["Match","🔥"],
-["Mug","☕"],
-["Muff","🧤"],
-["Map","🗺️"],
-["Rose","🌹"],
-["Rod","🎣"],
-["Raincoat","🧥"],
-["Ram","🐏"],
-["Rower","🚣"],
-["Rail","🛤️"],
-["Roach","🪳"],
-["Rock","🪨"],
-["Roof","🏠"],
-["Rope","🪢"],
-["Lace","👟"],
-["Light","💡"],
-["Linen","🛏️"],
-["Lime","🍋"],
-["Lorry","🚛"],
-["Lily","🌸"],
-["Leash","🦮"],
-["Lock","🔒"],
-["Leaf","🍃"],
-["Lip balm","💄"],
-["Juice","🧃"],
-["Jet","✈️"],
-["Chain","⛓️"],
-["Gem","💎"],
-["Jar","🫙"],
-["Jail cell","🔐"],
-["Judge doll","⚖️"],
-["Jacket","🧥"],
-["Chef hat","👨‍🍳"],
-["Jeep","🚙"],
-["Case","💼"],
-["Cat","🐈"],
-["Can","🥫"],
-["Comb","💇"],
-["Car","🚗"],
-["Coal","🪨"],
-["Cage","🪺"],
-["Cake","🎂"],
-["Coffee","☕"],
-["Cup","🥤"],
-["Vase","🏺"],
-["Vat","🛢️"],
-["Fan","🪭"],
-["Foam","🫧"],
-["Fur","🧶"],
-["File","📁"],
-["Fish","🐟"],
-["Fork","🍴"],
-["Fife","🎶"],
-["Fiberglass","🛶"],
-["Bus","🚌"],
-["Bat","🦇"],
-["Bone","🦴"],
-["Beam","🪵"],
-["Bear","🐻"],
-["Bell","🔔"],
-["Badge","🏅"],
-["Bike","🚲"],
-["Beef","🥩"],
-["Bib","👶"]
+
+    ["Sauce","🥫"],
+    ["Suit","🤵"],
+    ["Sun","☀️"],
+    ["Sumo","🤼"],
+    ["Sorry","🙏"],
+    ["Seal","🦭"],
+    ["Sushi","🍣"],
+    ["Sack","🛍️"],
+    ["Sofa","🛋️"],
+    ["Soap","🧼"],
+
+    ["Toss","🪀"],
+    ["Toad","🐸"],
+    ["Tin","🥫"],
+    ["Tom","😺"],
+    ["Tire","🛞"],
+    ["Towel","🧖"],
+    ["Dish","🍽️"],
+    ["Tack","📌"],
+    ["Toffee","🍬"],
+    ["Tub","🛁"],
+
+    ["Nasa","🚀"],
+    ["Net","🥅"],
+    ["Nun","🪆"],
+    ["Name","🏷️"],
+    ["Nori","🍙"],
+    ["Nail","🔩"],
+    ["Nudge","👉"],
+    ["Neck","🦒"],
+    ["Knife","🔪"],
+    ["Knob","🚪"],
+
+    ["Mouse","🐭"],
+    ["Mat","🧘"],
+    ["Mane","🦁"],
+    ["Momo","🥟"],
+    ["Mirror","🪞"],
+    ["Mail","✉️"],
+    ["Match","🔥"],
+    ["Mug","☕"],
+    ["Muff","🧤"],
+    ["Map","🗺️"],
+
+    ["Rose","🌹"],
+    ["Rod","🎣"],
+    ["Rain","🌧️"],
+    ["Ram","🐏"],
+    ["Rare","💎"],
+    ["Rail","🛤️"],
+    ["Roach","🪳"],
+    ["Rock","🪨"],
+    ["Roof","🏠"],
+    ["Rope","🪢"],
+
+    ["Lace","👟"],
+    ["Light","💡"],
+    ["Linen","🛏️"],
+    ["Lime","🍋"],
+    ["Lure","🎣"],
+    ["Lily","🌸"],
+    ["Leash","🦮"],
+    ["Lock","🔒"],
+    ["Leaf","🍃"],
+    ["Lip","👄"],
+
+    ["Juice","🧃"],
+    ["Jet","✈️"],
+    ["Chain","⛓️"],
+    ["Gem","💎"],
+    ["Jar","🫙"],
+    ["Jail","🔐"],
+    ["Judge","⚖️"],
+    ["Jack","🃏"],
+    ["Chef","👨‍🍳"],
+    ["Jeep","🚙"],
+
+    ["Case","💼"],
+    ["Cat","🐈"],
+    ["Can","🥫"],
+    ["Comb","💇"],
+    ["Car","🚗"],
+    ["Coal","🪨"],
+    ["Cage","🪺"],
+    ["Cake","🎂"],
+    ["Coffee","☕"],
+    ["Cup","🥤"],
+
+    ["Vase","🏺"],
+    ["Vet","🩺"],
+    ["Fan","🪭"],
+    ["Foam","🫧"],
+    ["Fur","🧶"],
+    ["File","📁"],
+    ["Fish","🐟"],
+    ["Fog","🌫️"],
+    ["Fave","⭐"],
+    ["Fib","🤥"],
+
+    ["Bus","🚌"],
+    ["Bat","🦇"],
+    ["Bone","🦴"],
+    ["Beam","🪵"],
+    ["Bear","🐻"],
+    ["Bell","🔔"],
+    ["Badge","🏅"],
+    ["Bike","🚲"],
+    ["Beef","🥩"],
+    ["Bib","👶"]
+
 ];
+
+
+// =====================================
+// ELEMENT REFERENCES
+// =====================================
 
 const grid = document.getElementById("grid");
 
+const modalOverlay = document.getElementById("modalOverlay");
+
+const modalContent = document.getElementById("modalContent");
+
+const numberInput = document.getElementById("numberInput");
+
+const errorMessage = document.getElementById("errorMessage");
+
+
+// =====================================
+// GENERATE MAIN GRID (00–99)
+// =====================================
+
 words.forEach((item, index) => {
+
     const number = String(index).padStart(2, "0");
 
     const card = document.createElement("div");
+
     card.className = "card";
 
     card.innerHTML = `
@@ -214,7 +501,139 @@ words.forEach((item, index) => {
     `;
 
     grid.appendChild(card);
+
 });
+
+
+// =====================================
+// SUBMIT NUMBER
+// =====================================
+
+function submitNumber() {
+
+    const value = numberInput.value.trim();
+
+    // Validate: digits only, even length, minimum 2 digits
+
+    if (!/^\d+$/.test(value) || value.length % 2 !== 0) {
+
+        errorMessage.style.display = "block";
+
+        return;
+    }
+
+    errorMessage.style.display = "none";
+
+
+    // =====================================
+    // SPLIT INPUT INTO TWO-DIGIT PAIRS
+    // =====================================
+
+    const pairs = value.match(/\d{2}/g);
+
+
+    // =====================================
+    // GENERATE CORRESPONDING MEMORY CARDS
+    // =====================================
+
+    modalContent.innerHTML = "";
+
+    const modalGrid = document.createElement("div");
+
+    modalGrid.className = "modal-grid";
+
+    pairs.forEach(pair => {
+
+        const index = Number(pair);
+
+        const item = words[index];
+
+        // Create one corresponding card
+
+        const card = document.createElement("div");
+
+        card.className = "card";
+
+        card.innerHTML = `
+            <div class="number">${pair}</div>
+            <div class="word">${item[0]}</div>
+            <div class="emoji">${item[1]}</div>
+        `;
+
+        modalGrid.appendChild(card);
+
+    });
+
+
+    // Add all generated cards to modal
+
+    modalContent.appendChild(modalGrid);
+
+
+    // =====================================
+    // SHOW POPUP
+    // =====================================
+
+    modalOverlay.classList.add("active");
+
+}
+
+
+// =====================================
+// CLOSE MODAL
+// =====================================
+
+function closeModal() {
+
+    modalOverlay.classList.remove("active");
+
+}
+
+
+// =====================================
+// ENTER KEY SUPPORT
+// =====================================
+
+numberInput.addEventListener("keydown", function(event) {
+
+    if (event.key === "Enter") {
+
+        submitNumber();
+
+    }
+
+});
+
+
+// =====================================
+// CLOSE WHEN CLICKING OUTSIDE MODAL
+// =====================================
+
+modalOverlay.addEventListener("click", function(event) {
+
+    if (event.target === modalOverlay) {
+
+        closeModal();
+
+    }
+
+});
+
+
+// =====================================
+// ESCAPE KEY SUPPORT
+// =====================================
+
+document.addEventListener("keydown", function(event) {
+
+    if (event.key === "Escape") {
+
+        closeModal();
+
+    }
+
+});
+
 </script>
 
 </body>
