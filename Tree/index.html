@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kinship</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#f2f2f2;--card:#fafafa;--fg:#222;--line:rgba(34,34,34,.15);--soft:rgba(34,34,34,.05);--mute:rgba(34,34,34,.55);--serif:"Cormorant Garamond",Georgia,serif;--sans:Inter,-apple-system,"Segoe UI",sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161616;--card:#1e1e1e;--fg:#dcdcdc;--line:rgba(220,220,220,.14);--soft:rgba(220,220,220,.06);--mute:rgba(220,220,220,.55)}}
+:root[data-theme="dark"]{--bg:#161616;--card:#1e1e1e;--fg:#dcdcdc;--line:rgba(220,220,220,.14);--soft:rgba(220,220,220,.06);--mute:rgba(220,220,220,.55)}
+#tree{transform:translateZ(0)}#tree text{text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased}
+html,body{height:100%}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px var(--sans);overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.bar{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;gap:6px;padding:calc(12px + env(safe-area-inset-top,0px)) 14px 12px}
+.bar h1{font:600 24px var(--serif);margin:0 auto 0 8px;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ib{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--bg);display:grid;place-items:center;font-size:17px;line-height:1;flex-shrink:0}
+.ib:hover,.btn:hover{border-color:var(--fg)}
+.btn{border:1px solid var(--line);background:var(--bg);padding:9px 14px;border-radius:8px;font-weight:500}
+.pri{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.dng{text-decoration:underline;border:0;background:none;color:var(--mute);padding:8px 0}
+#tree{position:fixed;inset:0;width:100%;height:100%;cursor:grab;touch-action:none;background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:26px 26px}
+#tree.drag{cursor:grabbing}
+.card rect{fill:var(--card);stroke:var(--line);stroke-width:1.2}
+.card{cursor:pointer}
+.card:hover rect{stroke:var(--fg)}
+.card.sel rect{stroke:var(--fg);stroke-width:2.2}
+.nm{font:600 15px var(--serif);fill:var(--fg)}
+.dt{font:11px var(--sans);fill:var(--mute)}
+.avt{font:600 14px var(--sans);fill:#262626;text-anchor:middle}
+.ed{fill:none;stroke:var(--mute);stroke-width:1.3}.hull{fill:transparent;stroke:transparent;stroke-width:1.2;stroke-dasharray:5 5;cursor:pointer;transition:.2s}.hull:hover,.hull.on{fill:var(--soft);stroke:var(--mute)}.dim{opacity:.14}
+.ib,.btn,.fam,.tabs button,.ri,.chips span,.dng,.card rect{transition:background .18s,border-color .18s,color .18s,transform .18s,opacity .18s,stroke .18s,fill .18s}
+.ib:hover{background:var(--soft);transform:translateY(-1px)}.btn:hover{background:var(--soft)}.pri:hover{background:var(--fg);opacity:.8}
+.fam:hover{background:var(--soft)}.fam.on:hover{background:var(--fg);opacity:.85}.tabs button:hover,.ri:hover{background:var(--soft);border-color:var(--fg)}.tabs .on:hover{background:var(--fg)}
+.chips span:hover{border-color:var(--fg);background:var(--soft)}.chips input:checked+span:hover{background:var(--fg)}.dng:hover{color:var(--fg)}
+.card:hover rect{stroke:var(--fg);stroke-width:2}.card.hit rect{fill:color-mix(in srgb,var(--fg) 20%,var(--card));stroke:var(--fg);stroke-width:2}
+input:hover,select:hover,textarea:hover{border-color:var(--mute)}
+.chk{flex-direction:row;align-items:center;gap:8px;color:var(--fg);font-size:13px;cursor:pointer}.chk input{width:auto;accent-color:var(--fg)}
+#srch{position:fixed;inset:0;z-index:20;display:none;align-items:flex-start;justify-content:center;padding:90px 16px;background:rgba(0,0,0,.18)}#srch.open{display:flex}.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.tabs button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:5px 11px;font-size:12px}.tabs .on{background:var(--fg);color:var(--bg);border-color:var(--fg)}.ri{display:flex;justify-content:space-between;align-items:center;width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);margin-bottom:6px;text-align:left}.ri small{color:var(--mute)}
+.sp{stroke:var(--fg);stroke-width:1.3}
+.ht{font-size:17px;fill:var(--fg);text-anchor:middle;dominant-baseline:central}
+.hb{fill:var(--bg)}
+.shade{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:8;opacity:0;pointer-events:none;transition:.2s}
+.shade.on{opacity:1;pointer-events:auto}
+aside,#panel{position:fixed;top:0;bottom:0;z-index:9;background:var(--bg);border:0 solid var(--line);transition:transform .25s;padding:calc(20px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px));overflow-y:auto}
+aside{left:0;width:280px;border-right-width:1px;transform:translateX(-100%)}
+aside.open{transform:none}
+#panel{right:0;width:380px;max-width:100%;border-left-width:1px;transform:translateX(100%)}
+#panel.open{transform:none}
+.brand{font:600 28px var(--serif);margin-bottom:22px}
+.lbl{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--mute);margin:20px 0 8px}
+.fam{display:block;width:100%;text-align:left;border:0;background:none;padding:10px 12px;border-radius:8px}
+.fam.on{background:var(--fg);color:var(--bg)}
+.menu button.fam{color:inherit}
+.stat{color:var(--mute);font-size:12px;margin-top:20px}
+.ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.ph h2{font:600 26px var(--serif);margin:0}
+.fg{display:grid;grid-template-columns:1fr;gap:12px}
+.fg .full{grid-column:1/-1}
+label{display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--mute)}
+input,select,textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 10px;width:100%;outline:none;color:var(--fg)}
+input:focus,select:focus,textarea:focus{border-color:var(--fg)}
+textarea{resize:vertical;min-height:60px}
+.add{margin-top:22px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
+.add h3{margin:0 0 12px;font:600 18px var(--serif)}
+.chips{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:12px}
+.chips label{margin:0}
+.chips input{display:none}
+.chips span{display:block;text-align:center;padding:8px 0;border:1px solid var(--line);border-radius:8px;font-size:12px;color:var(--fg);cursor:pointer;background:var(--bg)}
+.chips input:checked+span{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+#dlg{position:fixed;inset:0;z-index:20;display:none;place-items:center;background:rgba(0,0,0,.5);padding:16px}
+#dlg.open{display:grid}
+.box{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:22px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:12px}
+.box h3{font:600 24px var(--serif);margin:0}.box p{margin:0;color:var(--mute);line-height:1.5}
+.row{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,12px);background:var(--fg);color:var(--bg);padding:10px 18px;border-radius:999px;opacity:0;transition:.25s;pointer-events:none;z-index:30;white-space:nowrap}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#empty{position:fixed;inset:0;display:none;place-items:center;text-align:center;z-index:2}
+#empty h2{font:600 34px var(--serif);margin:0 0 14px}
+@media(max-width:560px){.bar h1{font-size:20px}.ib{width:34px;height:34px}#panel{width:100%}}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <button class="ib" id="mBtn" title="Menu">☰</button>
+  <h1 id="title"></h1>
+  <button class="ib" id="zOut" title="Zoom out">−</button>
+  <button class="ib" id="zIn" title="Zoom in">+</button>
+  <button class="ib" id="fit" title="Fit to screen">⌂</button>
+  <button class="ib" id="sBtn" title="Search (Ctrl+F)">⌕</button>
+  <button class="ib" id="fs" title="Full screen">⛶</button>
+  <button class="ib" id="addBtn" title="Add member">＋</button>
+</div>
+
+<svg id="tree"><g id="layer"></g></svg>
+<div id="empty"><div><h2>Begin your lineage</h2><button class="btn pri" id="first">Add first member</button></div></div>
+
+<div class="shade" id="shade"></div>
+
+<aside id="drawer">
+  <div class="brand">Kinship</div>
+  <div class="lbl">Families</div>
+  <div id="famList"></div>
+  <button class="fam" id="newFam">＋ New family</button>
+  <div class="lbl">Manage</div>
+  <div class="menu">
+    <button class="fam" id="ren">Rename</button>
+    <button class="fam" id="exp">Export</button>
+    <button class="fam" id="imp">Import</button>
+    <button class="fam" id="thm">Switch theme</button>
+    <button class="fam" id="delFam">Delete family</button>
+  </div>
+  <input type="file" id="file" accept=".json,application/json" hidden>
+  <div class="stat" id="stat"></div>
+</aside>
+
+<div id="panel"></div>
+<div id="srch"><div class="box"><input id="sq" placeholder="Search members…" autocomplete="off"><div class="stat" id="sc" style="margin:0">Type a name</div></div></div>
+<div id="dlg"></div>
+<div id="toast"></div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid=()=>"i"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const KEY="kinship_v2",TKEY="kinship_theme";
+let fams=[],aid=null,sel=null,k=1,tx=0,ty=0,focus=null;
+const fam=()=>fams.find(f=>f.id===aid);
+const get=id=>fam()?.members.find(m=>m.id===id);
+const mk=(name,gender,extra={})=>({id:uid(),name,gender:gender||"Not specified",birth:"",death:"",notes:"",parents:[],spouses:[],...extra});
+
+/* storage */
+function save(){try{localStorage.setItem(KEY,JSON.stringify({fams,aid}))}catch(e){}}
+function load(){
+  try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&Array.isArray(d.fams)&&d.fams.length){fams=d.fams;aid=fams.some(f=>f.id===d.aid)?d.aid:fams[0].id}}catch(e){}
+  const n0=fams.length;
+  fams=fams.filter(f=>!(f.name==="Sharma Family"&&f.members.length===6&&f.members[0].id==="a"));
+  if(!fams.length||fams.length<n0){const f=seed();fams.unshift(f);aid=f.id;save()}
+  fams.forEach(f=>f.members.forEach(m=>{if(!Array.isArray(m.spouses))m.spouses=m.spouse?[m.spouse]:[];delete m.spouse}));
+  try{const t=localStorage.getItem(TKEY);if(t)document.documentElement.dataset.theme=t}catch(e){}
+}
+
+/* UI helpers */
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("on"),2400)}
+function dialog({title,text,fields=[],ok="Confirm",cancel="Cancel"}){
+  return new Promise(res=>{
+    const m=$("dlg");
+    m.innerHTML=`<div class="box"><h3>${esc(title)}</h3>${text?`<p>${esc(text)}</p>`:""}${fields.map(f=>`<label>${esc(f.label)}${f.options?`<select id="f_${f.id}">${f.options.map(o=>`<option>${esc(o)}</option>`).join("")}</select>`:`<input id="f_${f.id}" value="${esc(f.value)}" placeholder="${esc(f.ph)}">`}</label>`).join("")}<div class="row">${cancel?`<button class="btn" id="dX">${esc(cancel)}</button>`:""}<button class="btn pri" id="dOk">${esc(ok)}</button></div></div>`;
+    m.classList.add("open");
+    const done=v=>{m.classList.remove("open");m.onclick=null;m.onkeydown=null;res(v)};
+    const ins=m.querySelectorAll("input,select");
+    (ins[0]||$("dOk")).focus();
+    $("dOk").onclick=()=>{const v={};fields.forEach(f=>v[f.id]=$("f_"+f.id).value.trim());done(fields.length?v:true)};
+    if($("dX"))$("dX").onclick=()=>done(null);
+    m.onclick=e=>{if(e.target===m)done(null)};
+    m.onkeydown=e=>{if(e.key==="Enter"&&e.target.tagName==="INPUT")$("dOk").click();if(e.key==="Escape")done(null)};
+  });
+}
+const note=(title,text)=>dialog({title,text,ok:"OK",cancel:null});
+function drawer(open){$("drawer").classList.toggle("open",open);$("shade").classList.toggle("on",open||$("panel").classList.contains("open"))}
+function closePanel(){$("panel").classList.remove("open");sel=null;$("shade").classList.remove("on");renderTree()}
+
+/* layout */
+const W=176,H=64,S=64,GY=140;
+function layout(ms){
+  const by=new Map(ms.map(m=>[m.id,m])),unitOf=new Map(),units=[];
+  ms.forEach(m=>{if(unitOf.has(m.id))return;const comp=[],st=[m];while(st.length){const x=st.pop();if(unitOf.has(x.id)||comp.includes(x))continue;comp.push(x);x.spouses.forEach(s=>by.has(s)&&st.push(by.get(s)))}
+    const hub=comp.reduce((a,b)=>b.spouses.length>a.spouses.length?b:a),oth=comp.filter(x=>x!==hub),h=Math.floor(oth.length/2);
+    const u={m:[...oth.slice(0,h),hub,...oth.slice(h)],ch:[]};u.m.forEach(x=>unitOf.set(x.id,u));units.push(u)});
+  units.forEach(u=>{
+    const seen=new Set(),list=[];
+    u.m.forEach(p=>ms.forEach(c=>{if(c.parents.includes(p.id)){const cu=unitOf.get(c.id);if(cu!==u&&!seen.has(cu)){seen.add(cu);list.push({cu,b:c.birth||"\uffff",k:c.parents.map(p=>u.m.findIndex(x=>x.id===p)).sort().join()})}}}));
+    list.sort((a,b)=>a.k<b.k?-1:a.k>b.k?1:a.b<b.b?-1:a.b>b.b?1:0);
+    u.ch=list.map(x=>x.cu);
+  });
+  const GX=36,pos=new Map(),uw=u=>u.m.length*W+(u.m.length-1)*S;
+  const hasPar=m=>m.parents.some(p=>by.has(p));
+  function claim(u,d){
+    u.d=d;u.kids=[];
+    u.ch.forEach(c=>{if(!c.vis){c.vis=true;u.kids.push(c)}});
+    u.kids.forEach(c=>claim(c,d+1));
+    u.sw=Math.max(uw(u),u.kids.reduce((a,c)=>a+c.sw,0)+GX*Math.max(0,u.kids.length-1));
+  }
+  function place(u,left){
+    const tot=u.kids.reduce((a,c)=>a+c.sw,0)+GX*Math.max(0,u.kids.length-1);
+    let cur=left+(u.sw-tot)/2;
+    u.kids.forEach(c=>{place(c,cur);cur+=c.sw+GX});
+    let cx=u.kids.length?(u.kids[0].cx+u.kids[u.kids.length-1].cx)/2:left+u.sw/2;
+    cx=Math.max(left+uw(u)/2,Math.min(left+u.sw-uw(u)/2,cx));
+    u.cx=cx;
+    u.m.forEach((m,i)=>pos.set(m.id,{x:cx-uw(u)/2+i*(W+S),y:u.d*GY}));
+  }
+  const roots=units.filter(u=>!u.m.some(hasPar));
+  roots.forEach(r=>r.vis=true);
+  roots.forEach(r=>claim(r,0));
+  units.filter(u=>!u.vis).forEach(u=>{u.vis=true;roots.push(u);claim(u,0)});
+  let x=0;
+  roots.forEach(r=>{place(r,x);x+=r.sw+GX*2});
+  const shift=(x-GX*2)/2;
+  pos.forEach(p=>p.x-=shift);
+  return pos;
+}
+function layoutOld(ms){
+  const d=new Map(ms.map(m=>[m.id,0])),by=new Map(ms.map(m=>[m.id,m]));
+  for(let i=0;i<20;i++){let ch=false;
+    ms.forEach(m=>{
+      m.parents.forEach(p=>{if(by.has(p)&&d.get(m.id)<d.get(p)+1){d.set(m.id,d.get(p)+1);ch=true}});
+      const s=by.get(m.spouse);if(s){const x=Math.max(d.get(m.id),d.get(s.id));if(d.get(m.id)!==x||d.get(s.id)!==x){d.set(m.id,x);d.set(s.id,x);ch=true}}
+    });
+    if(!ch)break;
+  }
+  const max=Math.max(...d.values()),pos=new Map(),cx=new Map();
+  for(let l=0;l<=max;l++){
+    const row=ms.filter(m=>d.get(m.id)===l);
+    const key=m=>{const xs=m.parents.map(p=>cx.get(p)).filter(v=>v!==undefined);return xs.length?xs.reduce((a,b)=>a+b)/xs.length:undefined};
+    const units=[],seen=new Set();
+    row.forEach((m,i)=>{
+      if(seen.has(m.id))return;seen.add(m.id);
+      const u=[m],s=by.get(m.spouse);
+      if(s&&!seen.has(s.id)&&d.get(s.id)===l){seen.add(s.id);u.push(s)}
+      const ks=u.map(key).filter(v=>v!==undefined);
+      units.push({u,k:ks.length?Math.min(...ks):1e9+i});
+    });
+    units.sort((a,b)=>a.k-b.k);
+    const w=u=>u.length*W+(u.length-1)*S;
+    const total=units.reduce((a,x)=>a+w(x.u),0)+(units.length-1)*70;
+    let x=-total/2;
+    units.forEach(({u})=>{u.forEach((m,i)=>{const px=x+i*(W+S);pos.set(m.id,{x:px,y:l*GY});cx.set(m.id,px+W/2)});x+=w(u)+70});
+  }
+  return pos;
+}
+
+/* render tree */
+const NS="http://www.w3.org/2000/svg";
+const GC=g=>g==="Female"?"#f3a5c3":g==="Male"?"#9dc4f2":"#c4c4c4";
+const isDead=m=>!!(m.dead||m.death);
+const effP=m=>{const ps=m.parents.filter(p=>get(p));if(ps.length===1){const s=get(ps[0]).spouses;if(s.length===1&&get(s[0]))return[ps[0],s[0]]}return ps};
+function seed(){
+  const D=(id,n,g,p,s,x)=>({id,name:n,gender:g,birth:'',death:'',dead:!!x,parents:p,spouses:s}),M='Male',F='Female';
+  return{id:uid(),name:'Mahabharata',members:[
+    D('sh','Shantanu',M,[],['ga','sa'],1),D('ga','Ganga',F,[],['sh']),D('sa','Satyavati',F,[],['sh']),
+    D('bh','Bhishma',M,['sh','ga'],[],1),D('vi','Vichitravirya',M,['sh','sa'],['am','ab'],1),
+    D('am','Ambika',F,[],['vi']),D('ab','Ambalika',F,[],['vi']),
+    D('dh','Dhritarashtra',M,['vi','am'],['gn'],1),D('gn','Gandhari',F,[],['dh'],1),
+    D('pa','Pandu',M,['vi','ab'],['ku','ma'],1),D('ku','Kunti',F,[],['pa','su']),D('ma','Madri',F,[],['pa'],1),
+    D('su','Surya',M,[],['ku']),D('ka','Karna',M,['su','ku'],[],1),
+    D('yu','Yudhishthira',M,['pa','ku'],['dr']),D('bm','Bhima',M,['pa','ku'],['dr']),D('ar','Arjuna',M,['pa','ku'],['dr']),
+    D('na','Nakula',M,['pa','ma'],['dr']),D('sd','Sahadeva',M,['pa','ma'],['dr']),D('dr','Draupadi',F,[],['yu','bm','ar','na','sd']),
+    D('du','Duryodhana',M,['dh','gn'],[],1),D('ds','Dushasana',M,['dh','gn'],[],1),D('dj','Dussaha',M,['dh','gn'],[],1),
+    D('dm','Durmukha',M,['dh','gn'],[],1),D('vk','Vikarna',M,['dh','gn'],[],1),D('cs','Chitrasena',M,['dh','gn'],[],1),
+    D('vv','Vivinshati',M,['dh','gn'],[],1),D('dy','Durjaya',M,['dh','gn'],[],1),
+    D('dl','Dussala',F,['dh','gn'],['jd']),D('jd','Jayadratha',M,[],['dl'],1)
+  ]};
+}
+function heart(a,b){const adj=Math.abs(a.x-b.x)<=W+S+1&&a.y===b.y;return{x:(a.x+b.x+W)/2,y:adj?a.y+H/2:Math.max(a.y,b.y)+H+22,adj}}
+function familiesOf(ms){const ids=new Set(ms.map(m=>m.id)),r=new Map();ms.forEach(c=>{const ps=effP(c).filter(p=>ids.has(p)).sort();if(!ps.length)return;const id=ps.join('+');if(!r.has(id))r.set(id,{id,parents:ps,kids:[]});r.get(id).kids.push(c.id)});return r}
+function focusFam(id){focus=focus===id?null:id;renderTree(true)}
+function clearFocus(){focus=null;renderTree(true)}
+function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const a in attrs)e.setAttribute(a,attrs[a]);if(text!==undefined)e.textContent=text;parent&&parent.appendChild(e);return e}
+let pos=new Map();
+function renderTree(refit){
+  const f=fam(),L=$("layer");L.innerHTML="";
+  const ms=f.members;
+  $("empty").style.display=ms.length?"none":"grid";
+  $("tree").style.display=ms.length?"block":"none";
+  if(!ms.length)return;
+  pos=layout(ms);
+  const fl=familiesOf(ms),FS=focus&&fl.get(focus)?new Set([...fl.get(focus).parents,...fl.get(focus).kids]):null;
+  if(focus&&!FS)focus=null;
+  const dm=id=>FS&&!FS.has(id)?' dim':'';
+  [...fl.values()].filter(q=>q.parents.every(p=>pos.has(p))).sort((a,b)=>pos.get(a.parents[0]).y-pos.get(b.parents[0]).y).forEach(q=>{
+    const ids=[...q.parents,...q.kids].filter(i=>pos.has(i)),xs=ids.map(i=>pos.get(i).x),ys=ids.map(i=>pos.get(i).y),x0=Math.min(...xs)-16,y0=Math.min(...ys)-16;
+    el('rect',{x:x0,y:y0,width:Math.max(...xs)+W+16-x0,height:Math.max(...ys)+H+16-y0,rx:18,class:'hull'+(focus===q.id?' on':'')+(FS&&focus!==q.id?' dim':''),'data-f':q.id},L);
+  });
+  ms.forEach(c=>{
+    const cp=pos.get(c.id),ps=effP(c).map(get).filter(Boolean);
+    if(!cp||!ps.length)return;
+    const ty0=cp.y,tx0=cp.x+W/2,my=ty0-(GY-H)/2,ec='ed'+(FS&&!(FS.has(c.id)&&ps.some(p=>FS.has(p.id)))?' dim':'');
+    if(ps.length===2&&ps[0].spouses.includes(ps[1].id)){
+      const h=heart(pos.get(ps[0].id),pos.get(ps[1].id));
+      el('path',{d:`M${h.x} ${h.y+14}V${my}H${tx0}V${ty0}`,class:ec},L);
+    }else ps.forEach(p=>{const pp=pos.get(p.id);el('path',{d:`M${pp.x+W/2} ${pp.y+H}V${my}H${tx0}V${ty0}`,class:ec},L)});
+  });
+  ms.forEach(m=>m.spouses.forEach(s=>{
+    if(m.id>s||!pos.has(s))return;
+    const a=pos.get(m.id),b=pos.get(s),h=heart(a,b),c0=a.x+W/2,c1=b.x+W/2;
+    const g=el('g',{class:FS&&!(FS.has(m.id)&&FS.has(s))?'dim':''},L);
+    if(h.adj){const l=a.x<b.x?a:b,r=a.x<b.x?b:a;el('path',{d:`M${l.x+W} ${l.y+H/2}H${r.x}`,class:'sp'},g)}
+    else el('path',{d:`M${c0} ${a.y+H}C${c0} ${h.y+7} ${c1} ${h.y+7} ${c1} ${b.y+H}`,class:'ed'},g);
+    el('circle',{cx:h.x,cy:h.y,r:13,class:'hb'},g);
+    el('text',{x:h.x,y:h.y+1,class:'ht'},g,'♥');
+  }));
+  ms.forEach(m=>{
+    const p=pos.get(m.id);
+    const g=el("g",{class:"card"+(sel===m.id?" sel":"")+dm(m.id)+(q&&m.name.toLowerCase().includes(q)?" hit":""),transform:`translate(${p.x},${p.y})`},L);
+    el("rect",{width:W,height:H,rx:10},g);
+    el("circle",{cx:30,cy:H/2,r:16,fill:isDead(m)?"#8c8c8c":GC(m.gender)},g);
+    el("text",{x:30,y:H/2+5,class:"avt"},g,(m.name.trim()[0]||"?").toUpperCase());
+    el("text",{x:56,y:28,class:"nm"},g,m.name.length>18?m.name.slice(0,17)+"…":m.name);
+    const yrs=(m.birth?m.birth.slice(0,4):"")+(m.death?" – "+m.death.slice(0,4):"");
+    el("text",{x:56,y:46,class:"dt"},g,yrs||"—");
+    g.addEventListener("click",e=>{e.stopPropagation();openMember(m.id)});
+  });
+  if(FS&&refit)fitView(FS);else if(refit)fitView();else applyT();
+}
+function applyT(){$("layer").setAttribute("transform",`translate(${tx},${ty}) scale(${k})`)}
+function fitView(set){
+  const ms=fam().members;if(!ms.length)return;
+  let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;pos.forEach((p,id)=>{if(set&&!set.has(id))return;x0=Math.min(x0,p.x);x1=Math.max(x1,p.x+W);y0=Math.min(y0,p.y);y1=Math.max(y1,p.y+H)});
+  const vw=innerWidth,vh=innerHeight,w=x1-x0,h=y1-y0;
+  k=Math.min(1,(vw-60)/w,(vh-170)/h);
+  tx=vw/2-(x0+w/2)*k;ty=(vh+60)/2-(y0+h/2)*k;applyT();
+}
+function zoom(f,cx=innerWidth/2,cy=innerHeight/2){
+  const nk=Math.max(.2,Math.min(2.5,k*f)),r=nk/k;tx=cx-(cx-tx)*r;ty=cy-(cy-ty)*r;k=nk;applyT();
+}
+
+/* pan / zoom input */
+const svg=$("tree");let pan=null,down=null;svg.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY}});
+svg.addEventListener("pointerdown",e=>{if(e.target.closest(".card"))return;pan={x:e.clientX-tx,y:e.clientY-ty};svg.classList.add("drag");svg.setPointerCapture(e.pointerId)});
+svg.addEventListener("pointermove",e=>{if(!pan)return;tx=e.clientX-pan.x;ty=e.clientY-pan.y;applyT()});
+["pointerup","pointercancel"].forEach(t=>svg.addEventListener(t,e=>{
+  const tap=t==='pointerup'&&down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<5;pan=null;svg.classList.remove('drag');
+  if(!tap)return;const u=document.elementFromPoint(e.clientX,e.clientY);if(u&&u.closest('.card'))return;
+  const h=u&&u.closest('.hull');if(h)focusFam(h.dataset.f);else if(focus)clearFocus();
+}));
+svg.addEventListener("wheel",e=>{e.preventDefault();zoom(e.deltaY<0?1.1:.9,e.clientX,e.clientY)},{passive:false});
+
+/* member panel */
+function openMember(id){
+  sel=id;const m=get(id);if(!m)return;
+  const P=$("panel");
+  const gOpt=["Male","Female","Other","Not specified"].map(g=>`<option${m.gender===g?" selected":""}>${g}</option>`).join("");
+  P.innerHTML=`
+  <div class="ph"><h2>${esc(m.name)}</h2><button class="ib" id="pX">×</button></div>
+  <div class="fg">
+    <label class="full">Name<input id="mName" value="${esc(m.name)}" maxlength="100"></label>
+    <label>Gender<select id="mGen">${gOpt}</select></label>
+    <label>Born<input id="mBirth" type="date" value="${esc(m.birth.length===10?m.birth:"")}"></label>
+    <label>Died<input id="mDeath" type="date" value="${esc(m.death.length===10?m.death:"")}"></label>
+    <label class="chk"><input type="checkbox" id="mDead"${isDead(m)?" checked":""}> Deceased</label>
+    
+  </div>
+  <div class="row"><button class="btn pri" id="mSave">Save</button></div>
+  <div class="lbl">Relations</div><div class="tabs" id="rTabs"></div><div id="rList"></div>
+  <div class="add">
+    <h3>Add relative</h3>
+    <div class="chips">${["Parent","Sibling","Child","Spouse"].map((r,i)=>`<label><input type="radio" name="rel" value="${r}"${i===2?" checked":""}><span>${r}</span></label>`).join("")}</div>
+    <div class="fg"><label>Name<input id="rName" placeholder="Full name"></label>
+    <label>Gender<select id="rGen"><option>Male</option><option>Female</option><option>Other</option></select></label><label id="rPW" style="display:none">Other parent<select id="rPar"></select></label></div>
+    <div class="row"><button class="btn pri" id="rAdd">Add</button></div>
+  </div>
+  <div style="margin-top:18px"><button class="dng" id="mDel">Delete member</button></div>`;
+  P.classList.add("open");$("shade").classList.add("on");
+  $("pX").onclick=closePanel;
+  const sync=()=>{const r=document.querySelector('input[name="rel"]:checked').value;
+    if(r==='Spouse')$('rGen').value=m.gender==='Male'?'Female':m.gender==='Female'?'Male':$('rGen').value;
+    $('rPW').style.display=r==='Child'&&m.spouses.length?'flex':'none'};
+  $('rPar').innerHTML="<option value=''>Unknown / none</option>"+m.spouses.map(get).filter(Boolean).map(s=>`<option value='${s.id}'>${esc(s.name)}</option>`).join('');
+  if(m.spouses.length)$('rPar').selectedIndex=1;
+  document.querySelectorAll('input[name="rel"]').forEach(r=>r.onchange=sync);sync();relList(m);
+  $('mDeath').oninput=()=>{if($('mDeath').value)$('mDead').checked=true};
+  $("mSave").onclick=()=>{
+    const n=$("mName").value.trim(),b=$("mBirth").value,d=$("mDeath").value;
+    if(!n)return toast("Name is required");
+    if(b&&d&&d<b)return toast("Death precedes birth");
+    {const dd=$("mDead").checked;Object.assign(m,{name:n,gender:$("mGen").value,birth:b,death:dd?d:"",dead:dd})}
+    save();renderTree();openMember(id);toast("Saved");
+  };
+  $("rAdd").onclick=()=>{
+    const n=$("rName").value.trim();if(!n)return toast("Enter a name");
+    addRelative(m,document.querySelector('input[name="rel"]:checked').value,n,$("rGen").value,$("rPar").value);
+  };
+  $("mDel").onclick=async()=>{
+    if(!await dialog({title:"Delete member?",text:`${m.name} and their links will be removed.`,ok:"Delete"}))return;
+    fam().members=fam().members.filter(x=>x.id!==id);
+    fam().members.forEach(x=>{x.parents=x.parents.filter(p=>p!==id);x.spouses=x.spouses.filter(s=>s!==id)});
+    save();closePanel();renderAll();toast("Member deleted");
+  };
+}
+let rf='All';
+function relsOf(m){
+  const ms=fam().members,gm=id=>get(id),ps=effP(m).map(gm).filter(Boolean),out=[];
+  const kids=p=>ms.filter(c=>effP(c).includes(p.id)),sibs=p=>ms.filter(c=>c.id!==p.id&&effP(c).some(x=>effP(p).includes(x)));
+  const add=(l,list)=>list.forEach(x=>{if(x&&!out.some(o=>o.m.id===x.id&&o.l===l))out.push({l,m:x})});
+  add('Parent',ps);add('Grandparent',ps.flatMap(p=>effP(p).map(gm)));add('Sibling',sibs(m));
+  add('Spouse',m.spouses.map(gm));add('Child',kids(m));add('Cousin',ps.flatMap(sibs).flatMap(kids));
+  return out;
+}
+function relList(m){
+  const all=relsOf(m),T=['All','Parent','Grandparent','Sibling','Spouse','Child','Cousin'];
+  $('rTabs').innerHTML=T.map(t=>`<button data-t='${t}' class='${rf===t?'on':''}'>${t}${t==='All'?'':' '+all.filter(o=>o.l===t).length}</button>`).join('');
+  $('rTabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{rf=b.dataset.t;relList(m)});
+  const l=all.filter(o=>rf==='All'||o.l===rf);
+  $('rList').innerHTML=l.length?l.map(o=>`<button class='ri' data-i='${o.m.id}'><span>${esc(o.m.name)}</span><small>${o.l}</small></button>`).join(''):"<div class='stat'>None yet</div>";
+  $('rList').querySelectorAll('button').forEach(b=>b.onclick=()=>openMember(b.dataset.i));
+}
+function addRelative(m,rel,name,gender,other){
+  const n=mk(name,gender),ms=fam().members;
+  if(rel==="Parent"){
+    if(m.parents.length>=2)return toast("Already has two parents");
+    const o=get(m.parents[0]);
+    m.parents.push(n.id);
+    if(o){o.spouses.push(n.id);n.spouses.push(o.id)}
+  }else if(rel==="Sibling"){n.parents=[...m.parents]}
+  else if(rel==="Child"){n.parents=[m.id];if(other)n.parents.push(other)}
+  else if(rel==="Spouse"){m.spouses.push(n.id);n.spouses.push(m.id)}
+  ms.push(n);save();renderAll(true);openMember(m.id);
+  toast(rel==="Sibling"&&!m.parents.length?"Sibling added (no shared parents yet)":rel+" added");
+}
+
+/* families & chrome */
+function renderAll(refit){
+  const f=fam();
+  $("title").textContent=f.name;
+  $("famList").innerHTML="";
+  fams.forEach(x=>{const b=document.createElement("button");b.className="fam"+(x.id===aid?" on":"");b.textContent=x.name;b.onclick=()=>{aid=x.id;sel=null;$("panel").classList.remove("open");save();renderAll(true);drawer(false)};$("famList").appendChild(b)});
+  const gens=new Set([...layout(f.members).values()].map(p=>p.y)).size;
+  $("stat").textContent=`${f.members.length} member${f.members.length===1?"":"s"} · ${gens} generation${gens===1?"":"s"}`;
+  renderTree(refit);
+}
+async function addMember(){
+  const r=await dialog({title:"New member",fields:[{id:"n",label:"Name",ph:"Full name"},{id:"g",label:"Gender",options:["Male","Female","Other"]}],ok:"Add"});
+  if(!r||!r.n)return;
+  fam().members.push(mk(r.n,r.g));save();renderAll(true);toast("Member added");
+}
+$("mBtn").onclick=()=>drawer(true);
+$("shade").onclick=()=>{drawer(false);if($("panel").classList.contains("open"))closePanel()};
+$("zIn").onclick=()=>zoom(1.2);$("zOut").onclick=()=>zoom(.83);$("fit").onclick=fitView;
+$("addBtn").onclick=addMember;$("first").onclick=addMember;
+$("fs").onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){toast("Full screen unavailable")}};
+$("newFam").onclick=async()=>{
+  drawer(false);
+  const r=await dialog({title:"New family",fields:[{id:"n",label:"Name",ph:"e.g. Thapa Family"}],ok:"Create"});
+  if(!r||!r.n)return;
+  const f={id:uid(),name:r.n,members:[]};fams.push(f);aid=f.id;save();renderAll(true);
+};
+$("ren").onclick=async()=>{
+  drawer(false);
+  const r=await dialog({title:"Rename family",fields:[{id:"n",label:"Name",value:fam().name}],ok:"Save"});
+  if(!r||!r.n)return;fam().name=r.n;save();renderAll();
+};
+$("delFam").onclick=async()=>{
+  drawer(false);
+  if(!await dialog({title:"Delete family?",text:`“${fam().name}” and all its members will be removed.`,ok:"Delete"}))return;
+  fams=fams.filter(f=>f.id!==aid);
+  if(!fams.length)fams=[{id:uid(),name:"My Family",members:[]}];
+  aid=fams[0].id;sel=null;$("panel").classList.remove("open");save();renderAll(true);
+};
+$("thm").onclick=()=>{
+  const cur=document.documentElement.dataset.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+  const nx=cur==="dark"?"light":"dark";document.documentElement.dataset.theme=nx;
+  try{localStorage.setItem(TKEY,nx)}catch(e){}
+};
+
+/* import / export */
+$("exp").onclick=()=>{
+  drawer(false);
+  const f=fam(),b=new Blob([JSON.stringify({app:"Kinship",version:2,family:f},null,2)],{type:"application/json"});
+  const u=URL.createObjectURL(b),a=document.createElement("a");
+  a.href=u;a.download=f.name.replace(/[^a-z0-9]/gi,"_")+".json";a.click();URL.revokeObjectURL(u);
+  toast("Exported");
+};
+$("imp").onclick=()=>{drawer(false);$("file").click()};
+$("file").onchange=e=>{
+  const file=e.target.files?.[0];if(!file)return;
+  const rd=new FileReader();
+  rd.onload=async()=>{
+    try{
+      const p=JSON.parse(rd.result),inc=p.family||p;
+      if(!inc||typeof inc.name!=="string"||!Array.isArray(inc.members))throw new Error("This is not a valid family file.");
+      const ids=new Set();
+      inc.members.forEach(m=>{if(!m||typeof m.id!=="string"||typeof m.name!=="string"||ids.has(m.id))throw new Error("The file has an invalid or duplicate member.");ids.add(m.id)});
+      const ms=inc.members.map(m=>({id:m.id,name:m.name,gender:m.gender||"Not specified",birth:m.birth||"",death:m.death||"",notes:m.notes||m.bio||"",
+        parents:Array.isArray(m.parents)?[...new Set(m.parents)].filter(x=>ids.has(x)&&x!==m.id).slice(0,2):[],spouses:[...new Set(Array.isArray(m.spouses)?m.spouses:m.spouse?[m.spouse]:[])].filter(x=>ids.has(x)&&x!==m.id)}));
+      const by=new Map(ms.map(m=>[m.id,m]));
+      const reach=(a,t,v=new Set())=>{if(a===t)return true;if(v.has(a))return false;v.add(a);return by.get(a).parents.some(x=>reach(x,t,v))};
+      if(ms.some(m=>m.parents.some(p=>reach(p,m.id))))throw new Error("The file contains circular parent links.");
+      ms.forEach(m=>m.spouses=m.spouses.filter(s=>by.get(s).spouses.includes(m.id)));
+      if(!await dialog({title:"Import family?",text:`“${inc.name}” will be added as a new family.`,ok:"Import"}))return;
+      const f={id:uid(),name:inc.name,members:ms};fams.push(f);aid=f.id;save();renderAll(true);toast("Imported");
+    }catch(err){note("Import failed",err.message)}
+    finally{e.target.value=""}
+  };
+  rd.onerror=()=>note("Import failed","The file could not be read.");
+  rd.readAsText(file);
+};
+
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("dlg").classList.contains("open")){drawer(false);$("srch").classList.remove("open");if(q){q="";renderTree()}if(focus)clearFocus();if($("panel").classList.contains("open"))closePanel()}});
+addEventListener("resize",()=>fitView());
+
+let q='';
+const hits=()=>q?fam().members.filter(m=>m.name.toLowerCase().includes(q)):[];
+function openSearch(){$('srch').classList.add('open');$('sq').value=q;$('sq').focus();$('sq').select();updS()}
+function closeSearch(clear){$('srch').classList.remove('open');if(clear){q='';renderTree()}}
+function updS(){q=$('sq').value.trim().toLowerCase();const h=hits();$('sc').textContent=q?(h.length?h.length+' found · Enter to jump':'No match'):'Type a name';renderTree()}
+$('sq').oninput=updS;
+$('sq').onkeydown=e=>{if(e.key==='Enter'){const h=hits();if(h[0]){closeSearch(false);fitView(new Set([h[0].id]))}}if(e.key==='Escape')closeSearch(true)};
+$('srch').onclick=e=>{if(e.target===$('srch'))closeSearch(false)};
+$('sBtn').onclick=openSearch;
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='f'){e.preventDefault();openSearch()}});
+load();renderAll(true);
+</script>
+</body>
+</html>
