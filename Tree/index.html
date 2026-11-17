@@ -81,7 +81,12 @@ textarea{resize:vertical;min-height:60px}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 #empty{position:fixed;inset:0;display:none;place-items:center;text-align:center;z-index:2}
 #empty h2{font:600 34px var(--serif);margin:0 0 14px}
-@media(max-width:560px){.bar h1{font-size:20px}.ib{width:34px;height:34px}#panel{width:100%}}
+html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+.arw{opacity:0;pointer-events:none;cursor:pointer;transition:opacity .18s}.arw circle{fill:var(--bg);stroke:var(--fg);stroke-width:1.2;transition:fill .18s}.arw text{font:13px var(--sans);fill:var(--fg);text-anchor:middle;dominant-baseline:central;pointer-events:none}.card:hover .arw,.card.sel .arw{opacity:1;pointer-events:auto}.arw:hover circle{fill:var(--fg)}.arw:hover text{fill:var(--bg)}
+#addBtn{position:absolute;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translateX(-50%);height:44px;padding:0 24px;border-radius:999px;font-size:15px;font-weight:600;z-index:6;white-space:nowrap}
+.tabs{max-width:100%}
+aside{max-width:86vw}
+@media(max-width:640px){.bar h1,#zIn,#zOut,.lg{display:none}.ib{width:36px;height:36px}#sBtn{margin-left:auto}#addBtn{height:40px;padding:0 18px;font-size:14px}#panel{width:100%;top:auto;height:80vh;border-left-width:0;border-top-width:1px;border-radius:18px 18px 0 0;transform:translateY(100%)}#srch{padding-top:70px}}
 </style>
 </head>
 <body>
@@ -94,7 +99,7 @@ textarea{resize:vertical;min-height:60px}
   <button class="ib" id="fit" title="Fit to screen">⌂</button>
   <button class="ib" id="sBtn" title="Search (Ctrl+F)">⌕</button>
   <button class="ib" id="fs" title="Full screen">⛶</button>
-  <button class="ib" id="addBtn" title="Add member">＋</button>
+  <button class="btn pri" id="addBtn">＋ Add <span class="lg">member</span></button>
 </div>
 
 <svg id="tree"><g id="layer"></g></svg>
@@ -151,7 +156,7 @@ function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clear
 function dialog({title,text,fields=[],ok="Confirm",cancel="Cancel"}){
   return new Promise(res=>{
     const m=$("dlg");
-    m.innerHTML=`<div class="box"><h3>${esc(title)}</h3>${text?`<p>${esc(text)}</p>`:""}${fields.map(f=>`<label>${esc(f.label)}${f.options?`<select id="f_${f.id}">${f.options.map(o=>`<option>${esc(o)}</option>`).join("")}</select>`:`<input id="f_${f.id}" value="${esc(f.value)}" placeholder="${esc(f.ph)}">`}</label>`).join("")}<div class="row">${cancel?`<button class="btn" id="dX">${esc(cancel)}</button>`:""}<button class="btn pri" id="dOk">${esc(ok)}</button></div></div>`;
+    m.innerHTML=`<div class="box"><h3>${esc(title)}</h3>${text?`<p>${esc(text)}</p>`:""}${fields.map(f=>`<label>${esc(f.label)}${f.options?`<select id="f_${f.id}">${f.options.map(o=>`<option${o===f.value?" selected":""}>${esc(o)}</option>`).join("")}</select>`:`<input id="f_${f.id}" value="${esc(f.value)}" placeholder="${esc(f.ph)}">`}</label>`).join("")}<div class="row">${cancel?`<button class="btn" id="dX">${esc(cancel)}</button>`:""}<button class="btn pri" id="dOk">${esc(ok)}</button></div></div>`;
     m.classList.add("open");
     const done=v=>{m.classList.remove("open");m.onclick=null;m.onkeydown=null;res(v)};
     const ins=m.querySelectorAll("input,select");
@@ -305,6 +310,10 @@ function renderTree(refit){
     el("text",{x:56,y:28,class:"nm"},g,m.name.length>18?m.name.slice(0,17)+"…":m.name);
     const yrs=(m.birth?m.birth.slice(0,4):"")+(m.death?" – "+m.death.slice(0,4):"");
     el("text",{x:56,y:46,class:"dt"},g,yrs||"—");
+    const ar=(x,y,t,d)=>{const a=el('g',{class:'arw',transform:`translate(${x},${y})`},g);el('circle',{r:11},a);el('text',{},a,t);a.addEventListener('click',ev=>{ev.stopPropagation();quickAdd(m,d)});a.addEventListener('pointerdown',ev=>ev.stopPropagation())};
+    ar(W/2,H+11,'↓','down');
+    if(m.gender!=='Female')ar(W+11,H/2,'→','right');
+    if(m.gender!=='Male')ar(-11,H/2,'←','left');
     g.addEventListener("click",e=>{e.stopPropagation();openMember(m.id)});
   });
   if(FS&&refit)fitView(FS);else if(refit)fitView();else applyT();
@@ -323,10 +332,18 @@ function zoom(f,cx=innerWidth/2,cy=innerHeight/2){
 
 /* pan / zoom input */
 const svg=$("tree");let pan=null,down=null;svg.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY}});
-svg.addEventListener("pointerdown",e=>{if(e.target.closest(".card"))return;pan={x:e.clientX-tx,y:e.clientY-ty};svg.classList.add("drag");svg.setPointerCapture(e.pointerId)});
-svg.addEventListener("pointermove",e=>{if(!pan)return;tx=e.clientX-pan.x;ty=e.clientY-pan.y;applyT()});
+const ptrs=new Map();let pinch=null;
+svg.addEventListener("pointerdown",e=>{
+  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y)||1,k,cx:(a.x+b.x)/2,cy:(a.y+b.y)/2};pan=null;down=null;return}
+  if(e.target.closest(".card"))return;
+  pan={x:e.clientX-tx,y:e.clientY-ty};svg.classList.add("drag");svg.setPointerCapture(e.pointerId)});
+svg.addEventListener("pointermove",e=>{
+  if(ptrs.has(e.pointerId))ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pinch&&ptrs.size===2){const [a,b]=[...ptrs.values()],d=Math.hypot(a.x-b.x,a.y-b.y),cx=(a.x+b.x)/2,cy=(a.y+b.y)/2;tx+=cx-pinch.cx;ty+=cy-pinch.cy;pinch.cx=cx;pinch.cy=cy;zoom(pinch.k*d/pinch.d/k,cx,cy);return}
+  if(!pan)return;tx=e.clientX-pan.x;ty=e.clientY-pan.y;applyT()});
 ["pointerup","pointercancel"].forEach(t=>svg.addEventListener(t,e=>{
-  const tap=t==='pointerup'&&down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<5;pan=null;svg.classList.remove('drag');
+  ptrs.delete(e.pointerId);if(ptrs.size<2)pinch=null;const tap=t==='pointerup'&&down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<5;pan=null;svg.classList.remove('drag');
   if(!tap)return;const u=document.elementFromPoint(e.clientX,e.clientY);if(u&&u.closest('.card'))return;
   const h=u&&u.closest('.hull');if(h)focusFam(h.dataset.f);else if(focus)clearFocus();
 }));
@@ -343,8 +360,8 @@ function openMember(id){
     <label class="full">Name<input id="mName" value="${esc(m.name)}" maxlength="100"></label>
     <label>Gender<select id="mGen">${gOpt}</select></label>
     <label>Born<input id="mBirth" type="date" value="${esc(m.birth.length===10?m.birth:"")}"></label>
-    <label>Died<input id="mDeath" type="date" value="${esc(m.death.length===10?m.death:"")}"></label>
     <label class="chk"><input type="checkbox" id="mDead"${isDead(m)?" checked":""}> Deceased</label>
+    <label id="dWrap"${isDead(m)?"":" style='display:none'"}>Died<input id="mDeath" type="date" value="${esc(m.death.length===10?m.death:"")}"></label>
     
   </div>
   <div class="row"><button class="btn pri" id="mSave">Save</button></div>
@@ -352,10 +369,11 @@ function openMember(id){
   <div class="add">
     <h3>Add relative</h3>
     <div class="chips">${["Parent","Sibling","Child","Spouse"].map((r,i)=>`<label><input type="radio" name="rel" value="${r}"${i===2?" checked":""}><span>${r}</span></label>`).join("")}</div>
-    <div class="fg"><label>Name<input id="rName" placeholder="Full name"></label>
+    <div class="fg"><label>Name(s)<input id="rName" placeholder="Comma separated · add (f) or (m)"></label>
     <label>Gender<select id="rGen"><option>Male</option><option>Female</option><option>Other</option></select></label><label id="rPW" style="display:none">Other parent<select id="rPar"></select></label></div>
     <div class="row"><button class="btn pri" id="rAdd">Add</button></div>
   </div>
+  <div class="add"><h3>Link to existing member</h3><div class="fg"><label>This person is<select id="lRel"><option>Child of</option><option>Parent of</option><option>Spouse of</option><option>Sibling of</option></select></label><label>Member<select id="lWho"></select></label></div><div class="row"><button class="btn pri" id="lGo">Link</button></div></div>
   <div style="margin-top:18px"><button class="dng" id="mDel">Delete member</button></div>`;
   P.classList.add("open");$("shade").classList.add("on");
   $("pX").onclick=closePanel;
@@ -365,7 +383,12 @@ function openMember(id){
   $('rPar').innerHTML="<option value=''>Unknown / none</option>"+m.spouses.map(get).filter(Boolean).map(s=>`<option value='${s.id}'>${esc(s.name)}</option>`).join('');
   if(m.spouses.length)$('rPar').selectedIndex=1;
   document.querySelectorAll('input[name="rel"]').forEach(r=>r.onchange=sync);sync();relList(m);
-  $('mDeath').oninput=()=>{if($('mDeath').value)$('mDead').checked=true};
+  $('mDead').onchange=()=>{$('dWrap').style.display=$('mDead').checked?'flex':'none'};
+  $('lWho').innerHTML=fam().members.filter(x=>x.id!==m.id).sort((a,b)=>a.name.localeCompare(b.name)).map(x=>`<option value='${x.id}'>${esc(x.name)}</option>`).join('');
+  $('lGo').onclick=()=>linkRel(m,$('lRel').value,$('lWho').value);
+  $('panel').onkeydown=e=>{if(e.key!=='Enter'||e.target.tagName!=='INPUT'||['checkbox','radio'].includes(e.target.type))return;e.preventDefault();
+    const nm=$('rName').value,rl=document.querySelector('input[name="rel"]:checked').value,g=$('rGen').value,o=$('rPar').value;
+    $('mSave').click();if(nm.trim())addRelative(m,rl,nm,g,o)};
   $("mSave").onclick=()=>{
     const n=$("mName").value.trim(),b=$("mBirth").value,d=$("mDeath").value;
     if(!n)return toast("Name is required");
@@ -386,6 +409,34 @@ function openMember(id){
 }
 let rf='All';
 function relsOf(m){
+  const ms=fam().members,out=[],seen=new Set([m.id]);
+  const par=x=>effP(x).map(get),kid=x=>ms.filter(c=>effP(c).includes(x.id)),sp=x=>x.spouses.map(get).filter(Boolean);
+  const sib=x=>{const p=effP(x);return ms.filter(c=>c.id!==x.id&&effP(c).some(i=>p.includes(i)))};
+  const G=(x,a,b,c)=>x.gender==='Male'?a:x.gender==='Female'?b:c;
+  const uq=l=>[...new Map(l.filter(Boolean).map(x=>[x.id,x])).values()];
+  const add=(x,l,cat)=>{if(!x||seen.has(x.id))return;seen.add(x.id);out.push({m:x,l,cat})};
+  const gr=n=>'Great-'.repeat(Math.max(0,n)),cap=s=>s[0].toUpperCase()+s.slice(1);
+  const up=[[m]],dn=[[m]];
+  for(let d=1;d<=6;d++){up[d]=uq(up[d-1].flatMap(par));dn[d]=uq(dn[d-1].flatMap(kid))}
+  sp(m).forEach(x=>add(x,G(x,'Husband','Wife','Spouse'),'Spouses'));
+  up[1].forEach(x=>add(x,G(x,'Father','Mother','Parent'),'Parents'));
+  sib(m).forEach(x=>add(x,G(x,'Brother','Sister','Sibling'),'Siblings'));
+  dn[1].forEach(x=>add(x,G(x,'Son','Daughter','Child'),'Children'));
+  for(let d=2;d<=6;d++){
+    up[d].forEach(x=>{const b=G(x,'grandfather','grandmother','grandparent');add(x,d===2?cap(b):gr(d-2)+b,'Ancestors')});
+    dn[d].forEach(x=>{const b=G(x,'grandson','granddaughter','grandchild');add(x,d===2?cap(b):gr(d-2)+b,'Descendants')});
+  }
+  for(let d=1;d<=3;d++)up[d].forEach(a=>sib(a).forEach(u=>{
+    add(u,d===1?G(u,'Uncle','Aunt','Uncle/Aunt'):gr(d-1)+G(u,'uncle','aunt','uncle/aunt'),'Extended');
+    if(d<=2){const k1=kid(u),k2=uq(k1.flatMap(kid)),L=d===1?['Cousin','Cousin\u2019s child']:['Parent\u2019s cousin','Second cousin'];k1.forEach(x=>add(x,L[0],'Extended'));k2.forEach(x=>add(x,L[1],'Extended'))}
+  }));
+  sib(m).forEach(s=>{kid(s).forEach(x=>add(x,G(x,'Nephew','Niece','Nephew/Niece'),'Extended'));uq(kid(s).flatMap(kid)).forEach(x=>add(x,G(x,'Grand-nephew','Grand-niece','Grand-nephew/niece'),'Extended'))});
+  sp(m).forEach(s=>{par(s).forEach(x=>add(x,G(x,'Father-in-law','Mother-in-law','Parent-in-law'),'In-laws'));sib(s).forEach(x=>add(x,G(x,'Brother-in-law','Sister-in-law','Sibling-in-law'),'In-laws'))});
+  sib(m).forEach(s=>sp(s).forEach(x=>add(x,G(x,'Brother-in-law','Sister-in-law','Sibling-in-law'),'In-laws')));
+  dn[1].forEach(c=>sp(c).forEach(x=>add(x,G(x,'Son-in-law','Daughter-in-law','Child-in-law'),'In-laws')));
+  return out;
+}
+function relsOld(m){
   const ms=fam().members,gm=id=>get(id),ps=effP(m).map(gm).filter(Boolean),out=[];
   const kids=p=>ms.filter(c=>effP(c).includes(p.id)),sibs=p=>ms.filter(c=>c.id!==p.id&&effP(c).some(x=>effP(p).includes(x)));
   const add=(l,list)=>list.forEach(x=>{if(x&&!out.some(o=>o.m.id===x.id&&o.l===l))out.push({l,m:x})});
@@ -394,14 +445,50 @@ function relsOf(m){
   return out;
 }
 function relList(m){
-  const all=relsOf(m),T=['All','Parent','Grandparent','Sibling','Spouse','Child','Cousin'];
-  $('rTabs').innerHTML=T.map(t=>`<button data-t='${t}' class='${rf===t?'on':''}'>${t}${t==='All'?'':' '+all.filter(o=>o.l===t).length}</button>`).join('');
+  const all=relsOf(m),T=['All','Spouses','Parents','Siblings','Children','Ancestors','Descendants','Extended','In-laws'];
+  $('rTabs').innerHTML=T.map(t=>`<button data-t='${t}' class='${rf===t?'on':''}'>${t}${t==='All'?'':' '+all.filter(o=>o.cat===t).length}</button>`).join('');
   $('rTabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{rf=b.dataset.t;relList(m)});
-  const l=all.filter(o=>rf==='All'||o.l===rf);
+  const l=all.filter(o=>rf==='All'||o.cat===rf);
   $('rList').innerHTML=l.length?l.map(o=>`<button class='ri' data-i='${o.m.id}'><span>${esc(o.m.name)}</span><small>${o.l}</small></button>`).join(''):"<div class='stat'>None yet</div>";
   $('rList').querySelectorAll('button').forEach(b=>b.onclick=()=>openMember(b.dataset.i));
 }
-function addRelative(m,rel,name,gender,other){
+const parseNames=(s,g)=>String(s).split(',').map(x=>x.trim()).filter(Boolean).map(x=>{const t=x.match(/\s*\((m|f)\)$/i);return{name:t?x.slice(0,t.index).trim():x,gender:t?(t[1].toLowerCase()==='f'?'Female':'Male'):g}}).filter(x=>x.name);
+function addRelative(m,rel,names,gender,other){
+  const list=parseNames(names,gender),ms=fam().members,added=[];
+  list.forEach(({name,gender:g})=>{
+    const n=mk(name,g);
+    if(rel==='Parent'){if(m.parents.length>=2)return toast('Already has two parents');const o=get(m.parents[0]);m.parents.push(n.id);if(o){o.spouses.push(n.id);n.spouses.push(o.id)}}
+    else if(rel==='Sibling')n.parents=[...m.parents];
+    else if(rel==='Child'){n.parents=[m.id];if(other)n.parents.push(other)}
+    else if(rel==='Spouse'){m.spouses.push(n.id);n.spouses.push(m.id)}
+    ms.push(n);added.push(n);
+  });
+  if(!added.length)return;
+  save();renderAll(true);
+  if(sel===m.id&&$('panel').classList.contains('open'))openMember(m.id);
+  note('Added',added.map(x=>x.name).join(', ')+' \u2192 '+rel.toLowerCase()+(added.length>1?'s':'')+' of '+m.name);
+}
+async function quickAdd(m,dir){
+  const sp=dir!=='down',kin=m.spouses.map(get).filter(Boolean);
+  const gd=sp?(m.gender==='Male'?'Female':m.gender==='Female'?'Male':dir==='right'?'Female':'Male'):'Male';
+  const fields=[{id:'n',label:sp?'Spouse name(s), comma separated':'Child name(s), comma separated',ph:'e.g. Ram, Sita (f)'},{id:'g',label:'Gender',options:['Male','Female','Other'],value:gd}];
+  if(!sp&&kin.length>1)fields.push({id:'o',label:'Other parent',options:[...kin.map(x=>x.name),'None'],value:kin[0].name});
+  const r=await dialog({title:sp?(gd==='Female'?'Add wife':'Add husband'):'Add child',fields,ok:'Add'});
+  if(!r||!r.n)return;
+  const other=sp?'':kin.length===1?kin[0].id:(kin.find(x=>x.name===r.o)||{}).id||'';
+  addRelative(m,sp?'Spouse':'Child',r.n,r.g,other);
+}
+function linkRel(m,rel,id){
+  const o=get(id);if(!o)return toast('Pick a member');
+  const anc=(x,t)=>effP(x).some(p=>p===t||anc(get(p),t));
+  const join=(c,p)=>{if(c.parents.includes(p.id))return true;if(c.parents.length>=2){toast('Already has two parents');return false}const p0=get(c.parents[0]);c.parents.push(p.id);if(p0&&!p0.spouses.includes(p.id)){p0.spouses.push(p.id);p.spouses.push(p0.id)}return true};
+  if(rel==='Child of'){if(anc(o,m.id))return toast('That would create a loop');if(!join(m,o))return}
+  else if(rel==='Parent of'){if(anc(m,o.id))return toast('That would create a loop');if(!join(o,m))return}
+  else if(rel==='Spouse of'){if(!m.spouses.includes(o.id)){m.spouses.push(o.id);o.spouses.push(m.id)}}
+  else{const p=effP(o);if(!p.length)return toast('Add parents to '+o.name+' first');if(p.some(x=>x===m.id||anc(get(x),m.id)))return toast('That would create a loop');m.parents=p.slice(0,2)}
+  save();renderAll(true);openMember(m.id);note('Linked',m.name+' is now '+rel.toLowerCase()+' '+o.name+'.');
+}
+function addRelOld(m,rel,name,gender,other){
   const n=mk(name,gender),ms=fam().members;
   if(rel==="Parent"){
     if(m.parents.length>=2)return toast("Already has two parents");
@@ -426,9 +513,9 @@ function renderAll(refit){
   renderTree(refit);
 }
 async function addMember(){
-  const r=await dialog({title:"New member",fields:[{id:"n",label:"Name",ph:"Full name"},{id:"g",label:"Gender",options:["Male","Female","Other"]}],ok:"Add"});
+  const r=await dialog({title:"New member",fields:[{id:"n",label:"Name(s), comma separated",ph:"e.g. Ram, Sita (f)"},{id:"g",label:"Gender",options:["Male","Female","Other"]}],ok:"Add"});
   if(!r||!r.n)return;
-  fam().members.push(mk(r.n,r.g));save();renderAll(true);toast("Member added");
+  parseNames(r.n,r.g).forEach(x=>fam().members.push(mk(x.name,x.gender)));save();renderAll(true);toast("Member added");
 }
 $("mBtn").onclick=()=>drawer(true);
 $("shade").onclick=()=>{drawer(false);if($("panel").classList.contains("open"))closePanel()};
