@@ -2,80 +2,45 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#ffffff" />
-
-    <title>My List</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickList</title>
 
     <style>
-        /* =========================================================
-           1. DESIGN TOKENS
-           ========================================================= */
-        
          :root {
-            /* Colors */
-            --color-background: #ffffff;
-            --color-surface: #ffffff;
-            --color-text: #222222;
-            --color-muted: #999999;
-            --color-border: #eeeeee;
-            --color-accent: #222222;
-            --color-soft: #f6f6f6;
-            --color-success: #27845d;
-            --color-danger: #d44;
-            /* Typography */
-            --font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            --font-size-xs: 11px;
-            --font-size-sm: 12px;
-            --font-size-md: 14px;
-            --font-size-lg: 15px;
-            --font-size-xl: 19px;
-            /* Spacing */
-            --space-xs: 4px;
-            --space-sm: 8px;
-            --space-md: 12px;
-            --space-lg: 16px;
-            --space-xl: 24px;
-            --space-2xl: 32px;
-            /* Border radius */
-            --radius-sm: 8px;
-            --radius-md: 10px;
-            --radius-lg: 14px;
-            --radius-xl: 17px;
-            /* Shadows */
-            --shadow-button: 0 5px 18px rgba(0, 0, 0, 0.12);
-            --shadow-modal: 0 20px 70px rgba(0, 0, 0, 0.15);
-            /* Layout */
-            --content-width: 650px;
-            --modal-width: 430px;
-            --header-height: 65px;
+            --bg: #f5f6f8;
+            --surface: #ffffff;
+            --surface-2: #f0f2f5;
+            --text: #202124;
+            --muted: #777;
+            --border: #e5e7eb;
+            --accent: #2878f0;
+            --danger: #e5484d;
+            --shadow: 0 8px 30px rgba(0, 0, 0, .08);
         }
-        /* =========================================================
-           2. RESET
-           ========================================================= */
         
-        *,
-        *::before,
-        *::after {
-            margin: 0;
-            padding: 0;
+        [data-theme="dark"] {
+            --bg: #141518;
+            --surface: #202226;
+            --surface-2: #2a2d32;
+            --text: #f2f3f5;
+            --muted: #a0a4ab;
+            --border: #383b40;
+            --accent: #70a5ff;
+            --danger: #ff6b70;
+            --shadow: 0 8px 30px rgba(0, 0, 0, .35);
+        }
+        
+        * {
             box-sizing: border-box;
-        }
-        /* =========================================================
-           3. BASE STYLES
-           ========================================================= */
-        
-        html {
-            scroll-behavior: smooth;
         }
         
         body {
-            min-height: 100vh;
-            background: var(--color-background);
-            color: var(--color-text);
-            font-family: var(--font-family);
-            -webkit-font-smoothing: antialiased;
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            transition: background .2s, color .2s;
         }
         
         button,
@@ -86,353 +51,90 @@
         
         button {
             cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
         }
         
-        button:focus-visible,
-        textarea:focus-visible {
-            outline: 2px solid var(--color-success);
-            outline-offset: 3px;
+        .app {
+            max-width: 720px;
+            margin: auto;
+            padding: 22px 18px 110px;
         }
-        /* =========================================================
-           4. HEADER
-           ========================================================= */
+        /* Header */
         
-        .topbar {
-            height: var(--header-height);
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 0 25px;
-        }
-        
-        .history-btn {
-            border: 1px solid var(--color-border);
-            background: var(--color-surface);
-            padding: 9px 13px;
-            border-radius: var(--radius-md);
-            color: #555555;
-            font-size: var(--font-size-sm);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 7px;
-        }
-        
-        .history-btn:hover {
-            background: var(--color-soft);
-        }
-        /* =========================================================
-           5. MAIN LIST
-           ========================================================= */
-        
-        main {
-            width: 100%;
-            max-width: var(--content-width);
-            margin: 35px auto 110px;
-            padding: 0 22px;
-        }
-        
-        .list {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        
-        .item {
-            min-height: 67px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px 8px;
-            border-bottom: 1px solid var(--color-border);
-            animation: itemAppear 0.2s ease;
-        }
-        
-        .item-info {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .item-name {
-            font-size: var(--font-size-lg);
-            font-weight: 600;
-            line-height: 1.5;
-            overflow-wrap: anywhere;
-        }
-        
-        .item.completed .item-name {
-            color: #aaaaaa;
-            text-decoration: line-through;
-        }
-        /* =========================================================
-           6. CHECKBOX
-           ========================================================= */
-        
-        .check {
-            width: 21px;
-            height: 21px;
-            flex-shrink: 0;
-            border: 1.5px solid #d5d5d5;
-            border-radius: 7px;
-            background: white;
-            display: grid;
-            place-items: center;
-            color: white;
-            transition: 0.15s;
-        }
-        
-        .check.done {
-            background: var(--color-success);
-            border-color: var(--color-success);
-        }
-        
-        .check.done::after {
-            content: "✓";
-            font-size: 13px;
-            font-weight: bold;
-        }
-        /* =========================================================
-           7. ITEM ACTIONS
-           ========================================================= */
-        
-        .item-actions {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            opacity: 0.55;
-        }
-        
-        .action {
-            width: 34px;
-            height: 34px;
-            border: none;
-            border-radius: var(--radius-sm);
-            background: transparent;
-            color: #666666;
-            font-size: 16px;
-            display: grid;
-            place-items: center;
-        }
-        
-        .action:hover {
-            background: var(--color-soft);
-            opacity: 1;
-        }
-        
-        .action-delete:hover {
-            color: var(--color-danger);
-        }
-        /* =========================================================
-           8. BOTTOM ADD BUTTON
-           ========================================================= */
-        
-        .bottom-area {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 18px 20px calc(18px + env(safe-area-inset-bottom));
-            display: flex;
-            justify-content: center;
-            background: linear-gradient( to top, white 75%, rgba(255, 255, 255, 0));
-            z-index: 10;
-        }
-        
-        .add-btn {
-            height: 51px;
-            min-width: 160px;
-            border: none;
-            border-radius: var(--radius-lg);
-            padding: 0 24px;
-            background: var(--color-accent);
-            color: white;
-            font-size: var(--font-size-md);
-            font-weight: 650;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 9px;
-            box-shadow: var(--shadow-button);
-            transition: 0.2s;
-        }
-        
-        .add-btn:hover {
-            background: #444444;
-            transform: translateY(-2px);
-        }
-        
-        .add-btn span {
-            font-size: 21px;
-            font-weight: 400;
-        }
-        /* =========================================================
-           9. MODAL OVERLAY
-           ========================================================= */
-        
-        .overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 100;
-            background: rgba(0, 0, 0, 0.36);
-            backdrop-filter: blur(4px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 18px;
-        }
-        
-        .overlay.active {
-            display: flex;
-        }
-        
-        .modal {
-            background: var(--color-surface);
-            width: 100%;
-            max-width: var(--modal-width);
-            max-height: 85vh;
-            overflow-y: auto;
-            border-radius: var(--radius-xl);
-            padding: 25px;
-            box-shadow: var(--shadow-modal);
-            animation: modalAppear 0.18s ease;
-        }
-        
-        .modal-header {
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 21px;
+            margin-bottom: 28px;
         }
         
-        .modal-header h2 {
-            font-size: var(--font-size-xl);
-            font-weight: 700;
+        .brand {
+            font-size: 25px;
+            font-weight: 750;
+            letter-spacing: -.7px;
         }
         
-        .close-btn {
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 9px;
-            background: var(--color-soft);
-            color: #555555;
-            font-size: 19px;
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .icon-button {
+            width: 42px;
+            height: 42px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            border-radius: 13px;
             display: grid;
             place-items: center;
+            font-size: 19px;
+            transition: transform .15s, background .15s;
         }
         
-        .close-btn:hover {
-            background: #eeeeee;
+        .icon-button:hover {
+            background: var(--surface-2);
+            transform: translateY(-1px);
         }
-        /* =========================================================
-           10. INPUT
-           ========================================================= */
+        /* List */
         
-        .input-label {
-            font-size: var(--font-size-sm);
-            color: #777777;
-            display: block;
-            margin-bottom: 9px;
-            font-weight: 600;
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
         }
         
-        #itemInput {
-            width: 100%;
-            min-height: 105px;
-            resize: vertical;
-            padding: 15px;
-            border: 1px solid #e5e5e5;
-            border-radius: 11px;
-            outline: none;
-            font-size: var(--font-size-lg);
-            line-height: 1.6;
-            color: var(--color-text);
-            background: var(--color-surface);
+        .list-header h2 {
+            font-size: 17px;
+            margin: 0;
         }
         
-        #itemInput:focus {
-            border-color: #888888;
-        }
-        
-        #itemInput::placeholder {
-            color: #aaaaaa;
-        }
-        
-        .examples {
-            margin-top: 12px;
-            font-size: var(--font-size-xs);
-            line-height: 1.8;
-            color: var(--color-muted);
-        }
-        
-        .submit-btn {
-            width: 100%;
-            height: 46px;
-            margin-top: 20px;
-            border: none;
-            border-radius: var(--radius-md);
-            background: var(--color-accent);
-            color: white;
+        .count {
+            color: var(--muted);
             font-size: 13px;
-            font-weight: 650;
         }
         
-        .submit-btn:hover {
-            background: #444444;
-        }
-        /* =========================================================
-           11. HISTORY
-           ========================================================= */
-        
-        .history-list {
+        .items {
             display: flex;
             flex-direction: column;
+            gap: 9px;
         }
         
-        .history-entry {
-            padding: 13px 0;
-            border-bottom: 1px solid var(--color-border);
+        .item {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            animation: appear .2s ease;
         }
         
-        .history-original {
-            font-size: var(--font-size-md);
-            font-weight: 600;
-            color: #333333;
-            overflow-wrap: anywhere;
-        }
-        
-        .history-date {
-            margin-top: 5px;
-            font-size: 10px;
-            color: #aaaaaa;
-        }
-        
-        .history-empty {
-            text-align: center;
-            padding: 30px 5px;
-            font-size: 13px;
-            color: #aaaaaa;
-        }
-        /* =========================================================
-           12. EMPTY LIST
-           ========================================================= */
-        
-        .list-empty {
-            text-align: center;
-            padding: 45px 15px;
-            color: var(--color-muted);
-            font-size: var(--font-size-md);
-        }
-        /* =========================================================
-           13. ANIMATIONS
-           ========================================================= */
-        
-        @keyframes itemAppear {
+        @keyframes appear {
             from {
                 opacity: 0;
-                transform: translateY(5px);
+                transform: translateY(7px);
             }
             to {
                 opacity: 1;
@@ -440,50 +142,406 @@
             }
         }
         
-        @keyframes modalAppear {
+        .item-check {
+            width: 22px;
+            height: 22px;
+            accent-color: var(--accent);
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        
+        .item-emoji {
+            font-size: 25px;
+            width: 35px;
+            text-align: center;
+        }
+        
+        .item-main {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .item-name {
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+        
+        .item-quantity {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 3px;
+        }
+        
+        .item.completed .item-name {
+            text-decoration: line-through;
+            opacity: .55;
+        }
+        
+        .item-actions {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .small-button {
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            padding: 8px;
+            border-radius: 9px;
+            font-size: 17px;
+        }
+        
+        .small-button:hover {
+            background: var(--surface-2);
+        }
+        
+        .empty {
+            text-align: center;
+            padding: 65px 20px;
+            color: var(--muted);
+        }
+        
+        .empty-emoji {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        
+        .empty p {
+            margin: 6px 0;
+        }
+        /* Input */
+        
+        .input-area {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 15px;
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+            z-index: 10;
+        }
+        
+        .input-inner {
+            max-width: 720px;
+            margin: auto;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-box {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            padding: 0 15px;
+            min-height: 54px;
+        }
+        
+        #mainInput {
+            flex: 1;
+            border: none;
+            outline: none;
+            resize: none;
+            background: transparent;
+            color: var(--text);
+            font-size: 16px;
+            max-height: 120px;
+            padding: 15px 0;
+        }
+        
+        #mainInput::placeholder {
+            color: var(--muted);
+        }
+        
+        .add-button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            width: 54px;
+            min-width: 54px;
+            border-radius: 17px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .add-button:hover {
+            filter: brightness(1.08);
+        }
+        /* Modal */
+        
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            background: rgba(0, 0, 0, .45);
+            backdrop-filter: blur(3px);
+        }
+        
+        .modal-backdrop.show {
+            display: flex;
+        }
+        
+        .modal {
+            width: 100%;
+            max-width: 460px;
+            max-height: 85vh;
+            overflow: auto;
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 22px;
+            box-shadow: var(--shadow);
+            animation: modalIn .18s ease;
+        }
+        
+        @keyframes modalIn {
             from {
                 opacity: 0;
-                transform: translateY(10px) scale(0.98);
+                transform: scale(.96);
             }
             to {
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                transform: scale(1);
             }
         }
-        /* =========================================================
-           14. RESPONSIVE DESIGN
-           ========================================================= */
         
-        @media (max-width: 480px) {
-            .topbar {
-                height: 58px;
-                padding: 0 17px;
+        .modal h2 {
+            margin: 0 0 9px;
+            font-size: 20px;
+        }
+        
+        .modal p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .modal-input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--surface-2);
+            color: var(--text);
+            outline: none;
+            margin: 8px 0;
+        }
+        
+        .modal-input:focus {
+            border-color: var(--accent);
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .button {
+            border: none;
+            border-radius: 11px;
+            padding: 11px 15px;
+            font-weight: 600;
+        }
+        
+        .button-secondary {
+            background: var(--surface-2);
+            color: var(--text);
+        }
+        
+        .button-primary {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .button-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .suggestions {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin-top: 12px;
+        }
+        
+        .suggestion {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px;
+            text-align: left;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 12px;
+        }
+        
+        .suggestion:hover {
+            border-color: var(--accent);
+        }
+        
+        .suggestion-emoji {
+            font-size: 22px;
+        }
+        
+        .suggestion-info {
+            flex: 1;
+        }
+        
+        .suggestion-name {
+            font-weight: 600;
+        }
+        
+        .suggestion-sub {
+            font-size: 12px;
+            color: var(--muted);
+        }
+        
+        .unit-options {
+            display: flex;
+            gap: 7px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+        
+        .unit-chip {
+            background: var(--surface-2);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 8px 13px;
+        }
+        
+        .unit-chip:hover {
+            border-color: var(--accent);
+        }
+        /* History */
+        
+        .history-modal {
+            max-width: 560px;
+        }
+        
+        .history-container {
+            margin-top: 12px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        
+        .history-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 11px 13px;
+            background: var(--surface-2);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .history-toolbar span {
+            font-size: 13px;
+            color: var(--muted);
+        }
+        
+        .history-list {
+            max-height: 380px;
+            overflow-y: auto;
+        }
+        
+        .history-entry {
+            padding: 13px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+        
+        .history-entry:last-child {
+            border-bottom: 0;
+        }
+        
+        .history-time {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 5px;
+        }
+        
+        .history-empty {
+            text-align: center;
+            padding: 30px;
+            color: var(--muted);
+        }
+        /* Emoji blast */
+        
+        .emoji-blast {
+            position: fixed;
+            pointer-events: none;
+            z-index: 200;
+            left: 50%;
+            top: 50%;
+            font-size: 30px;
+            animation: blast 2s ease-in-out;
+        }
+        
+        @keyframes blast {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(.35) rotate(0deg);
             }
-            main {
-                margin-top: 18px;
-                padding: 0 17px;
+            30% {
+                opacity: 1;
+                transform: translate(var(--x1), var(--y1)) scale(1.2) rotate(90deg);
             }
-            .item-name {
-                font-size: var(--font-size-md);
+            100% {
+                opacity: 0;
+                transform: translate(var(--x2), var(--y2)) scale(.5) rotate(var(--rotation));
+            }
+        }
+        /* Toast */
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text);
+            color: var(--bg);
+            padding: 11px 17px;
+            border-radius: 12px;
+            font-size: 13px;
+            z-index: 300;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .5s;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+        /* Responsive */
+        
+        @media (max-width: 500px) {
+            .app {
+                padding: 18px 13px 110px;
+            }
+            .item {
+                padding: 12px;
             }
             .item-actions {
-                opacity: 0.8;
+                gap: 0;
             }
             .modal {
-                padding: 21px;
-            }
-        }
-        /* =========================================================
-           15. REDUCED MOTION
-           ========================================================= */
-        
-        @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
-                animation-duration: 0.01ms !important;
-                transition-duration: 0.01ms !important;
-                scroll-behavior: auto !important;
+                padding: 18px;
             }
         }
     </style>
@@ -491,1840 +549,848 @@
 
 <body>
 
-    <!-- =========================================================
-         1. HEADER
-         ========================================================= -->
+    <div class="app">
 
-    <header class="topbar">
-        <button class="history-btn" id="historyBtn" type="button" aria-label="View original input history" title="Original inputs">
-            <span aria-hidden="true">☷</span>
-        </button>
-    </header>
+        <header class="header">
+            <div class="brand">Saman Kinam</div>
 
+            <div class="header-actions">
+                <button class="icon-button" id="themeToggle" title="Toggle theme">
+        🌙
+      </button>
 
-    <!-- =========================================================
-         2. MAIN SHOPPING LIST
-         ========================================================= -->
+                <button class="icon-button" id="historyButton" title="History">
+        🕘
+      </button>
 
-    <main>
-        <div class="list" id="shoppingList" aria-live="polite"></div>
-    </main>
+                <button class="icon-button" id="deleteAllButton" title="Delete all items">
+        🗑️
+      </button>
+            </div>
+        </header>
 
+        <section>
+            <div class="list-header">
+                <span class="count" id="itemCount">0 items</span>
+            </div>
 
-    <!-- =========================================================
-         3. ADD BUTTON
-         ========================================================= -->
+            <div class="items" id="items"></div>
+        </section>
 
-    <div class="bottom-area">
-        <button class="add-btn" id="addBtn" type="button">
-            <span aria-hidden="true">+</span>
-            Add item
-        </button>
     </div>
 
+    <!-- Input -->
 
-    <!-- =========================================================
-         4. ADD / EDIT MODAL
-         ========================================================= -->
+    <div class="input-area">
+        <div class="input-inner">
 
-    <div class="overlay" id="itemOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-        <div class="modal">
-
-            <div class="modal-header">
-                <h2 id="modalTitle">Add item</h2>
-
-                <button class="close-btn" type="button" data-close="itemOverlay" aria-label="Close">
-                    ×
-                </button>
+            <div class="input-box">
+                <textarea id="mainInput" rows="1" placeholder="char kg alu, ath kilo pyaj..." autocomplete="off"></textarea>
             </div>
 
-            <label class="input-label" for="itemInput">
-                WHAT DO YOU NEED?
-            </label>
-
-            <textarea id="itemInput" placeholder="ek kilo chamal&#10;ada kg maida&#10;ek litre dudh" autocomplete="off"></textarea>
-
-            <div class="examples">
-                Examples: ek kilo chamal · dui darzan kola · char wota shampoo · pawa chini
-            </div>
-
-            <button class="submit-btn" id="saveBtn" type="button">
-                Add to list
-            </button>
+            <button class="add-button" id="addButton" title="Add items">
+      +
+    </button>
 
         </div>
     </div>
 
+    <!-- Modal -->
 
-    <!-- =========================================================
-         5. HISTORY MODAL
-         ========================================================= -->
-
-    <div class="overlay" id="historyOverlay" role="dialog" aria-modal="true" aria-labelledby="historyTitle">
-        <div class="modal">
-
-            <div class="modal-header">
-                <h2 id="historyTitle">Original inputs</h2>
-
-                <button class="close-btn" type="button" data-close="historyOverlay" aria-label="Close">
-                    ×
-                </button>
-            </div>
-
-            <div class="history-list" id="historyList"></div>
-
+    <div class="modal-backdrop" id="modalBackdrop">
+        <div class="modal" id="modal">
+            <h2 id="modalTitle"></h2>
+            <p id="modalDescription"></p>
+            <div id="modalContent"></div>
+            <div class="modal-actions" id="modalActions"></div>
         </div>
     </div>
 
+    <!-- Toast -->
 
-    <!-- =========================================================
-         6. APPLICATION JAVASCRIPT
-         ========================================================= -->
+    <div class="toast" id="toast"></div>
 
     <script>
-        "use strict";
+        /* =========================================================
+                                                                                                                                                                                           DATA
+                                                                                                                                                                                        ========================================================= */
 
+        /*
+          Add new aliases here.
 
-        // =========================================================
-        // 1. CONFIGURATION
-        // =========================================================
+          Format:
+          Canonical item: "alias alias alias"
 
-        const CONFIG = {
-            storage: {
-                items: "myShoppingList_v1",
-                history: "myShoppingHistory_v1",
-            },
+          Spaces inside aliases are supported.
+        */
 
-            defaultUnit: "pcs",
+        function defineAliases(data) {
+            const result = {};
 
-            specialQuantityWords: {
-                quarter: 0.25,
-                pawa: 0.25,
-                pau: 0.25,
-                paau: 0.25,
-                paawa: 0.25,
-            },
-        };
-
-
-        // =========================================================
-        // 2. APPLICATION STATE
-        // =========================================================
-
-        const state = {
-            items: [],
-            inputHistory: [],
-            editingId: null,
-        };
-
-
-        // =========================================================
-        // 3. DOM REFERENCES
-        // =========================================================
-
-        const DOM = {
-            shoppingList: document.getElementById("shoppingList"),
-
-            addButton: document.getElementById("addBtn"),
-            historyButton: document.getElementById("historyBtn"),
-
-            itemOverlay: document.getElementById("itemOverlay"),
-            historyOverlay: document.getElementById("historyOverlay"),
-
-            itemInput: document.getElementById("itemInput"),
-            modalTitle: document.getElementById("modalTitle"),
-            saveButton: document.getElementById("saveBtn"),
-
-            historyList: document.getElementById("historyList"),
-        };
-
-
-        // =========================================================
-        // 4. DICTIONARY HELPER
-        // =========================================================
-
-        /**
-         * Converts grouped aliases into a searchable dictionary.
-         *
-         * Example:
-         *
-         * {
-         *     "Rice": ["chamal", "chawal", "rice"]
-         * }
-         *
-         * Becomes:
-         *
-         * {
-         *     chamal: "Rice",
-         *     chawal: "Rice",
-         *     rice: "Rice"
-         * }
-         */
-
-        function createAliasDictionary(groups) {
-            const dictionary = {};
-
-            for (const [canonicalName, aliases] of Object.entries(groups)) {
-                for (const alias of aliases) {
-                    dictionary[alias.toLowerCase()] = canonicalName;
-                }
-
-                // Canonical name is also searchable.
-                dictionary[canonicalName.toLowerCase()] = canonicalName;
+            for (const [canonical, aliases] of Object.entries(data)) {
+                result[canonical] = [
+                    canonical,
+                    ...aliases.split("|").map(x => x.trim())
+                ];
             }
 
-            return dictionary;
+            return result;
         }
 
+        const ITEM_ALIASES = defineAliases({
 
-        /**
-         * Creates a dictionary where each alias points
-         * to the same standardized value.
-         */
+            "Potato": "alu|aloo|aaloo|potato|potatoes",
 
-        function createValueDictionary(groups) {
-            const dictionary = {};
+            "Onion": "pyaj|pyaaj|piaz|onion|onions",
 
-            for (const [value, aliases] of Object.entries(groups)) {
-                for (const alias of aliases) {
-                    dictionary[alias.toLowerCase()] = value;
-                }
-            }
+            "Tomato": "tamatar|tomato|tomatoes",
 
-            return dictionary;
-        }
+            "Rice": "chamal|chaamal|chawal|rice",
+
+            "Wheat Flour": "atta|aata|flour|wheat flour",
+
+            "Lentils": "dal|daal|lentil|lentils",
+
+            "Chickpeas": "chana|channa|chickpea|chickpeas",
+
+            "Green Peas": "matar|peas|green peas",
+
+            "Garlic": "lasun|lahsun|garlic",
+
+            "Ginger": "aduwa|adrak|ginger",
+
+            "Green Chili": "khursani|chilli|chili|green chili",
+
+            "Coriander": "dhaniya|dhania|coriander",
+
+            "Cumin": "jira|jeera|cumin",
+
+            "Turmeric": "besar|haldi|turmeric",
+
+            "Salt": "nun|namak|salt",
+
+            "Sugar": "chini|cheeni|sugar",
+
+            "Milk": "dudh|doodh|milk",
+
+            "Curd": "dahi|yogurt|curd",
+
+            "Butter": "makhan|butter",
+
+            "Ghee": "ghi|ghee",
+
+            "Egg": "anda|andaa|egg|eggs",
+
+            "Chicken": "kukura|chicken",
+
+            "Fish": "machha|machli|fish",
+
+            "Apple": "syau|syaau|apple|apples",
+
+            "Banana": "kera|banana|bananas",
+
+            "Orange": "suntala|orange|oranges",
+
+            "Lemon": "kagati|nimbu|lemon",
+
+            "Mango": "aap|aam|mango",
+
+            "Grapes": "angur|grapes",
+
+            "Papaya": "meva|papaya",
+
+            "Cucumber": "kakro|cucumber",
+
+            "Carrot": "gajar|carrot",
+
+            "Cabbage": "bandakopi|cabbage",
+
+            "Cauliflower": "kauli|cauliflower",
+
+            "Spinach": "saag|palak|spinach",
+
+            "Radish": "mula|mooli|radish",
+
+            "Pumpkin": "farsi|pumpkin",
+
+            "Bottle Gourd": "lauka|lau|bottle gourd",
+
+            "Brinjal": "bhanta|baigan|brinjal|eggplant",
+
+            "Beans": "simi|beans",
+
+            "Capsicum": "bhende|capsicum|bell pepper",
+
+            "Cooking Oil": "tel|oil|cooking oil",
+
+            "Tea": "chiya|chai|tea",
+
+            "Coffee": "coffee",
+
+            "Bread": "bread|paun|pav",
+
+            "Biscuits": "biscuit|biscuits",
+
+            "Noodles": "chauchau|noodles",
+
+            "Soap": "sabun|soap",
+
+            "Shampoo": "shampoo",
+
+            "Toothpaste": "toothpaste|tooth paste",
+
+            "Toothbrush": "toothbrush|tooth brush",
+
+            "Detergent": "surf|detergent|washing powder",
+
+            "Dish Soap": "dishwash|dish soap|washing liquid",
+
+            "Tissue": "tissue|tissues",
+
+            "Toilet Paper": "toilet paper",
+
+            "Water": "pani|water",
+
+            "Mineral Water": "mineral water",
+
+            "Peanuts": "badam|moongfali|peanut|peanuts",
+
+            "Almonds": "badam|almond|almonds",
+
+            "Cashews": "kaju|cashew|cashews",
+
+            "Coconut": "nariwal|coconut",
+
+            "Dates": "khajur|dates",
+
+            "Corn": "makai|maize|corn",
+
+            "Potato Chips": "chips|potato chips",
+
+            "Chocolate": "chocolate| chocolates",
+
+            "Ice Cream": "ice cream",
+
+            "Plastic Bag": "plastic bag|bag",
+
+            "Matches": "match|matches",
+
+            "Candles": "candle|candles",
+
+            "Batteries": "battery|batteries",
+
+            "Rice Flour": "rice flour|chamal ko pitho",
+
+            "Corn Flour": "corn flour|cornstarch",
+
+            "Semolina": "suji|semolina",
+
+            "Black Pepper": "marich|black pepper",
+
+            "Cardamom": "alaichi|elachi|cardamom",
+
+            "Cloves": "laung|clove|cloves",
+
+            "Cinnamon": "dalchini|cinnamon",
+
+            "Fenugreek": "methi|fenugreek",
+
+            "Mustard": "tori|mustard",
+
+            "Soybeans": "bhatmas|soybean|soybeans",
+
+            "Kidney Beans": "rajma|kidney beans",
+
+            "Black Gram": "mas|urad|black gram",
+
+            "White Beans": "seto simi|white beans",
+
+            "Puffed Rice": "muri|puffed rice",
+
+            "Flattened Rice": "chiura|chura|flattened rice",
+
+            "Yogurt": "yogurt|curd",
+
+            "Cheese": "cheese",
+
+            "Paneer": "paneer",
+
+            "Juice": "juice",
+
+            "Soft Drink": "coke|cola|soft drink|cold drink",
+
+            "Flour": "pitho|flour",
+
+            "Oats": "oats",
+
+            "Honey": "mahu|honey",
+
+            "Jam": "jam",
+
+            "Ketchup": "ketchup|tomato sauce",
+
+            "Mayonnaise": "mayo|mayonnaise",
+
+            "Vinegar": "vinegar",
+
+            "Lettuce": "lettuce",
+
+            "Broccoli": "broccoli",
+
+            "Sweet Potato": "sweet potato",
+
+            "Mushroom": "mushroom|mushrooms",
+
+            "Mint": "pudina|mint",
+
+            "Spring Onion": "spring onion|green onion",
+
+            "Beetroot": "beetroot|beet",
+
+            "Lime": "lime",
+
+            "Pineapple": "bhui katahar|pineapple",
+
+            "Strawberry": "strawberry|strawberries",
+
+            "Watermelon": "watermelon",
+
+            "Melon": "melon",
+
+            "Pomegranate": "anar|pomegranate",
+
+            "Peach": "peach",
+
+            "Pear": "pear",
+
+            "Laundry Soap": "laundry soap",
+
+            "Hand Wash": "handwash|hand wash",
+
+            "Face Wash": "facewash|face wash",
+
+            "Body Wash": "body wash",
+
+            "Sanitary Pads": "pad|pads|sanitary pads",
+
+            "Shaving Cream": "shaving cream",
+
+            "Razor": "razor|razors",
+
+            "Baby Diapers": "diaper|diapers",
+
+            "Baby Wipes": "baby wipes",
+
+            "Garbage Bags": "garbage bag|trash bag|bin bag"
+
+        });
 
 
-        // =========================================================
-        // 5. NUMBER WORDS
-        // =========================================================
+        /* Emoji mapping */
 
-        const NUMBER_WORDS = {
-            1: [
-                "ek", "aik", "ak", "aek", "eak",
-                "eka", "euta", "auta", "one",
-            ],
+        const EMOJIS = {
 
-            2: [
-                "dui", "dwi", "duita", "two",
-            ],
+            "Potato": "🥔",
+            "Onion": "🧅",
+            "Tomato": "🍅",
+            "Rice": "🍚",
+            "Wheat Flour": "🌾",
+            "Lentils": "🫘",
+            "Chickpeas": "🫘",
+            "Green Peas": "🫛",
+            "Garlic": "🧄",
+            "Ginger": "🫚",
+            "Green Chili": "🌶️",
+            "Coriander": "🌿",
+            "Cumin": "🌿",
+            "Turmeric": "🟡",
+            "Salt": "🧂",
+            "Sugar": "🍚",
+            "Milk": "🥛",
+            "Curd": "🥣",
+            "Butter": "🧈",
+            "Ghee": "🧈",
+            "Egg": "🥚",
+            "Chicken": "🍗",
+            "Fish": "🐟",
+            "Apple": "🍎",
+            "Banana": "🍌",
+            "Orange": "🍊",
+            "Lemon": "🍋",
+            "Mango": "🥭",
+            "Grapes": "🍇",
+            "Papaya": "🍈",
+            "Cucumber": "🥒",
+            "Carrot": "🥕",
+            "Cabbage": "🥬",
+            "Cauliflower": "🥦",
+            "Spinach": "🥬",
+            "Radish": "🥕",
+            "Pumpkin": "🎃",
+            "Bottle Gourd": "🥒",
+            "Brinjal": "🍆",
+            "Beans": "🫛",
+            "Capsicum": "🫑",
+            "Cooking Oil": "🫗",
+            "Tea": "🍵",
+            "Coffee": "☕",
+            "Bread": "🍞",
+            "Biscuits": "🍪",
+            "Noodles": "🍜",
+            "Soap": "🧼",
+            "Shampoo": "🧴",
+            "Toothpaste": "🪥",
+            "Toothbrush": "🪥",
+            "Detergent": "🧺",
+            "Dish Soap": "🧽",
+            "Tissue": "🧻",
+            "Toilet Paper": "🧻",
+            "Water": "💧",
+            "Mineral Water": "💧",
+            "Peanuts": "🥜",
+            "Almonds": "🥜",
+            "Cashews": "🥜",
+            "Coconut": "🥥",
+            "Dates": "🌴",
+            "Corn": "🌽",
+            "Potato Chips": "🍟",
+            "Chocolate": "🍫",
+            "Ice Cream": "🍦",
+            "Plastic Bag": "🛍️",
+            "Matches": "🔥",
+            "Candles": "🕯️",
+            "Batteries": "🔋",
+            "Rice Flour": "🌾",
+            "Corn Flour": "🌽",
+            "Semolina": "🌾",
+            "Black Pepper": "🌶️",
+            "Cardamom": "🌿",
+            "Cloves": "🌿",
+            "Cinnamon": "🪵",
+            "Fenugreek": "🌿",
+            "Mustard": "🌱",
+            "Soybeans": "🫘",
+            "Kidney Beans": "🫘",
+            "Black Gram": "🫘",
+            "White Beans": "🫘",
+            "Puffed Rice": "🍚",
+            "Flattened Rice": "🍚",
+            "Yogurt": "🥣",
+            "Cheese": "🧀",
+            "Paneer": "🧀",
+            "Juice": "🧃",
+            "Soft Drink": "🥤",
+            "Flour": "🌾",
+            "Oats": "🥣",
+            "Honey": "🍯",
+            "Jam": "🍓",
+            "Ketchup": "🍅",
+            "Mayonnaise": "🥫",
+            "Vinegar": "🫗",
+            "Lettuce": "🥬",
+            "Broccoli": "🥦",
+            "Sweet Potato": "🍠",
+            "Mushroom": "🍄",
+            "Mint": "🌿",
+            "Spring Onion": "🧅",
+            "Beetroot": "🫜",
+            "Lime": "🍋",
+            "Pineapple": "🍍",
+            "Strawberry": "🍓",
+            "Watermelon": "🍉",
+            "Melon": "🍈",
+            "Pomegranate": "🍎",
+            "Peach": "🍑",
+            "Pear": "🍐",
+            "Laundry Soap": "🧼",
+            "Hand Wash": "🧴",
+            "Face Wash": "🧴",
+            "Body Wash": "🧴",
+            "Sanitary Pads": "🩸",
+            "Shaving Cream": "🪒",
+            "Razor": "🪒",
+            "Baby Diapers": "👶",
+            "Baby Wipes": "🧻",
+            "Garbage Bags": "🗑️"
 
-            3: [
-                "tin", "teen", "tinn", "tina", "three",
-            ],
-
-            4: [
-                "char", "chaar", "chau", "four",
-            ],
-
-            5: [
-                "panch", "paanch", "pach", "five",
-            ],
-
-            6: [
-                "chha", "chhe", "che", "six",
-            ],
-
-            7: [
-                "saat", "sat", "seven",
-            ],
-
-            8: [
-                "aath", "ath", "eight",
-            ],
-
-            9: [
-                "nau", "naau", "nine",
-            ],
-
-            10: [
-                "das", "dasa", "dus", "ten",
-            ],
-
-            11: [
-                "gyarah", "egyarah", "eleven",
-            ],
-
-            12: [
-                "bara", "barah", "twelve",
-            ],
-
-            20: [
-                "bis", "bees", "twenty",
-            ],
         };
 
 
-        const NUMBER_ALIASES = {};
+        /* Numbers */
 
-        for (const [number, aliases] of Object.entries(NUMBER_WORDS)) {
-            for (const alias of aliases) {
-                NUMBER_ALIASES[alias] = Number(number);
-            }
-        }
+        const NUMBERS = {
+
+            "ek": 1,
+            "aik": 1,
+            "ak": 1,
+            "aek": 1,
+            "eak": 1,
+            "eka": 1,
+            "euta": 1,
+            "auta": 1,
+            "one": 1,
+
+            "dui": 2,
+            "dwi": 2,
+            "duita": 2,
+            "two": 2,
+
+            "tin": 3,
+            "teen": 3,
+            "tinn": 3,
+            "tina": 3,
+            "three": 3,
+
+            "char": 4,
+            "chaar": 4,
+            "chau": 4,
+            "four": 4,
+
+            "panch": 5,
+            "paanch": 5,
+            "pach": 5,
+            "five": 5,
+
+            "chha": 6,
+            "chhe": 6,
+            "che": 6,
+            "six": 6,
+
+            "saat": 7,
+            "sat": 7,
+            "seven": 7,
+
+            "aath": 8,
+            "ath": 8,
+            "eight": 8,
+
+            "nau": 9,
+            "naau": 9,
+            "nine": 9,
+
+            "das": 10,
+            "dasa": 10,
+            "dus": 10,
+            "ten": 10,
+
+            "gyarah": 11,
+            "egyarah": 11,
+            "eleven": 11,
+
+            "bara": 12,
+            "barah": 12,
+            "twelve": 12,
+
+            "terah": 13,
+            "thirteen": 13,
+
+            "chaudah": 14,
+            "fourteen": 14,
+
+            "pandrah": 15,
+            "fifteen": 15,
+
+            "solah": 16,
+            "sixteen": 16,
+
+            "satrah": 17,
+            "seventeen": 17,
+
+            "atharah": 18,
+            "eighteen": 18,
+
+            "unnis": 19,
+            "nineteen": 19,
+
+            "bis": 20,
+            "bees": 20,
+            "twenty": 20,
+
+            "tees": 30,
+            "thirty": 30,
+
+            "chalis": 40,
+            "forty": 40,
+
+            "pachas": 50,
+            "fifty": 50,
+
+            "saath": 60,
+            "sixty": 60,
+
+            "sattar": 70,
+            "seventy": 70,
+
+            "assi": 80,
+            "eighty": 80,
+
+            "nabbe": 90,
+            "ninety": 90,
+
+            "sau": 100,
+            "hundred": 100
+        };
 
 
-        // =========================================================
-        // 6. HALF QUANTITY WORDS
-        // =========================================================
+        /* Units */
+
+        const UNIT_ALIASES = {
+
+            "KG": [
+                "kg", "kgs", "kilo", "kilos", "kilogram", "kilograms"
+            ],
+
+            "g": [
+                "g", "gm", "gms", "gram", "grams"
+            ],
+
+            "L": [
+                "l", "ltr", "ltrs", "litre", "litres",
+                "liter", "liters"
+            ],
+
+            "ml": [
+                "ml", "milliliter", "milliliters",
+                "millilitre", "millilitres"
+            ],
+
+            "Dozen": [
+                "dozen", "doz", "darzan", "darjan"
+            ],
+
+            "pcs": [
+                "pcs", "pc", "piece", "pieces",
+                "wota", "ota", "wat"
+            ],
+
+            "pack": [
+                "pack", "packet", "packets", "pkt"
+            ],
+
+            "bottle": [
+                "bottle", "bottles"
+            ],
+
+            "box": [
+                "box", "boxes"
+            ],
+
+            "bundle": [
+                "bundle", "bundles"
+            ],
+
+            "cup": [
+                "cup", "cups"
+            ],
+
+            "spoon": [
+                "spoon", "spoons"
+            ]
+        };
+
 
         const HALF_WORDS = [
-            "adha",
-            "aadha",
-            "ada",
-            "ardha",
-            "half",
-            "adi",
-            "aadi",
-            "adhi",
-            "aadhi",
+            "adha", "aadha", "ada", "ardha",
+            "half", "adi", "aadi", "adhi", "aadhi"
+        ];
+
+        const QUARTER_WORDS = [
+            "pawa", "pau", "paau", "paawa", "quarter"
+        ];
+
+        const FILLER_WORDS = [
+            "ko", "ka", "ki", "ra", "for", "of", "the", "and"
         ];
 
 
-        // =========================================================
-        // 7. UNIT ALIASES
-        // =========================================================
+        /* =========================================================
+           DOM
+        ========================================================= */
 
-        const UNIT_GROUPS = {
-            KG: [
-                "kg", "kgs", "kilo", "kilos",
-                "kilogram", "kilograms",
-            ],
+        const DOM = {
 
-            g: [
-                "gram", "grams", "gm", "gms", "g",
-            ],
+            items: document.getElementById("items"),
+            itemCount: document.getElementById("itemCount"),
+            itemInput: document.getElementById("mainInput"),
 
-            L: [
-                "litre", "liter", "litres", "liters",
-                "ltr", "ltrs", "l",
-            ],
+            addButton: document.getElementById("addButton"),
 
-            Dozen: [
-                "darzan", "darjan", "dozen", "doz",
-            ],
+            themeToggle: document.getElementById("themeToggle"),
+            historyButton: document.getElementById("historyButton"),
+            deleteAllButton: document.getElementById("deleteAllButton"),
 
-            pcs: [
-                "wota", "ota", "wat", "piece",
-                "pieces", "pc", "pcs",
-            ],
+            backdrop: document.getElementById("modalBackdrop"),
+            modalTitle: document.getElementById("modalTitle"),
+            modalDescription: document.getElementById("modalDescription"),
+            modalContent: document.getElementById("modalContent"),
+            modalActions: document.getElementById("modalActions"),
 
-            pack: [
-                "packet", "packets", "pkt", "pack",
-            ],
-
-            bottle: [
-                "bottle", "bottles",
-            ],
-
-            box: [
-                "box", "boxes",
-            ],
+            toast: document.getElementById("toast")
         };
 
 
-        const UNIT_ALIASES = createValueDictionary(UNIT_GROUPS);
-
-
-        // =========================================================
-        // 8. ITEM ALIASES
-        // =========================================================
-
-        /**
-         * Add new items here.
-         *
-         * Format:
-         *
-         * "Canonical Item Name": [
-         *     "alias one",
-         *     "alias two",
-         *     "alias three"
-         * ],
-         *
-         * No need to repeat the canonical name for every alias.
-         */
-
-        const ITEM_GROUPS = {
-
-            // -----------------------------------------------------
-            // Rice and grains
-            // -----------------------------------------------------
-
-            "Rice": [
-                "chamal", "chawal", "chaamal", "chaul",
-                "rice",
-            ],
-
-            "Basmati Rice": [
-                "basmati", "basmati rice", "basmatirice",
-            ],
-
-            "Brown Rice": [
-                "brown rice", "brownrice",
-            ],
-
-            "Oats": [
-                "oats",
-            ],
-
-            "Oatmeal": [
-                "oatmeal",
-            ],
-
-            "Corn": [
-                "corn", "maize", "makai",
-            ],
-
-            "Popcorn": [
-                "popcorn",
-            ],
-
-            "Quinoa": [
-                "quinoa",
-            ],
-
-
-            // -----------------------------------------------------
-            // Flour and baking
-            // -----------------------------------------------------
-
-            "Flour": [
-                "maida", "meda", "flour",
-            ],
-
-            "Wheat Flour": [
-                "atta", "wheat flour", "wheatflour",
-            ],
-
-            "Gram Flour": [
-                "besan", "gram flour", "chickpeaflour",
-                "chickpea flour",
-            ],
-
-            "Semolina": [
-                "semolina", "suji", "sooji",
-            ],
-
-            "Baking Powder": [
-                "baking powder", "bakingpowder",
-            ],
-
-            "Baking Soda": [
-                "baking soda", "bakingsoda",
-            ],
-
-            "Yeast": [
-                "yeast",
-            ],
-
-            "Cocoa Powder": [
-                "cocoa", "cocoa powder",
-            ],
-
-
-            // -----------------------------------------------------
-            // Dairy
-            // -----------------------------------------------------
-
-            "Milk": [
-                "dudh", "doodh", "dud", "milk",
-            ],
-
-            "Ghee": [
-                "ghee",
-            ],
-
-            "Butter": [
-                "butter", "makhan",
-            ],
-
-            "Cheese": [
-                "cheese",
-            ],
-
-            "Paneer": [
-                "paneer",
-            ],
-
-            "Cream": [
-                "cream",
-            ],
-
-            "Yogurt": [
-                "yogurt", "dahi", "curd",
-            ],
-
-            "Lassi": [
-                "lassi",
-            ],
-
-            "Condensed Milk": [
-                "condensed milk", "condensedmilk",
-            ],
-
-
-            // -----------------------------------------------------
-            // Fruits
-            // -----------------------------------------------------
-
-            "Bananas": [
-                "kola", "kela", "kelaa", "banana", "bananas",
-            ],
-
-            "Apples": [
-                "syau", "syaau", "apple", "apples",
-            ],
-
-            "Oranges": [
-                "suntala", "orange", "oranges",
-            ],
-
-            "Mangoes": [
-                "mango", "mangos", "mangoes", "aam",
-            ],
-
-            "Grapes": [
-                "grapes", "angur",
-            ],
-
-            "Watermelon": [
-                "watermelon", "tarbuj",
-            ],
-
-            "Papaya": [
-                "papaya",
-            ],
-
-            "Pineapple": [
-                "pineapple", "ananas",
-            ],
-
-            "Lemons": [
-                "lemon", "lemons",
-            ],
-
-            "Limes": [
-                "lime", "limes",
-            ],
-
-            "Avocado": [
-                "avocado",
-            ],
-
-            "Strawberries": [
-                "strawberry", "strawberries",
-            ],
-
-            "Guava": [
-                "guava",
-            ],
-
-            "Pears": [
-                "pear", "pears",
-            ],
-
-            "Peaches": [
-                "peach", "peaches",
-            ],
-
-            "Coconut": [
-                "coconut", "nariwal",
-            ],
-
-            "Pomegranate": [
-                "pomegranate", "anar",
-            ],
-
-
-            // -----------------------------------------------------
-            // Vegetables
-            // -----------------------------------------------------
-
-            "Potatoes": [
-                "alu", "aloo", "aaloo", "aalu", "potato", "potatoes",
-            ],
-
-            "Onions": [
-                "pyaj", "pyaaj", "pyaz", "onion", "onions",
-            ],
-
-            "Tomatoes": [
-                "tamatar", "tomato", "tomatoes",
-            ],
-
-            "Ginger": [
-                "aduwa", "adrak", "ginger",
-            ],
-
-            "Garlic": [
-                "lasun", "lahsun", "garlic",
-            ],
-
-            "Cauliflower": [
-                "gobi", "cauliflower",
-            ],
-
-            "Cabbage": [
-                "bandakopi", "cabbage",
-            ],
-
-            "Carrots": [
-                "gajar", "carrot", "carrots",
-            ],
-
-            "Cucumber": [
-                "cucumber", "cucumbers", "kakro",
-            ],
-
-            "Spinach": [
-                "spinach", "palak",
-            ],
-
-            "Leafy Greens": [
-                "saag", "sag"
-            ],
-
-            "Broccoli": [
-                "broccoli", "brocauli"
-            ],
-
-            "Bell Peppers": [
-                "capsicum", "bellpepper", "bell pepper",
-                "pepper",
-            ],
-
-            "Green Chilies": [
-                "green chilli", "green chili",
-                "greenchilli", "greenchili",
-                "chilli", "chili", "chilies", "chillies",
-                "khursani", "khursaani"
-            ],
-
-            "Green Peas": [
-                "peas", "matar", "hariyo matar"
-            ],
-
-            "Green Beans": [
-                "beans", "frenchbeans", "french beans",
-                "green beans",
-            ],
-
-            "Pumpkin": [
-                "pumpkin", "kaddu",
-            ],
-
-            "Radish": [
-                "radish", "mula",
-            ],
-
-            "Eggplant": [
-                "eggplant", "brinjal", "baingan",
-            ],
-
-            "Okra": [
-                "okra", "bhindi",
-            ],
-
-            "Mushrooms": [
-                "mushroom", "mushrooms",
-            ],
-
-            "Lettuce": [
-                "lettuce",
-            ],
-
-            "Celery": [
-                "celery",
-            ],
-
-            "Beetroot": [
-                "beetroot", "beet",
-            ],
-
-            "Sweet Potatoes": [
-                "sweet potato", "sweetpotato",
-            ],
-
-
-            // -----------------------------------------------------
-            // Meat, fish and protein
-            // -----------------------------------------------------
-
-            "Eggs": [
-                "anda", "ande", "egg", "eggs",
-            ],
-
-            "Chicken": [
-                "chicken", "kukhura",
-            ],
-
-            "Mutton": [
-                "mutton",
-            ],
-
-            "Lamb": [
-                "lamb",
-            ],
-
-            "Beef": [
-                "beef",
-            ],
-
-            "Pork": [
-                "pork",
-            ],
-
-            "Fish": [
-                "fish", "machha",
-            ],
-
-            "Prawns": [
-                "prawns", "shrimp",
-            ],
-
-            "Tofu": [
-                "tofu",
-            ],
-
-            "Soybeans": [
-                "soy", "soybean", "soybeans",
-            ],
-
-            "Mixed Nuts": [
-                "nuts",
-            ],
-
-            "Almonds": [
-                "almonds", "badam",
-            ],
-
-            "Cashews": [
-                "cashews", "kaju",
-            ],
-
-            "Peanuts": [
-                "peanuts", "groundnuts", "peanut",
-            ],
-
-
-            // -----------------------------------------------------
-            // Pulses and beans
-            // -----------------------------------------------------
-
-            "Lentils": [
-                "dal", "daal", "lentil", "lentils",
-            ],
-
-            "Red Lentils": [
-                "masoor", "masoordal", "masoor dal",
-            ],
-
-            "Mung Beans": [
-                "moong", "mung",
-            ],
-
-            "Mung Dal": [
-                "moong dal",
-            ],
-
-            "Urad Dal": [
-                "urad", "urad dal",
-            ],
-
-            "Chickpeas": [
-                "chana", "chickpeas", "chole",
-            ],
-
-            "Kidney Beans": [
-                "rajma", "kidneybeans", "kidney beans",
-            ],
-
-
-            // -----------------------------------------------------
-            // Pantry, condiments and spices
-            // -----------------------------------------------------
-
-            "Sugar": [
-                "chini", "cheeni", "sugar",
-            ],
-
-            "Brown Sugar": [
-                "brownSugar", "brownsugar", "brown sugar",
-            ],
-
-            "Honey": [
-                "honey",
-            ],
-
-            "Salt": [
-                "nun", "noon", "namak", "salt",
-            ],
-
-            "Cooking Oil": [
-                "tel", "tail", "oil", "cookingoil",
-                "cooking oil",
-            ],
-
-            "Mustard Oil": [
-                "mustardoil", "mustard oil",
-            ],
-
-            "Olive Oil": [
-                "oliveoil", "olive oil",
-            ],
-
-            "Vinegar": [
-                "vinegar",
-            ],
-
-            "Soy Sauce": [
-                "soyasauce", "soy sauce",
-            ],
-
-            "Ketchup": [
-                "ketchup",
-            ],
-
-            "Tomato Sauce": [
-                "tomato sauce",
-            ],
-
-            "Mayonnaise": [
-                "mayonnaise", "mayo",
-            ],
-
-            "Pickle": [
-                "achar", "pickle",
-            ],
-
-            "Pickles": [
-                "pickles",
-            ],
-
-            "Spice Mix": [
-                "masala",
-            ],
-
-            "Spices": [
-                "spices",
-            ],
-
-            "Turmeric": [
-                "turmeric", "haldi",
-            ],
-
-            "Cumin": [
-                "cumin", "jeera",
-            ],
-
-            "Coriander": [
-                "coriander", "dhaniya",
-            ],
-
-            "Chili Powder": [
-                "chilli powder", "chili powder",
-                "redchilli", "red chili",
-            ],
-
-            "Black Pepper": [
-                "blackpepper", "black pepper",
-            ],
-
-            "Cinnamon": [
-                "cinnamon", "dalchini",
-            ],
-
-            "Cardamom": [
-                "cardamom", "elaichi",
-            ],
-
-            "Cloves": [
-                "cloves", "laung",
-            ],
-
-            "Bay Leaves": [
-                "bayleaf", "bay leaf", "bayleaves",
-                "bay leaves",
-            ],
-
-            "Oregano": [
-                "oregano",
-            ],
-
-            "Basil": [
-                "basil",
-            ],
-
-            "Thyme": [
-                "thyme",
-            ],
-
-            "Paprika": [
-                "paprika",
-            ],
-
-
-            // -----------------------------------------------------
-            // Drinks and snacks
-            // -----------------------------------------------------
-
-            "Tea": [
-                "chiya", "chai", "tea",
-            ],
-
-            "Coffee": [
-                "coffee", "kofi",
-            ],
-
-            "Juice": [
-                "juice",
-            ],
-
-            "Orange Juice": [
-                "orangejuice", "orange juice",
-            ],
-
-            "Water": [
-                "water", "pani", "paani",
-            ],
-
-            "Biscuits": [
-                "biscuits", "biscuit",
-            ],
-
-            "Cookies": [
-                "cookies", "cookie",
-            ],
-
-            "Chips": [
-                "chips", "crisps",
-            ],
-
-            "Noodles": [
-                "noodles", "ramen",
-            ],
-
-            "Pasta": [
-                "pasta",
-            ],
-
-            "Macaroni": [
-                "macaroni",
-            ],
-            "Mint": ["pudina"],
-            "Spaghetti": [
-                "spaghetti",
-            ],
-
-            "Chocolate": [
-                "chocolate",
-            ],
-
-            "Candy": [
-                "candy",
-            ],
-
-            "Sweets": [
-                "sweets",
-            ],
-
-            "Crackers": [
-                "crackers",
-            ],
-
-
-            // -----------------------------------------------------
-            // Bakery
-            // -----------------------------------------------------
-
-            "Bread": [
-                "bread", "roti",
-            ],
-
-            "Buns": [
-                "bun", "buns",
-            ],
-
-            "Cake": [
-                "cake",
-            ],
-
-            "Pastries": [
-                "pastries",
-            ],
-
-            "Croissants": [
-                "croissant", "croissants",
-            ],
-
-            "Pizza": [
-                "pizza",
-            ],
-
-
-            // -----------------------------------------------------
-            // Household cleaning
-            // -----------------------------------------------------
-
-            "Detergent": [
-                "detergent",
-            ],
-
-            "Washing Powder": [
-                "washingpowder", "washing powder",
-            ],
-
-            "Laundry Soap": [
-                "laundrysoap", "laundry soap",
-            ],
-
-            "Dish Soap": [
-                "dishsoap", "dish soap",
-            ],
-
-            "Dishwashing Liquid": [
-                "dishwashingliquid", "dishwashing liquid",
-            ],
-
-            "Scrubber": [
-                "scrubber",
-            ],
-
-            "Sponge": [
-                "sponge",
-            ],
-
-            "Broom": [
-                "broom",
-            ],
-
-            "Mop": [
-                "mop",
-            ],
-
-            "Floor Cleaner": [
-                "floorcleaner", "floor cleaner",
-            ],
-
-            "Bleach": [
-                "bleach",
-            ],
-
-            "Garbage Bags": [
-                "garbagebags", "garbage bags",
-            ],
-
-            "Trash Bags": [
-                "trashbags", "trash bags",
-            ],
-
-
-            // -----------------------------------------------------
-            // Personal care
-            // -----------------------------------------------------
-
-            "Shampoo": [
-                "shampoo", "sampoo", "shampho",
-            ],
-
-            "Conditioner": [
-                "conditioner",
-            ],
-
-            "Soap": [
-                "sabun", "sabon", "soap",
-            ],
-
-            "Body Wash": [
-                "bodywash", "body wash",
-            ],
-
-            "Toothpaste": [
-                "toothpaste",
-            ],
-
-            "Toothbrush": [
-                "brush", "toothbrush",
-            ],
-
-            "Mouthwash": [
-                "mouthwash",
-            ],
-
-            "Dental Floss": [
-                "floss",
-            ],
-
-            "Tissues": [
-                "tissue", "tissues",
-            ],
-
-            "Toilet Paper": [
-                "toiletpaper", "toilet paper",
-            ],
-
-            "Napkins": [
-                "napkins",
-            ],
-
-            "Sanitary Pads": [
-                "sanitarypads", "sanitary pads",
-            ],
-
-            "Deodorant": [
-                "deodorant",
-            ],
-
-            "Body Lotion": [
-                "lotion", "bodylotion", "body lotion",
-            ],
-
-            "Sunscreen": [
-                "sunscreen",
-            ],
-
-            "Hand Wash": [
-                "handwash", "hand wash",
-            ],
-
-
-            // -----------------------------------------------------
-            // Baby and miscellaneous
-            // -----------------------------------------------------
-
-            "Diapers": [
-                "diapers", "diaper",
-            ],
-
-            "Baby Wipes": [
-                "wipes", "babywipes", "baby wipes",
-            ],
-
-            "Batteries": [
-                "batteries", "battery",
-            ],
-
-            "Light Bulb": [
-                "bulb", "lightbulb", "light bulb",
-            ],
-
-            "Light Bulbs": [
-                "bulbs", "light bulbs",
-            ],
-
-            "Candles": [
-                "candles", "candle",
-            ],
-
-            "Matches": [
-                "matchbox", "matches",
-            ],
-
-            "Plastic Bags": [
-                "plasticbags", "plastic bags",
-            ],
-
-            "Aluminum Foil": [
-                "foil", "aluminium foil", "aluminum foil",
-            ],
-
-            "Cling Film": [
-                "clingfilm", "cling film",
-            ],
-
-            "Zip Bags": [
-                "ziplock", "zip bags",
-            ],
+        /* =========================================================
+           STORAGE
+        ========================================================= */
+
+        const STORAGE_KEYS = {
+            items: "quicklist_items_v2",
+            history: "quicklist_history_v2",
+            theme: "quicklist_theme_v2"
         };
 
-
-        // Create searchable alias dictionary.
-        const ITEM_ALIASES = createAliasDictionary(ITEM_GROUPS);
-
-
-        // =========================================================
-        // 9. EMOJI GROUPS
-        // =========================================================
-
-        /**
-         * Format:
-         *
-         * "Emoji": ["Item One", "Item Two", "Item Three"]
-         *
-         * Each item name only needs to be listed once.
-         */
-
-        const EMOJI_GROUPS = {
-
-            "🍚": [
-                "Rice", "Basmati Rice", "Brown Rice",
-            ],
-
-            "🌾": [
-                "Flour", "Wheat Flour", "Gram Flour",
-                "Semolina", "Quinoa",
-            ],
-
-
-            "🥣": [
-                "Oats", "Oatmeal", "Yogurt",
-            ],
-
-            "🌽": [
-                "Corn",
-            ],
-
-            "🍿": [
-                "Popcorn",
-            ],
-
-            "🧁": [
-                "Baking Powder",
-            ],
-
-            "🧂": [
-                "Baking Soda", "Salt", "Spice Mix", "Spices",
-            ],
-
-            "🧫": [
-                "Yeast",
-            ],
-
-            "🍫": [
-                "Cocoa Powder", "Chocolate",
-            ],
-
-            "🥛": [
-                "Milk", "Cream", "Lassi", "Condensed Milk",
-            ],
-
-            "🧈": [
-                "Ghee", "Butter",
-            ],
-
-            "🧀": [
-                "Cheese", "Paneer",
-            ],
-
-            "🍌": [
-                "Bananas",
-            ],
-
-            "🍎": [
-                "Apples", "Pomegranate",
-            ],
-
-            "🍊": [
-                "Oranges",
-            ],
-
-            "🥭": [
-                "Mangoes",
-            ],
-
-            "🍇": [
-                "Grapes",
-            ],
-
-            "🍉": [
-                "Watermelon",
-            ],
-
-            "🍈": [
-                "Papaya",
-            ],
-
-            "🍍": [
-                "Pineapple",
-            ],
-
-            "🍋": [
-                "Lemons", "Limes",
-            ],
-
-            "🥑": [
-                "Avocado",
-            ],
-
-            "🍓": [
-                "Strawberries",
-            ],
-
-            "🍐": [
-                "Guava", "Pears",
-            ],
-
-            "🍑": [
-                "Peaches",
-            ],
-
-            "🥥": [
-                "Coconut",
-            ],
-
-            "🥔": [
-                "Potatoes",
-            ],
-
-            "🧅": [
-                "Onions",
-            ],
-
-            "🍅": [
-                "Tomatoes", "Ketchup", "Tomato Sauce",
-            ],
-
-            "🫚": [
-                "Ginger",
-            ],
-
-            "🧄": [
-                "Garlic",
-            ],
-
-            "🥦": [
-                "Cauliflower", "Broccoli",
-            ],
-
-            "🥬": [
-                "Cabbage", "Spinach", "Leafy Greens",
-                "Lettuce", "Celery",
-            ],
-
-            "🥕": [
-                "Carrots", "Radish",
-            ],
-
-            "🥒": [
-                "Cucumber", "Pickle",
-            ],
-
-            "🫑": [
-                "Bell Peppers",
-            ],
-
-            "🌶️": [
-                "Green Chilies", "Chili Powder", "Paprika",
-            ],
-
-            "🫛": [
-                "Green Peas", "Green Beans",
-            ],
-
-            "🎃": [
-                "Pumpkin",
-            ],
-
-            "🍆": [
-                "Eggplant",
-            ],
-
-            "🌿": [
-                "Okra", "Coriander", "Cardamom",
-                "Bay Leaves", "Oregano", "Basil", "Thyme",
-            ],
-
-            "🍄": [
-                "Mushrooms",
-            ],
-
-            "🫜": [
-                "Beetroot",
-            ],
-
-            "🍠": [
-                "Sweet Potatoes",
-            ],
-
-            "🥚": [
-                "Eggs",
-            ],
-
-            "🍗": [
-                "Chicken",
-            ],
-
-            "🍖": [
-                "Mutton", "Lamb",
-            ],
-
-            "🥩": [
-                "Beef", "Pork",
-            ],
-
-            "🐟": [
-                "Fish",
-            ],
-
-            "🦐": [
-                "Prawns",
-            ],
-
-            "🧊": [
-                "Tofu",
-            ],
-
-            "🫘": [
-                "Soybeans", "Lentils", "Red Lentils",
-                "Mung Beans", "Mung Dal", "Urad Dal",
-                "Chickpeas", "Kidney Beans",
-            ],
-
-            "🥜": [
-                "Mixed Nuts", "Almonds", "Cashews",
-                "Peanuts",
-            ],
-
-            "🍬": [
-                "Sugar", "Candy", "Sweets",
-            ],
-
-            "🟤": [
-                "Brown Sugar", "Cumin",
-            ],
-
-            "🍯": [
-                "Honey",
-            ],
-
-            "🫗": [
-                "Cooking Oil", "Mustard Oil",
-            ],
-
-            "🫒": [
-                "Olive Oil",
-            ],
-
-            "🍶": [
-                "Vinegar",
-            ],
-
-            "🥣": [
-                "Soy Sauce", "Mayonnaise",
-            ],
-
-            "🟡": [
-                "Turmeric",
-            ],
-
-            "⚫": [
-                "Black Pepper",
-            ],
-
-            "🪵": [
-                "Cinnamon",
-            ],
-
-            "🌰": [
-                "Cloves",
-            ],
-
-            "🍵": [
-                "Tea",
-            ],
-
-            "☕": [
-                "Coffee",
-            ],
-
-            "🧃": [
-                "Juice", "Orange Juice",
-            ],
-
-            "💧": [
-                "Water",
-            ],
-
-            "🍪": [
-                "Biscuits", "Cookies",
-            ],
-
-            "🍟": [
-                "Chips",
-            ],
-
-            "🍜": [
-                "Noodles",
-            ],
-
-            "🍝": [
-                "Pasta", "Macaroni", "Spaghetti",
-            ],
-
-            "🍘": [
-                "Crackers",
-            ],
-
-            "🍞": [
-                "Bread",
-            ],
-
-            "🥯": [
-                "Buns",
-            ],
-
-            "🎂": [
-                "Cake",
-            ],
-
-            "🥐": [
-                "Pastries", "Croissants",
-            ],
-
-            "🍕": [
-                "Pizza",
-            ],
-
-            "🧴": [
-                "Shampoo", "Conditioner", "Body Wash",
-                "Floor Cleaner", "Bleach", "Mouthwash",
-                "Deodorant", "Body Lotion", "Sunscreen",
-            ],
-
-            "🧼": [
-                "Soap", "Laundry Soap", "Hand Wash",
-            ],
-
-            "🧺": [
-                "Detergent", "Washing Powder",
-            ],
-
-            "🧽": [
-                "Dish Soap", "Dishwashing Liquid",
-                "Scrubber", "Sponge",
-            ],
-
-            "🧹": [
-                "Broom", "Mop",
-            ],
-
-            "🗑️": [
-                "Garbage Bags", "Trash Bags",
-            ],
-
-            "🪥": [
-                "Toothpaste", "Toothbrush",
-            ],
-
-            "🧵": [
-                "Dental Floss",
-            ],
-
-            "🧻": [
-                "Tissues", "Toilet Paper", "Napkins",
-                "Baby Wipes", "Aluminum Foil", "Cling Film",
-            ],
-
-            "🩸": [
-                "Sanitary Pads",
-            ],
-
-            "🧷": [
-                "Diapers",
-            ],
-
-            "🔋": [
-                "Batteries",
-            ],
-
-            "💡": [
-                "Light Bulb", "Light Bulbs",
-            ],
-
-            "🕯️": [
-                "Candles",
-            ],
-
-            "🔥": [
-                "Matches",
-            ],
-
-            "🛍️": [
-                "Plastic Bags", "Zip Bags",
-            ],
-        };
-
-
-        // Convert emoji groups into a lookup dictionary.
-        const ITEM_EMOJIS = {};
-
-        for (const [emoji, itemNames] of Object.entries(EMOJI_GROUPS)) {
-            for (const itemName of itemNames) {
-                ITEM_EMOJIS[itemName] = emoji;
+        function loadStorage(key, fallback) {
+            try {
+                const value = localStorage.getItem(key);
+                return value ? JSON.parse(value) : fallback;
+            } catch {
+                return fallback;
             }
         }
 
+        function saveStorage(key, value) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
 
-        // =========================================================
-        // 10. FILLER WORDS
-        // =========================================================
+        let items = loadStorage(STORAGE_KEYS.items, []);
+        let history = loadStorage(STORAGE_KEYS.history, []);
 
-        const FILLER_WORDS = new Set([
-            "ko",
-            "ka",
-            "ki",
-            "ra",
-            "for",
-            "of",
-            "the",
-            "and",
-        ]);
+        let currentTheme = loadStorage(STORAGE_KEYS.theme, "light");
 
+        function saveItems() {
+            saveStorage(STORAGE_KEYS.items, items);
+        }
 
-        // =========================================================
-        // 11. STORAGE
-        // =========================================================
-
-        const Storage = {
-
-            /**
-             * Safely load data from localStorage.
-             */
-
-            load(key, fallback = []) {
-                try {
-                    const storedValue = localStorage.getItem(key);
-
-                    if (!storedValue) {
-                        return fallback;
-                    }
-
-                    const parsedValue = JSON.parse(storedValue);
-
-                    return Array.isArray(parsedValue) ?
-                        parsedValue :
-                        fallback;
-
-                } catch (error) {
-                    console.error(
-                        `Unable to load storage key "${key}".`,
-                        error
-                    );
-
-                    return fallback;
-                }
-            },
-
-
-            /**
-             * Save application state.
-             */
-
-            save() {
-                try {
-                    localStorage.setItem(
-                        CONFIG.storage.items,
-                        JSON.stringify(state.items)
-                    );
-
-                    localStorage.setItem(
-                        CONFIG.storage.history,
-                        JSON.stringify(state.inputHistory)
-                    );
-
-                } catch (error) {
-                    console.error(
-                        "Unable to save application data.",
-                        error
-                    );
-                }
-            },
-
-
-            /**
-             * Load application data.
-             */
-
-            initialize() {
-                state.items = this.load(CONFIG.storage.items);
-                state.inputHistory = this.load(CONFIG.storage.history);
-            },
-        };
-
-
-        // =========================================================
-        // 12. UTILITIES
-        // =========================================================
-
-        /**
-         * Generate a unique ID.
-         */
-
-        function createId() {
-            if (crypto.randomUUID) {
-                return crypto.randomUUID();
-            }
-
-            return (
-                Date.now().toString(36) +
-                Math.random().toString(36).slice(2)
-            );
+        function saveHistory() {
+            saveStorage(STORAGE_KEYS.history, history);
         }
 
 
-        /**
-         * Normalize input text.
-         */
+        /* =========================================================
+           NORMALIZATION
+        ========================================================= */
 
-        function normalizeInput(rawInput) {
-            return rawInput
+        function normalize(text) {
+            return String(text)
                 .toLowerCase()
-                .trim()
-                .replace(/[.,!?]/g, "")
-                .split(/\s+/)
-                .filter(Boolean);
+                .replace(/[^\p{L}\p{N}\s]/gu, " ")
+                .replace(/\s+/g, " ")
+                .trim();
+        }
+
+        function tokenize(text) {
+            return normalize(text).split(" ").filter(Boolean);
         }
 
 
-        /**
-         * Format a quantity.
-         */
+        /* =========================================================
+           NUMBER PARSER
+        ========================================================= */
 
-        function formatQuantity(quantity) {
-            return Number(quantity).toString();
-        }
+        function parseNumberWords(tokens) {
+            if (!tokens.length) return null;
 
+            if (tokens.length === 1) {
+                if (/^\d+(\.\d+)?$/.test(tokens[0])) {
+                    return Number(tokens[0]);
+                }
 
-        /**
-         * Format a date safely.
-         */
-
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-
-            if (Number.isNaN(date.getTime())) {
-                return "";
-            }
-
-            return date.toLocaleString();
-        }
-
-
-        /**
-         * Create a button safely.
-         */
-
-        function createButton({
-            className,
-            text,
-            ariaLabel,
-            onClick,
-        }) {
-            const button = document.createElement("button");
-
-            button.type = "button";
-            button.className = className;
-            button.textContent = text;
-            button.setAttribute("aria-label", ariaLabel);
-
-            button.addEventListener("click", onClick);
-
-            return button;
-        }
-
-
-        // =========================================================
-        // 13. PARSER UTILITIES
-        // =========================================================
-
-        /**
-         * Find a quantity from a number word.
-         */
-
-        function getNumberWord(word) {
-            return NUMBER_ALIASES[word];
-        }
-
-
-        /**
-         * Find a numeric quantity.
-         */
-
-        function getNumericQuantity(word) {
-            if (/^\d+(\.\d+)?$/.test(word)) {
-                return Number(word);
-            }
-
-            return null;
-        }
-
-
-        /**
-         * Find a unit alias.
-         */
-
-        function getUnit(word) {
-            return UNIT_ALIASES[word] || null;
-        }
-
-
-        /**
-         * Remove a token by index.
-         */
-
-        function removeToken(tokens, index) {
-            tokens[index] = null;
-        }
-
-
-        /**
-         * Find the longest matching item alias.
-         *
-         * Supports:
-         *
-         * basmati rice
-         * basmatirice
-         * brown rice
-         * brownrice
-         */
-
-        function findItemAlias(tokens) {
-            const validTokens = tokens.filter(Boolean);
-
-            if (!validTokens.length) {
-                return null;
-            }
-
-            const aliases = Object.keys(ITEM_ALIASES)
-                .sort((a, b) => b.length - a.length);
-
-            const joinedText = validTokens.join(" ");
-            const compactText = validTokens.join("");
-
-            // Exact match.
-            for (const alias of aliases) {
-                const compactAlias = alias.replace(/\s+/g, "");
-
-                if (
-                    joinedText === alias ||
-                    compactText === compactAlias
-                ) {
-                    return {
-                        name: ITEM_ALIASES[alias],
-                        matchedAlias: alias,
-                    };
+                if (NUMBERS[tokens[0]] !== undefined) {
+                    return NUMBERS[tokens[0]];
                 }
             }
 
-            // Multi-word match.
-            for (const alias of aliases) {
-                const aliasTokens = alias.split(/\s+/);
+            let total = 0;
+            let current = 0;
+            let found = false;
 
-                if (aliasTokens.length > validTokens.length) {
+            for (const token of tokens) {
+
+                if (/^\d+(\.\d+)?$/.test(token)) {
+                    current += Number(token);
+                    found = true;
                     continue;
                 }
 
-                for (
-                    let start = 0; start <= validTokens.length - aliasTokens.length; start++
-                ) {
-                    const candidate = validTokens
-                        .slice(start, start + aliasTokens.length)
-                        .join(" ");
+                if (NUMBERS[token] !== undefined) {
+                    const value = NUMBERS[token];
 
-                    if (candidate === alias) {
+                    if (value === 100) {
+                        current = current || 1;
+                        total += current * 100;
+                        current = 0;
+                    } else {
+                        current += value;
+                    }
+
+                    found = true;
+                } else {
+                    return null;
+                }
+            }
+
+            return found ? total + current : null;
+        }
+
+
+        /* =========================================================
+           UNIT LOOKUP
+        ========================================================= */
+
+        const UNIT_LOOKUP = {};
+
+        for (const [canonical, aliases] of Object.entries(UNIT_ALIASES)) {
+            for (const alias of aliases) {
+                UNIT_LOOKUP[normalize(alias)] = canonical;
+            }
+        }
+
+        function findUnit(token) {
+            return UNIT_LOOKUP[normalize(token)] || null;
+        }
+
+
+        /* =========================================================
+           ITEM MATCHING
+        ========================================================= */
+
+        const ALIAS_LOOKUP = [];
+
+        for (const [canonical, aliases] of Object.entries(ITEM_ALIASES)) {
+
+            for (const alias of aliases) {
+
+                ALIAS_LOOKUP.push({
+                    canonical,
+                    alias: normalize(alias),
+                    tokens: tokenize(alias)
+                });
+            }
+        }
+
+        ALIAS_LOOKUP.sort((a, b) => b.tokens.length - a.tokens.length);
+
+
+        /* Longest matching known item */
+
+        function findExactItem(tokens) {
+
+            for (const entry of ALIAS_LOOKUP) {
+
+                const aliasTokens = entry.tokens;
+
+                if (!aliasTokens.length) continue;
+
+                for (let i = 0; i <= tokens.length - aliasTokens.length; i++) {
+
+                    const segment = tokens.slice(i, i + aliasTokens.length);
+
+                    if (segment.join(" ") === aliasTokens.join(" ")) {
                         return {
-                            name: ITEM_ALIASES[alias],
-                            matchedAlias: alias,
+                            canonical: entry.canonical,
+                            alias: entry.alias,
+                            start: i,
+                            length: aliasTokens.length
                         };
                     }
                 }
@@ -2334,715 +1400,1304 @@
         }
 
 
-        // =========================================================
-        // 14. INPUT PARSER
-        // =========================================================
+        /* =========================================================
+           FUZZY MATCHING
+        ========================================================= */
 
-        /**
-         * Converts natural-language input into a shopping item.
-         *
-         * Examples:
-         *
-         * "ek kilo chamal"
-         * "dui darzan kola"
-         * "adha kg maida"
-         * "char wota shampoo"
-         * "pawa chini"
-         * "2 litres milk"
-         */
+        function levenshtein(a, b) {
 
-        function parseInput(rawInput) {
-            const words = normalizeInput(rawInput);
+            const matrix = [];
 
-            if (!words.length) {
-                return null;
+            for (let i = 0; i <= b.length; i++) {
+                matrix[i] = [i];
             }
 
-            let quantity = 1;
-            let unit = CONFIG.defaultUnit;
+            for (let j = 0; j <= a.length; j++) {
+                matrix[0][j] = j;
+            }
 
-            const removableWords = new Set();
+            for (let i = 1; i <= b.length; i++) {
 
+                for (let j = 1; j <= a.length; j++) {
 
-            // -----------------------------------------------------
-            // A. Detect quantity
-            // -----------------------------------------------------
+                    const cost = a[j - 1] === b[i - 1] ? 0 : 1;
 
-            for (let index = 0; index < words.length; index++) {
-                const word = words[index];
-
-                const wordQuantity = getNumberWord(word);
-                const numericQuantity = getNumericQuantity(word);
-
-                if (wordQuantity !== undefined) {
-                    quantity = wordQuantity;
-                    removableWords.add(index);
-
-                    break;
-                }
-
-                if (numericQuantity !== null) {
-                    quantity = numericQuantity;
-                    removableWords.add(index);
-
-                    break;
+                    matrix[i][j] = Math.min(
+                        matrix[i - 1][j] + 1,
+                        matrix[i][j - 1] + 1,
+                        matrix[i - 1][j - 1] + cost
+                    );
                 }
             }
 
+            return matrix[b.length][a.length];
+        }
 
-            // -----------------------------------------------------
-            // B. Detect half quantity
-            // -----------------------------------------------------
 
-            for (let index = 0; index < words.length; index++) {
-                const word = words[index];
+        function similarity(a, b) {
 
-                if (!HALF_WORDS.includes(word)) {
-                    continue;
-                }
+            if (!a || !b) return 0;
 
-                const nextWord = words[index + 1] || "";
-                const nextUnit = getUnit(nextWord);
+            const distance = levenshtein(a, b);
 
-                if (
-                    nextUnit === "KG" ||
-                    nextUnit === "g" ||
-                    nextUnit === "L"
-                ) {
-                    quantity = 0.5;
+            return 1 - distance / Math.max(a.length, b.length);
+        }
 
-                    removableWords.add(index);
 
-                    // Remove any previously detected quantity.
-                    for (const removableIndex of removableWords) {
-                        if (removableIndex !== index) {
-                            removableWords.delete(removableIndex);
-                        }
+        function getSuggestions(text) {
+
+            const query = normalize(text);
+
+            if (!query) return [];
+
+            const results = [];
+
+            for (const [canonical, aliases] of Object.entries(ITEM_ALIASES)) {
+
+                let best = 0;
+
+                for (const alias of aliases) {
+
+                    const normalizedAlias = normalize(alias);
+
+                    const score = similarity(query, normalizedAlias);
+
+                    if (score > best) {
+                        best = score;
                     }
 
-                    removableWords.add(index);
+                    /* Prefix similarity */
 
-                    break;
+                    if (
+                        normalizedAlias.startsWith(query) &&
+                        query.length >= 3
+                    ) {
+                        best = Math.max(best, .82);
+                    }
+
+                    if (
+                        query.startsWith(normalizedAlias) &&
+                        normalizedAlias.length >= 3
+                    ) {
+                        best = Math.max(best, .82);
+                    }
+                }
+
+                if (best >= .48) {
+                    results.push({
+                        canonical,
+                        emoji: EMOJIS[canonical] || "🛒",
+                        score: best
+                    });
                 }
             }
 
-
-            // -----------------------------------------------------
-            // C. Detect units
-            // -----------------------------------------------------
-
-            for (let index = 0; index < words.length; index++) {
-                const word = words[index];
-
-                const detectedUnit = getUnit(word);
-
-                if (detectedUnit) {
-                    unit = detectedUnit;
-                    removableWords.add(index);
-
-                    break;
-                }
-            }
+            return results
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 5);
+        }
 
 
-            // -----------------------------------------------------
-            // D. Detect special quantity expressions
-            // -----------------------------------------------------
+        /* =========================================================
+           PARSING
+        ========================================================= */
 
-            for (let index = 0; index < words.length; index++) {
-                const word = words[index];
+        function parseClause(raw) {
 
-                const specialQuantity =
-                    CONFIG.specialQuantityWords[word];
+            let tokens = tokenize(raw);
 
-                if (specialQuantity !== undefined) {
-                    quantity *= specialQuantity;
+            if (!tokens.length) return null;
 
-                    unit = "KG";
+            let quantity = null;
+            let unit = null;
 
-                    removableWords.add(index);
+            /*
+              Quantity can be:
+              4 kg alu
+              char kg alu
+              half kg potato
+              2 potato
+            */
 
-                    break;
-                }
-            }
+            let quantityTokens = [];
 
+            if (/^\d+(\.\d+)?$/.test(tokens[0])) {
 
-            // -----------------------------------------------------
-            // E. Remove filler words
-            // -----------------------------------------------------
+                quantity = Number(tokens[0]);
+                tokens.shift();
 
-            words.forEach((word, index) => {
-                if (FILLER_WORDS.has(word)) {
-                    removableWords.add(index);
-                }
-            });
-
-
-            // -----------------------------------------------------
-            // F. Remove quantity and unit words
-            // -----------------------------------------------------
-
-            const remainingWords = words.filter(
-                (word, index) => !removableWords.has(index)
-            );
-
-
-            // -----------------------------------------------------
-            // G. Find item alias
-            // -----------------------------------------------------
-
-            const aliasMatch = findItemAlias(remainingWords);
-
-            let itemName = "";
-
-            if (aliasMatch) {
-                itemName = aliasMatch.name;
             } else {
-                itemName = remainingWords
-                    .map(word => {
-                        return (
-                            word.charAt(0).toUpperCase() +
-                            word.slice(1)
-                        );
-                    })
-                    .join(" ");
+
+                let count = 0;
+
+                while (
+                    count < tokens.length &&
+                    NUMBERS[tokens[count]] !== undefined
+                ) {
+                    quantityTokens.push(tokens[count]);
+                    count++;
+                }
+
+                if (quantityTokens.length) {
+                    quantity = parseNumberWords(quantityTokens);
+                    tokens.splice(0, quantityTokens.length);
+                }
             }
 
 
-            // -----------------------------------------------------
-            // H. Validate
-            // -----------------------------------------------------
+            /* Half quantity */
 
-            if (!itemName.trim()) {
-                return null;
+            const hasHalf = tokens.some(t => HALF_WORDS.includes(t));
+
+            if (hasHalf) {
+
+                if (quantity === null) {
+                    quantity = 0.5;
+                } else {
+                    quantity *= 0.5;
+                }
+
+                tokens = tokens.filter(t => !HALF_WORDS.includes(t));
             }
 
 
-            // -----------------------------------------------------
-            // I. Return parsed item
-            // -----------------------------------------------------
+            /* Quarter quantity */
 
-            quantity = Number(quantity.toFixed(3));
+            const hasQuarter = tokens.some(t => QUARTER_WORDS.includes(t));
+
+            if (hasQuarter) {
+
+                if (quantity === null) {
+                    quantity = 0.25;
+                } else {
+                    quantity *= 0.25;
+                }
+
+                tokens = tokens.filter(t => !QUARTER_WORDS.includes(t));
+            }
+
+
+            /*
+              Unit only recognized when explicitly written.
+
+              IMPORTANT:
+              Unknown unit is NOT automatically converted to pcs.
+            */
+
+            if (tokens.length) {
+
+                const potentialUnit = findUnit(tokens[0]);
+
+                if (potentialUnit) {
+                    unit = potentialUnit;
+                    tokens.shift();
+                }
+            }
+
+
+            /* Remove filler words */
+
+            tokens = tokens.filter(t => !FILLER_WORDS.includes(t));
+
+            const remaining = tokens.join(" ").trim();
+
+            if (!remaining) return null;
+
+
+            /* Exact product match */
+
+            const exact = findExactItem(tokens);
+
+            if (exact) {
+
+                return {
+                    rawInput: raw.trim(),
+                    quantity,
+                    unit,
+                    item: exact.canonical,
+                    emoji: EMOJIS[exact.canonical] || "🛒",
+                    recognized: true,
+                    suggestions: []
+                };
+            }
+
+
+            /* Unknown item */
+
+            const suggestions = getSuggestions(remaining);
 
             return {
+                rawInput: raw.trim(),
                 quantity,
                 unit,
-                name: itemName,
-                emoji: ITEM_EMOJIS[itemName] || "🛒",
+                item: titleCase(remaining),
+                emoji: "🛒",
+                recognized: false,
+                suggestions
             };
         }
 
 
-        // =========================================================
-        // 15. MODAL MANAGEMENT
-        // =========================================================
+        function titleCase(text) {
 
-        const Modal = {
-
-            open(overlay) {
-                overlay.classList.add("active");
-            },
-
-
-            close(overlay) {
-                overlay.classList.remove("active");
-            },
+            return text
+                .split(" ")
+                .filter(Boolean)
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(" ");
+        }
 
 
-            closeAll() {
-                this.close(DOM.itemOverlay);
-                this.close(DOM.historyOverlay);
-            },
+        /* =========================================================
+           DISPLAY
+        ========================================================= */
+
+        function formatQuantity(item) {
+
+            const parts = [];
+
+            if (item.quantity !== null && item.quantity !== undefined) {
+                parts.push(item.quantity);
+            }
+
+            if (item.unit) {
+                parts.push(item.unit);
+            }
+
+            return parts.join(" ");
+        }
+
+
+        function render() {
+
+            DOM.items.innerHTML = "";
+
+            DOM.itemCount.textContent =
+                `${items.length} ${items.length === 1 ? "item" : "items"}`;
+
+
+            if (!items.length) {
+
+                DOM.items.innerHTML = `
+      <div class="empty">
+        <div class="empty-emoji">🛍️</div>
+        <p>Your shopping list is empty</p>
+        <p>Type something below to get started</p>
+      </div>
+    `;
+
+                return;
+            }
+
+
+            items.forEach(item => {
+
+                const row = document.createElement("div");
+
+                row.className = "item" + (item.completed ? " completed" : "");
+
+                row.innerHTML = `
+      <input
+        class="item-check"
+        type="checkbox"
+        ${item.completed ? "checked" : ""}
+      >
+
+      <div class="item-emoji"></div>
+
+      <div class="item-main">
+        <div class="item-name"></div>
+        <div class="item-quantity"></div>
+      </div>
+
+      <div class="item-actions">
+        <button class="small-button edit-button" title="Edit">✏️</button>
+        <button class="small-button delete-button" title="Delete">×</button>
+      </div>
+    `;
+
+                row.querySelector(".item-emoji").textContent =
+                    item.emoji || "🛒";
+
+                row.querySelector(".item-name").textContent =
+                    item.item;
+
+                row.querySelector(".item-quantity").textContent =
+                    formatQuantity(item);
+
+
+                row.querySelector(".item-check").addEventListener("change", e => {
+
+                    item.completed = e.target.checked;
+
+                    saveItems();
+                    render();
+
+                });
+
+
+                row.querySelector(".delete-button").addEventListener("click", () => {
+
+                    items = items.filter(x => x.id !== item.id);
+
+                    saveItems();
+                    render();
+
+                });
+
+
+                row.querySelector(".edit-button").addEventListener("click", () => {
+
+                    openEditModal(item);
+
+                });
+
+
+                DOM.items.appendChild(row);
+
+            });
+
+        }
+
+
+        /* =========================================================
+           HISTORY
+        ========================================================= */
+
+        function addHistory(raw, products) {
+
+            history.unshift({
+
+                id: createId(),
+
+                raw,
+
+                products: products.map(p => ({
+                    item: p.item,
+                    quantity: p.quantity,
+                    unit: p.unit
+                })),
+
+                timestamp: Date.now()
+
+            });
+
+            /* Keep latest 300 logs */
+
+            history = history.slice(0, 300);
+
+            saveHistory();
+        }
+
+
+        function renderHistory() {
+
+            DOM.modalTitle.textContent = "Input History";
+
+            DOM.modalDescription.textContent =
+                "Your previous shopping-list inputs.";
+
+            DOM.modalContent.innerHTML = `
+    <div class="history-container">
+
+      <div class="history-toolbar">
+        <span id="historyCount"></span>
+
+        <button
+          class="button button-danger"
+          id="clearHistoryButton"
+        >
+          Delete all logs
+        </button>
+      </div>
+
+      <div class="history-list" id="historyList"></div>
+
+    </div>
+  `;
+
+
+            const list = document.getElementById("historyList");
+
+            document.getElementById("historyCount").textContent =
+                `${history.length} ${history.length === 1 ? "log" : "logs"}`;
+
+
+            if (!history.length) {
+
+                list.innerHTML = `
+      <div class="history-empty">
+        No history yet.
+      </div>
+    `;
+
+            } else {
+
+                history.forEach(entry => {
+
+                    const row = document.createElement("div");
+
+                    row.className = "history-entry";
+
+                    const rawText = document.createElement("div");
+
+                    rawText.textContent = entry.raw;
+
+                    const time = document.createElement("div");
+
+                    time.className = "history-time";
+
+                    time.textContent = new Date(entry.timestamp).toLocaleString();
+
+                    row.appendChild(rawText);
+                    row.appendChild(time);
+
+                    list.appendChild(row);
+
+                });
+
+            }
+
+
+            document.getElementById("clearHistoryButton")
+                .addEventListener("click", () => {
+
+                    openConfirmModal(
+                        "Delete all logs?",
+                        "This will permanently delete your input history. Your shopping list will not be affected.",
+                        "Delete logs",
+                        () => {
+
+                            history = [];
+
+                            saveHistory();
+
+                            renderHistory();
+
+                            showToast("History deleted");
+
+                        }
+                    );
+
+                });
+
+
+            DOM.modalActions.innerHTML = "";
+
+            addModalButton("Close", "button-secondary", closeModal);
+
+        }
+
+
+        /* =========================================================
+           MODAL SYSTEM
+        ========================================================= */
+
+        function openModal(title, description = "") {
+
+            DOM.modalTitle.textContent = title;
+            DOM.modalDescription.textContent = description;
+
+            DOM.modalContent.innerHTML = "";
+            DOM.modalActions.innerHTML = "";
+
+            DOM.backdrop.classList.add("show");
+        }
+
+
+        function closeModal() {
+
+            DOM.backdrop.classList.remove("show");
+
+        }
+
+
+        function addModalButton(label, className, callback) {
+
+            const button = document.createElement("button");
+
+            button.className = "button " + className;
+            button.textContent = label;
+
+            button.addEventListener("click", callback);
+
+            DOM.modalActions.appendChild(button);
+
+            return button;
+        }
+
+
+        function openConfirmModal(title, description, confirmText, callback) {
+
+            openModal(title, description);
+
+            addModalButton("Cancel", "button-secondary", closeModal);
+
+            addModalButton(confirmText, "button-danger", () => {
+
+                closeModal();
+
+                callback();
+
+            });
+
+        }
+
+
+        /* =========================================================
+           EDIT MODAL
+        ========================================================= */
+
+        function openEditModal(item) {
+
+            openModal("Edit item", "Change the product name or quantity.");
+
+            const nameInput = document.createElement("input");
+
+            nameInput.className = "modal-input";
+            nameInput.value = item.item;
+            nameInput.placeholder = "Product name";
+
+
+            const quantityInput = document.createElement("input");
+
+            quantityInput.className = "modal-input";
+            quantityInput.value = item.quantity != null ? item.quantity : "";
+            quantityInput.placeholder = "Quantity";
+
+
+            const unitInput = document.createElement("input");
+
+            unitInput.className = "modal-input";
+            unitInput.value = item.unit != null ? item.unit : "";
+            unitInput.placeholder = "Unit (leave blank if unknown)";
+
+
+            DOM.modalContent.append(
+                nameInput,
+                quantityInput,
+                unitInput
+            );
+
+
+            addModalButton("Cancel", "button-secondary", closeModal);
+
+            addModalButton("Save", "button-primary", () => {
+
+                const newName = nameInput.value.trim();
+
+                if (!newName) {
+                    showToast("Enter an item name");
+                    return;
+                }
+
+                item.item = titleCase(newName);
+
+                item.quantity =
+                    quantityInput.value.trim() === "" ?
+                    null :
+                    Number(quantityInput.value);
+
+                item.unit = unitInput.value.trim() || null;
+
+                item.emoji = EMOJIS[item.item] || "🛒";
+
+                saveItems();
+                render();
+
+                closeModal();
+
+            });
+
+        }
+
+
+        /* =========================================================
+           UNKNOWN ITEM SUGGESTION
+        ========================================================= */
+
+        function openSuggestionModal(parsed, onSelect) {
+
+            openModal(
+                "Did you mean?",
+                `We couldn't confidently recognize "${parsed.item}". Select a suggestion or keep the original text.`
+            );
+
+
+            const suggestions = document.createElement("div");
+
+            suggestions.className = "suggestions";
+
+
+            if (parsed.suggestions.length) {
+
+                parsed.suggestions.forEach(suggestion => {
+
+                    const button = document.createElement("button");
+
+                    button.className = "suggestion";
+
+                    button.innerHTML = `
+        <span class="suggestion-emoji"></span>
+
+        <span class="suggestion-info">
+          <span class="suggestion-name"></span>
+          <br>
+          <span class="suggestion-sub">Use this item</span>
+        </span>
+
+        <span>→</span>
+      `;
+
+                    button.querySelector(".suggestion-emoji").textContent =
+                        suggestion.emoji;
+
+                    button.querySelector(".suggestion-name").textContent =
+                        suggestion.canonical;
+
+
+                    button.addEventListener("click", () => {
+
+                        parsed.item = suggestion.canonical;
+                        parsed.emoji = suggestion.emoji;
+                        parsed.recognized = true;
+
+                        closeModal();
+
+                        onSelect(parsed);
+
+                    });
+
+                    suggestions.appendChild(button);
+
+                });
+
+            } else {
+
+                const noSuggestions = document.createElement("p");
+
+                noSuggestions.textContent =
+                    "No similar products found. You can keep your original item.";
+
+                suggestions.appendChild(noSuggestions);
+
+            }
+
+
+            DOM.modalContent.appendChild(suggestions);
+
+
+            /* Original item */
+
+            const original = document.createElement("button");
+
+            original.className = "suggestion";
+
+            original.innerHTML = `
+    <span class="suggestion-emoji">🛒</span>
+    <span class="suggestion-info">
+      <span class="suggestion-name"></span>
+      <br>
+      <span class="suggestion-sub">Keep exactly as typed</span>
+    </span>
+    <span>✓</span>
+  `;
+
+            original.querySelector(".suggestion-name").textContent =
+                parsed.item;
+
+
+            original.addEventListener("click", () => {
+
+                parsed.recognized = true;
+
+                closeModal();
+
+                onSelect(parsed);
+
+            });
+
+
+            DOM.modalContent.appendChild(original);
+
+
+            addModalButton("Skip", "button-secondary", closeModal);
+
+        }
+
+
+        /* =========================================================
+           UNKNOWN UNIT
+        ========================================================= */
+
+        function openUnitModal(parsed, onSelect) {
+
+            openModal(
+                "Quantity unit?",
+                `You entered ${parsed.quantity ?? ""} for "${parsed.item}", but no recognized unit was provided.`
+            );
+
+
+            const options = [
+                "KG",
+                "g",
+                "L",
+                "ml",
+                "pcs",
+                "Dozen",
+                "pack",
+                "bottle",
+                "box"
+            ];
+
+
+            const unitOptions = document.createElement("div");
+
+            unitOptions.className = "unit-options";
+
+
+            options.forEach(unit => {
+
+                const button = document.createElement("button");
+
+                button.className = "unit-chip";
+                button.textContent = unit;
+
+                button.addEventListener("click", () => {
+
+                    parsed.unit = unit;
+
+                    closeModal();
+
+                    onSelect(parsed);
+
+                });
+
+                unitOptions.appendChild(button);
+
+            });
+
+
+            DOM.modalContent.appendChild(unitOptions);
+
+
+            addModalButton(
+                "Leave unit blank",
+                "button-secondary",
+                () => {
+
+                    parsed.unit = null;
+
+                    closeModal();
+
+                    onSelect(parsed);
+
+                }
+            );
+
+        }
+
+
+        /* =========================================================
+           ADD ITEM
+        ========================================================= */
+
+        function createId() {
+
+            return Date.now().toString(36) +
+                Math.random().toString(36).slice(2, 8);
+
+        }
+
+
+        function addItem(parsed) {
+
+            const item = {
+
+                id: createId(),
+
+                item: parsed.item,
+
+                quantity: parsed.quantity,
+
+                unit: parsed.unit,
+
+                emoji: parsed.emoji || EMOJIS[parsed.item] || "🛒",
+
+                rawInput: parsed.rawInput,
+
+                completed: false,
+
+                createdAt: Date.now()
+
+            };
+
+
+            items.push(item);
+
+            saveItems();
+            render();
+
+            animateEmoji(item.emoji);
+
+        }
+
+
+        function processParsed(parsed) {
+
+            if (!parsed) return;
+
+
+            /*
+              Unknown item:
+              Ask before silently using a potentially incorrect product.
+            */
+
+            if (!parsed.recognized) {
+
+                openSuggestionModal(parsed, processParsed);
+
+                return;
+            }
+
+
+            /*
+              Missing unit:
+              Never automatically convert it to pcs.
+            */
+
+            if (
+                parsed.quantity !== null &&
+                parsed.unit === null
+            ) {
+
+                openUnitModal(parsed, processParsed);
+
+                return;
+            }
+
+
+            addItem(parsed);
+
+        }
+
+
+        /* =========================================================
+           MULTI-ITEM INPUT
+        ========================================================= */
+
+        function handleAdd() {
+
+            const raw = DOM.itemInput.value.trim();
+
+            if (!raw) return;
+
+
+            /*
+              Comma-separated entries are independent clauses.
+
+              Example:
+              char kg alu, ath kilo pyaj
+
+              Example:
+              2 kg potato, half kg tomato, 3 apples
+            */
+
+            const clauses = raw
+                .split(",")
+                .map(x => x.trim())
+                .filter(Boolean);
+
+
+            if (!clauses.length) return;
+
+
+            const parsedItems = clauses
+                .map(parseClause)
+                .filter(Boolean);
+
+
+            if (!parsedItems.length) {
+
+                showToast("Couldn't understand the input");
+
+                return;
+            }
+
+
+            addHistory(raw, parsedItems);
+
+
+            DOM.itemInput.value = "";
+
+            DOM.itemInput.style.height = "auto";
+
+
+            /*
+              Process sequentially because a spelling suggestion
+              or missing unit may need user confirmation.
+            */
+
+            processQueue(parsedItems);
+
+        }
+
+
+        function processQueue(queue) {
+
+            if (!queue.length) return;
+
+
+            const current = queue.shift();
+
+
+            processParsed({
+
+                ...current,
+
+                _queue: queue
+
+            });
+
+
+        }
+
+
+        /* =========================================================
+           QUEUE CONTINUATION
+        ========================================================= */
+
+        const originalProcessParsed = processParsed;
+
+        function processQueueItem(parsed) {
+
+            const remaining = parsed._queue || [];
+
+            delete parsed._queue;
+
+
+            function continueQueue() {
+
+                if (remaining.length) {
+
+                    const next = remaining.shift();
+
+                    processParsed({
+                        ...next,
+                        _queue: remaining
+                    });
+
+                }
+
+            }
+
+
+            const oldAddItem = addItem;
+
+            addItem = function(item) {
+
+                oldAddItem(item);
+
+                addItem = oldAddItem;
+
+                continueQueue();
+
+            };
+
+
+            processParsed(parsed);
+
+        }
+
+
+        /*
+          Wrap processParsed so each confirmed product continues
+          processing the rest of the comma-separated input.
+        */
+
+        const baseProcessParsed = processParsed;
+
+        processParsed = function(parsed) {
+
+            if (!parsed) return;
+
+
+            const queue = parsed._queue || [];
+
+            const next = () => {
+
+                if (queue.length) {
+
+                    const nextItem = queue.shift();
+
+                    processParsed({
+                        ...nextItem,
+                        _queue: queue
+                    });
+
+                }
+
+            };
+
+
+            if (!parsed.recognized) {
+
+                openSuggestionModal(parsed, selected => {
+
+                    selected._queue = queue;
+
+                    processParsed(selected);
+
+                });
+
+                return;
+
+            }
+
+
+            if (
+                parsed.quantity !== null &&
+                parsed.unit === null
+            ) {
+
+                openUnitModal(parsed, selected => {
+
+                    selected._queue = queue;
+
+                    processParsed(selected);
+
+                });
+
+                return;
+
+            }
+
+
+            addItem(parsed);
+
+            next();
+
         };
 
 
-        /**
-         * Open add/edit modal.
-         */
+        /* =========================================================
+           EMOJI ANIMATION
+        ========================================================= */
 
-        function openItemModal(itemId = null) {
-            state.editingId = itemId;
+        function animateEmoji(emoji) {
 
-            const item = itemId ?
-                state.items.find(item => item.id === itemId) :
-                null;
+            const count = 9;
 
-            if (itemId && !item) {
-                return;
-            }
+            for (let i = 0; i < count; i++) {
 
-            DOM.itemInput.value = item && item.rawInput ? item.rawInput : "";
-            DOM.modalTitle.textContent = item ?
-                "Edit item" :
-                "Add item";
+                const particle = document.createElement("div");
 
-            DOM.saveButton.textContent = item ?
-                "Save changes" :
-                "Add to list";
+                particle.className = "emoji-blast";
+                particle.textContent = emoji;
 
-            Modal.open(DOM.itemOverlay);
 
-            setTimeout(() => {
-                DOM.itemInput.focus();
-            }, 100);
-        }
+                const angle = Math.random() * Math.PI * 2;
 
+                const distance = 80 + Math.random() * 170;
 
-        // =========================================================
-        // 16. HISTORY OPERATIONS
-        // =========================================================
+                const x = Math.cos(angle) * distance;
+                const y = Math.sin(angle) * distance;
 
-        /**
-         * Store the original input.
-         */
+                const x1 = x * .4;
+                const y1 = y * .4;
 
-        function addHistoryEntry(itemId, text, date) {
-            state.inputHistory.push({
-                id: createId(),
-                itemId,
-                text,
-                date,
-            });
-        }
 
+                particle.style.setProperty("--x1", `${x1}px`);
+                particle.style.setProperty("--y1", `${y1}px`);
 
-        /**
-         * Render history.
-         */
+                particle.style.setProperty("--x2", `${x}px`);
+                particle.style.setProperty("--y2", `${y}px`);
 
-        function renderHistory() {
-            DOM.historyList.replaceChildren();
-
-            if (!state.inputHistory.length) {
-                const emptyMessage = document.createElement("div");
-
-                emptyMessage.className = "history-empty";
-                emptyMessage.textContent = "No original inputs yet.";
-
-                DOM.historyList.appendChild(emptyMessage);
-
-                return;
-            }
-
-            // Display newest entries first.
-            const entries = [...state.inputHistory].reverse();
-
-            entries.forEach(entry => {
-                const row = document.createElement("div");
-
-                row.className = "history-entry";
-
-                const original = document.createElement("div");
-
-                original.className = "history-original";
-                original.textContent = entry.text;
-
-                const date = document.createElement("div");
-
-                date.className = "history-date";
-                date.textContent = formatDate(entry.date);
-
-                row.append(original, date);
-
-                DOM.historyList.appendChild(row);
-            });
-        }
-
-
-        // =========================================================
-        // 17. ITEM OPERATIONS
-        // =========================================================
-
-        /**
-         * Add a new item.
-         */
-
-        function addItem(parsedItem, rawInput) {
-            const timestamp = new Date().toISOString();
-
-            const newItem = {
-                id: createId(),
-                ...parsedItem,
-                rawInput,
-                completed: false,
-                createdAt: timestamp,
-            };
-
-            state.items.push(newItem);
-
-            addHistoryEntry(
-                newItem.id,
-                rawInput,
-                timestamp
-            );
-
-            Storage.save();
-
-            renderList();
-        }
-
-
-        /**
-         * Update an existing item.
-         */
-
-        function updateItem(itemId, parsedItem, rawInput) {
-            const item = state.items.find(
-                item => item.id === itemId
-            );
-
-            if (!item) {
-                return;
-            }
-
-            const timestamp = new Date().toISOString();
-
-            Object.assign(item, parsedItem, {
-                rawInput,
-                updatedAt: timestamp,
-            });
-
-            addHistoryEntry(
-                item.id,
-                rawInput,
-                timestamp
-            );
-
-            Storage.save();
-
-            renderList();
-        }
-
-
-        /**
-         * Toggle completion.
-         */
-
-        function toggleItem(itemId) {
-            const item = state.items.find(
-                item => item.id === itemId
-            );
-
-            if (!item) {
-                return;
-            }
-
-            item.completed = !item.completed;
-
-            Storage.save();
-
-            renderList();
-        }
-
-
-        /**
-         * Delete an item.
-         *
-         * Original input history remains unchanged.
-         */
-
-        function deleteItem(itemId) {
-            state.items = state.items.filter(
-                item => item.id !== itemId
-            );
-
-            Storage.save();
-
-            renderList();
-        }
-
-
-        // =========================================================
-        // 18. SAVE ITEM
-        // =========================================================
-
-        function saveItem() {
-            const rawInput = DOM.itemInput.value.trim();
-
-            if (!rawInput) {
-                DOM.itemInput.focus();
-
-                return;
-            }
-
-            const parsedItem = parseInput(rawInput);
-
-            if (!parsedItem) {
-                DOM.itemInput.focus();
-
-                return;
-            }
-
-            if (state.editingId) {
-                updateItem(
-                    state.editingId,
-                    parsedItem,
-                    rawInput
+                particle.style.setProperty(
+                    "--rotation",
+                    `${Math.random() * 360 - 180}deg`
                 );
-            } else {
-                addItem(
-                    parsedItem,
-                    rawInput
-                );
+
+                particle.style.fontSize =
+                    `${20 + Math.random() * 38}px`;
+
+                particle.style.animationDelay =
+                    `${Math.random() * .08}s`;
+
+
+                document.body.appendChild(particle);
+
+
+                setTimeout(() => particle.remove(), 1000);
+
             }
 
-            Modal.close(DOM.itemOverlay);
-
-            state.editingId = null;
-
-            DOM.itemInput.value = "";
         }
 
 
-        // =========================================================
-        // 19. ITEM COMPONENTS
-        // =========================================================
+        /* =========================================================
+           THEME
+        ========================================================= */
 
-        /**
-         * Create checkbox.
-         */
+        function applyTheme(theme) {
 
-        function createCheckbox(item) {
-            const checkbox = document.createElement("button");
+            currentTheme = theme;
 
-            checkbox.type = "button";
-
-            checkbox.className = [
-                    "check",
-                    item.completed ? "done" : "",
-                ]
-                .filter(Boolean)
-                .join(" ");
-
-            checkbox.setAttribute(
-                "aria-label",
-                item.completed ?
-                "Unmark item" :
-                "Mark item as completed"
+            document.documentElement.setAttribute(
+                "data-theme",
+                theme
             );
 
-            checkbox.setAttribute(
-                "aria-pressed",
-                String(item.completed)
+            DOM.themeToggle.textContent =
+                theme === "dark" ? "☀️" : "🌙";
+
+            DOM.themeToggle.title =
+                theme === "dark" ? "Switch to light mode" : "Switch to dark mode";
+
+            saveStorage(STORAGE_KEYS.theme, theme);
+
+        }
+
+
+        DOM.themeToggle.addEventListener("click", () => {
+
+            applyTheme(
+                currentTheme === "dark" ?
+                "light" :
+                "dark"
             );
 
-            checkbox.addEventListener("click", () => {
-                toggleItem(item.id);
-            });
-
-            return checkbox;
-        }
+        });
 
 
-        /**
-         * Create item information.
-         */
+        /* =========================================================
+           DELETE ALL ITEMS
+        ========================================================= */
 
-        function createItemInfo(item) {
-            const info = document.createElement("div");
+        DOM.deleteAllButton.addEventListener("click", () => {
 
-            info.className = "item-info";
+            if (!items.length) {
 
-            const name = document.createElement("div");
-
-            name.className = "item-name";
-
-            name.textContent = [
-                    formatQuantity(item.quantity),
-                    item.unit,
-                    item.name,
-                    item.emoji,
-                ]
-                .filter(Boolean)
-                .join(" ");
-
-            info.appendChild(name);
-
-            return info;
-        }
-
-
-        /**
-         * Create item action buttons.
-         */
-
-        function createItemActions(item) {
-            const actions = document.createElement("div");
-
-            actions.className = "item-actions";
-
-            const editButton = createButton({
-                className: "action action-edit",
-                text: "✎",
-                ariaLabel: "Edit item",
-
-                onClick() {
-                    openItemModal(item.id);
-                },
-            });
-
-            const deleteButton = createButton({
-                className: "action action-delete",
-                text: "×",
-                ariaLabel: "Delete item",
-
-                onClick() {
-                    deleteItem(item.id);
-                },
-            });
-
-            actions.append(
-                editButton,
-                deleteButton
-            );
-
-            return actions;
-        }
-
-
-        /**
-         * Create complete list item.
-         */
-
-        function createItemElement(item) {
-            const row = document.createElement("div");
-
-            row.className = [
-                    "item",
-                    item.completed ? "completed" : "",
-                ]
-                .filter(Boolean)
-                .join(" ");
-
-            const checkbox = createCheckbox(item);
-            const info = createItemInfo(item);
-            const actions = createItemActions(item);
-
-            row.append(
-                checkbox,
-                info,
-                actions
-            );
-
-            return row;
-        }
-
-
-        // =========================================================
-        // 20. LIST RENDERING
-        // =========================================================
-
-        function renderList() {
-            DOM.shoppingList.replaceChildren();
-
-            if (!state.items.length) {
-                const emptyMessage = document.createElement("div");
-
-                emptyMessage.className = "list-empty";
-                emptyMessage.textContent = "Your list is empty.";
-
-                DOM.shoppingList.appendChild(emptyMessage);
+                showToast("Your list is already empty");
 
                 return;
+
             }
 
-            state.items.forEach(item => {
-                const itemElement = createItemElement(item);
 
-                DOM.shoppingList.appendChild(itemElement);
-            });
-        }
+            openConfirmModal(
+                "Delete all items?",
+                "This will permanently remove every item from your shopping list. Your history will remain intact.",
+                "Delete everything",
+                () => {
 
+                    items = [];
 
-        // =========================================================
-        // 21. EVENT LISTENERS
-        // =========================================================
+                    saveItems();
+                    render();
 
-        function initializeEventListeners() {
+                    showToast("Shopping list cleared");
 
-            // Open add modal.
-            DOM.addButton.addEventListener("click", () => {
-                openItemModal();
-            });
-
-
-            // Save item.
-            DOM.saveButton.addEventListener("click", saveItem);
-
-
-            // Open history.
-            DOM.historyButton.addEventListener("click", () => {
-                renderHistory();
-
-                Modal.open(DOM.historyOverlay);
-            });
-
-
-            // Ctrl + Enter / Cmd + Enter to submit.
-            DOM.itemInput.addEventListener("keydown", event => {
-                if (
-                    event.key === "Enter" &&
-                    (event.ctrlKey || event.metaKey)
-                ) {
-                    event.preventDefault();
-
-                    saveItem();
                 }
-            });
+
+            );
+
+        });
 
 
-            // Close modal buttons.
-            document.querySelectorAll("[data-close]").forEach(button => {
-                button.addEventListener("click", () => {
-                    const overlayId = button.dataset.close;
+        /* =========================================================
+           HISTORY BUTTON
+        ========================================================= */
 
-                    const overlay = document.getElementById(overlayId);
+        DOM.historyButton.addEventListener("click", () => {
 
-                    if (overlay) {
-                        Modal.close(overlay);
-                    }
-                });
-            });
+            openModal("Input History");
 
-
-            // Close when clicking outside the modal.
-            [
-                DOM.itemOverlay,
-                DOM.historyOverlay,
-            ].forEach(overlay => {
-                overlay.addEventListener("click", event => {
-                    if (event.target === overlay) {
-                        Modal.close(overlay);
-                    }
-                });
-            });
-
-
-            // Close modals with Escape.
-            document.addEventListener("keydown", event => {
-                if (event.key === "Escape") {
-                    Modal.closeAll();
-                }
-            });
-        }
-
-
-        // =========================================================
-        // 22. INITIALIZATION
-        // =========================================================
-
-        function initializeApp() {
-            Storage.initialize();
-
-            initializeEventListeners();
-
-            renderList();
             renderHistory();
+
+        });
+
+
+        /* =========================================================
+           TOAST
+        ========================================================= */
+
+        let toastTimer;
+
+        function showToast(message) {
+
+            DOM.toast.textContent = message;
+
+            DOM.toast.classList.add("show");
+
+            clearTimeout(toastTimer);
+
+            toastTimer = setTimeout(() => {
+
+                DOM.toast.classList.remove("show");
+
+            }, 2200);
+
         }
 
 
-        // Start application.
-        initializeApp();
+        /* =========================================================
+           INPUT EVENTS
+        ========================================================= */
+
+        DOM.addButton.addEventListener("click", handleAdd);
+
+
+        DOM.itemInput.addEventListener("keydown", e => {
+
+            if (e.key === "Enter" && !e.shiftKey) {
+
+                e.preventDefault();
+
+                handleAdd();
+
+            }
+
+        });
+
+
+        DOM.itemInput.addEventListener("input", () => {
+
+            DOM.itemInput.style.height = "auto";
+
+            DOM.itemInput.style.height =
+                Math.min(DOM.itemInput.scrollHeight, 120) + "px";
+
+        });
+
+
+        DOM.backdrop.addEventListener("click", e => {
+
+            if (e.target === DOM.backdrop) {
+                closeModal();
+            }
+
+        });
+
+
+        document.addEventListener("keydown", e => {
+
+            if (e.key === "Escape") {
+                closeModal();
+            }
+
+        });
+
+
+        /* =========================================================
+           INIT
+        ========================================================= */
+
+        applyTheme(currentTheme);
+
+        render();
+
+        DOM.itemInput.focus();
     </script>
 
 </body>
