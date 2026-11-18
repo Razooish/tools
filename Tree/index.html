@@ -5,27 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kinship</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Inter:wght@400;500;600&display=swap">
 <style>
-:root{--bg:#f2f2f2;--card:#fafafa;--lt:40%;--fg:#222;--line:rgba(34,34,34,.15);--soft:rgba(34,34,34,.05);--mute:rgba(34,34,34,.55);--serif:"Cormorant Garamond",Georgia,serif;--sans:Inter,-apple-system,"Segoe UI",sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161616;--card:#1e1e1e;--lt:64%;--fg:#dcdcdc;--line:rgba(220,220,220,.14);--soft:rgba(220,220,220,.06);--mute:rgba(220,220,220,.55)}}
-:root[data-theme="dark"]{--bg:#161616;--card:#1e1e1e;--lt:64%;--fg:#dcdcdc;--line:rgba(220,220,220,.14);--soft:rgba(220,220,220,.06);--mute:rgba(220,220,220,.55)}
+:root{color-scheme:light;--bg:#f2f2f2;--card:#fafafa;--lt:40%;--fg:#222;--line:rgba(34,34,34,.15);--soft:rgba(34,34,34,.05);--mute:rgba(34,34,34,.55);--serif:"Cormorant Garamond",Georgia,serif;--sans:Inter,-apple-system,"Segoe UI",sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#161616;--card:#1e1e1e;--lt:64%;--fg:#dcdcdc;--line:rgba(220,220,220,.14);--soft:rgba(220,220,220,.06);--mute:rgba(220,220,220,.55)}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#161616;--card:#1e1e1e;--lt:64%;--fg:#dcdcdc;--line:rgba(220,220,220,.14);--soft:rgba(220,220,220,.06);--mute:rgba(220,220,220,.55)}
 html,body{height:100%;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 *{box-sizing:border-box;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
 ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}::-webkit-scrollbar-thumb:hover{background:var(--mute)}::-webkit-scrollbar-track,::-webkit-scrollbar-corner{background:transparent}::-webkit-scrollbar-button{display:none;width:0;height:0}
 body{margin:0;background:var(--bg);color:var(--fg);font:14px var(--sans);overflow:hidden}
 button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
+button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 .bar{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;gap:6px;padding:calc(12px + env(safe-area-inset-top,0px)) 14px 12px;pointer-events:none}
 .bar>*{pointer-events:auto}
 .bar h1{font:600 24px var(--serif);margin:0 auto 0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:28vw}
 .ib{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--bg);display:grid;place-items:center;font-size:17px;line-height:1;flex-shrink:0}
+.ib:disabled{opacity:.35;pointer-events:none}
 .btn{border:1px solid var(--line);background:var(--bg);padding:9px 14px;border-radius:8px;font-weight:500}
 .pri{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 .dng{text-decoration:underline;border:0;background:none;color:var(--mute);padding:8px 0}
 .ib,.btn,.fam,.fa button,.tabs button,.ri,.chips span,.dng,.card rect,#ctx button,#ctx label{transition:background .18s,border-color .18s,color .18s,transform .18s,opacity .18s,stroke .18s,fill .18s}
 .ib:hover{background:var(--soft);border-color:var(--fg);transform:translateY(-1px)}.btn:hover{background:var(--soft);border-color:var(--fg)}.pri:hover{background:var(--fg);opacity:.8}
-#addBtn{position:absolute;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translateX(-50%);height:44px;padding:0 24px;border-radius:999px;font-size:15px;font-weight:600;white-space:nowrap}
-#addBtn:hover{transform:translateX(-50%) translateY(-1px)}
+.mid{position:absolute;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translateX(-50%);display:flex;align-items:center;gap:8px}
+#addBtn{height:44px;padding:0 24px;border-radius:999px;font-size:15px;font-weight:600;white-space:nowrap}
+#playBtn{width:44px;height:44px;font-size:15px;padding-left:3px}
 #tree{position:fixed;inset:0;width:100%;height:100%;cursor:grab;touch-action:none;transform:translateZ(0);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:26px 26px}
 #tree.drag{cursor:grabbing}
 #tree text{text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased}
@@ -36,7 +39,6 @@ button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
 .avt{font:600 14px var(--sans);fill:#262626;text-anchor:middle}.you{font:600 8px var(--sans);letter-spacing:1px;fill:var(--mute);text-anchor:end}
 .ed{fill:none;stroke:var(--mute);stroke-width:1.3}.sp{stroke:var(--fg);stroke-width:1.3}
 .ht{font-size:17px;fill:var(--fg);text-anchor:middle;dominant-baseline:central}.hb{fill:var(--bg)}
-.hull{fill:transparent;stroke:transparent;stroke-width:1.2;stroke-dasharray:5 5;cursor:pointer;transition:.2s}.hull:hover,.hull.on{fill:var(--soft);stroke:var(--mute)}
 .dim{opacity:.14}
 .rg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.rg label{margin:0}.rg input{display:none}.rg span{display:block;text-align:center;padding:8px 0;border:1px solid var(--line);border-radius:8px;font-size:12px;color:var(--fg);cursor:pointer;background:var(--bg);transition:.18s}.rg span:hover{border-color:var(--fg);background:var(--soft)}.rg input:checked+span,.rg input:checked+span:hover{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 .rgw{display:flex;flex-direction:column;gap:5px}.rgl{font-size:11px;color:var(--mute)}
@@ -78,21 +80,81 @@ input:hover,select:hover{border-color:var(--mute)}input:focus,select:focus{borde
 .tabs button.rc:hover,.ri.rc:hover{background:color-mix(in srgb,var(--c) 40%,var(--bg))}.tabs button.rc.on{background:var(--c);border-color:var(--c);color:#222}
 .rl{max-height:230px;overflow-y:auto;padding-right:4px}
 .ri{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;padding:9px 12px;border-radius:8px;margin-bottom:6px;text-align:left}.ri small{color:var(--mute);white-space:nowrap}
-.ord{max-height:170px;overflow-y:auto;padding-right:4px}.or{display:flex;justify-content:space-between;gap:8px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;margin-bottom:5px;font-size:13px}.or small{color:var(--mute)}.or.me{background:var(--fg);color:var(--bg)}.or.me small{color:var(--bg);opacity:.7}
+.bp{position:sticky;bottom:0;margin:18px -20px calc(-20px - env(safe-area-inset-bottom,0px));padding:12px 20px calc(12px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line)}
+.bp .btn{width:100%;padding:16px;font-size:16px;font-weight:600;border-radius:12px}
 #dlg,#srch{position:fixed;inset:0;z-index:20;display:none;padding:16px}
 #dlg{place-items:center;background:rgba(0,0,0,.5)}#dlg.open{display:grid}
 #srch{align-items:flex-start;justify-content:center;padding-top:90px;background:rgba(0,0,0,.18)}#srch.open{display:flex}
 .box{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:22px;width:100%;max-width:380px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
 .box h3{font:600 24px var(--serif);margin:0}.box p{margin:0;color:var(--mute);line-height:1.5}
-#toast{position:fixed;left:50%;bottom:calc(60px + env(safe-area-inset-bottom,0px));transform:translate(-50%,12px);background:var(--fg);color:var(--bg);padding:10px 18px;border-radius:999px;opacity:0;transition:.25s;pointer-events:none;z-index:30;white-space:nowrap}#toast.on{opacity:1;transform:translate(-50%,0)}
+#toast{position:fixed;left:50%;bottom:calc(60px + env(safe-area-inset-bottom,0px));transform:translate(-50%,12px);background:var(--fg);color:var(--bg);padding:10px 18px;border-radius:999px;opacity:0;transition:.25s;pointer-events:none;z-index:50;white-space:nowrap}#toast.on{opacity:1;transform:translate(-50%,0)}
 #empty{position:fixed;inset:0;display:none;place-items:center;text-align:center;z-index:2}#empty h2{font:600 34px var(--serif);margin:0 0 14px}
 #tip{position:fixed;z-index:15;display:none;pointer-events:none;background:var(--fg);color:var(--bg);padding:6px 11px;border-radius:8px;font-size:12px}
 #ctx{position:fixed;z-index:25;display:none;flex-direction:column;min-width:200px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:0 10px 34px rgba(0,0,0,.28)}
 #ctx button,#ctx label{display:flex;flex-direction:row;align-items:center;gap:8px;padding:9px 12px;border:0;background:none;border-radius:8px;text-align:left;font-size:13px;color:var(--fg);cursor:pointer;width:100%}
 #ctx button:hover,#ctx label:hover{background:var(--soft)}#ctx input{width:auto;accent-color:var(--fg)}
 .cr{padding:8px 12px 8px;font-size:12px;color:var(--mute);border-bottom:1px solid var(--line);margin-bottom:4px}.cr b{display:block;color:var(--fg);font:600 17px var(--serif)}
-@media(max-width:640px){.bar h1,#zIn,#zOut,.lg{display:none}.ib{width:36px;height:36px}#sBtn{margin-left:auto}#addBtn{height:40px;padding:0 18px;font-size:14px}
-#panel{width:100%;top:auto;height:80vh;border-left-width:0;border-top-width:1px;border-radius:18px 18px 0 0;transform:translateY(100%)}#srch{padding-top:70px}}
+/* presentation */
+@property --ac{syntax:"<color>";inherits:true;initial-value:#e0708a}
+#pres{--ac:#e0708a;position:fixed;inset:0;z-index:40;background:var(--bg);display:none;flex-direction:column;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);overflow:hidden;transition:--ac .9s}#pres.open{display:flex}
+#pres::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 85% 55% at 50% -5%,color-mix(in srgb,var(--ac) 26%,transparent),transparent 70%),radial-gradient(ellipse 75% 45% at 50% 108%,color-mix(in srgb,var(--ac) 20%,transparent),transparent 70%)}
+#pFx{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+#pFx i{position:absolute;bottom:-8%;left:var(--x);font-style:normal;font-size:var(--s);color:var(--ac);opacity:0;animation:rise var(--t) linear var(--dl) infinite}
+@keyframes rise{0%{transform:translateY(0) rotate(0);opacity:0}12%{opacity:.5}88%{opacity:.3}100%{transform:translateY(-118vh) rotate(var(--r));opacity:0}}
+.ptop,#pRail,#pBody,#pBar,.pnav{position:relative;z-index:1}
+.ptop{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px 4px}.ptop span{font:600 20px var(--serif);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#pRail{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;padding:2px 18px 4px;min-height:30px;font-size:11px;color:var(--mute)}
+#pRail .rd{width:22px;height:22px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:10px;background:var(--bg);transition:.4s}
+#pRail .on{background:var(--ac);border-color:var(--ac);color:#222}#pRail .cur{transform:scale(1.25);box-shadow:0 0 0 4px color-mix(in srgb,var(--ac) 30%,transparent)}
+#pRail s{width:16px;height:2px;background:var(--line);transition:.4s}#pRail s.on{background:var(--ac)}
+#pRail .rl2{margin-left:12px;letter-spacing:1.2px;text-transform:uppercase}
+#pBody{flex:1;min-height:0;overflow:hidden;touch-action:pan-y}
+.sl{position:absolute;left:50%;top:50%;width:min(980px,calc(100% - 32px));transform:translate(-50%,-50%) scale(var(--sc,1));transform-origin:center;text-align:center}
+.si{animation:sIn .7s ease both}
+.sk{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--mute);margin-bottom:10px}
+.sl h2{font:600 clamp(26px,4.6vw,44px) var(--serif);margin:0 0 10px;line-height:1.1}
+.sl.big h2{font-size:clamp(38px,9vw,76px);background:linear-gradient(90deg,var(--fg),var(--ac),var(--fg));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sheen 7s linear infinite;padding-bottom:6px}
+.chip{display:inline-block;padding:4px 14px;border-radius:999px;background:color-mix(in srgb,var(--ac) 18%,transparent);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;margin:0 0 22px}
+.mrow{display:flex;align-items:center;justify-content:center}
+.prow{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;padding-top:8px}
+.pc{position:relative;width:150px;padding:16px 10px 12px;border:1px solid var(--line);border-radius:16px;background:color-mix(in srgb,var(--card) 88%,transparent);display:flex;flex-direction:column;align-items:center;gap:2px;animation:pop .6s cubic-bezier(.2,.9,.3,1.2) var(--d,0s) both}
+.pc.fl{animation-name:fromL}.pc.fr{animation-name:fromR}
+.pc.m{width:200px;padding:18px 12px}
+.av{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font:600 21px var(--sans);color:#262626;background:var(--g);box-shadow:0 0 0 4px color-mix(in srgb,var(--g) 28%,transparent),0 6px 18px color-mix(in srgb,var(--g) 40%,transparent);margin-bottom:6px}
+.pc.m .av{width:72px;height:72px;font-size:28px}
+.pc b{font:600 20px/1.15 var(--serif);overflow-wrap:anywhere}.pc.m b{font-size:25px}
+.pc small{color:var(--mute);font-size:11px}
+.pc em{font-style:normal;font-size:9px;letter-spacing:1.3px;text-transform:uppercase;color:var(--mute);margin-top:3px}
+.nt{font-size:11px;color:var(--mute);font-style:italic;line-height:1.3;margin-top:4px}
+.od{position:absolute;top:-10px;left:50%;transform:translateX(-50%);text-decoration:none;white-space:nowrap;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:var(--ac);color:#222;font-weight:600}
+.pc.tgt{border:2px solid var(--ac);box-shadow:0 0 28px color-mix(in srgb,var(--ac) 35%,transparent)}
+.pc.sm{width:120px;padding:14px 8px 10px}.pc.sm .av{width:38px;height:38px;font-size:16px}.pc.sm b{font-size:16px}.pc.sm .nt,.pc.xs .nt{display:none}
+.pc.xs{width:100px;padding:12px 6px 8px}.pc.xs .av{width:30px;height:30px;font-size:13px;margin-bottom:3px}.pc.xs b{font-size:14px}.pc.xs em{display:none}
+.knot{position:relative;width:96px;height:96px;display:grid;place-items:center;flex-shrink:0}
+.knot::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:linear-gradient(90deg,transparent,var(--ac),transparent);transform:scaleX(0);animation:growX .8s ease var(--d) both}
+.knot span{position:relative;font-size:38px;color:var(--ac);text-shadow:0 0 22px var(--ac);opacity:0;animation:pop .6s ease var(--d) both,beat 1.5s ease-in-out calc(var(--d) + .7s) infinite}
+.knot i{position:absolute;inset:22px;border-radius:50%;border:2px solid var(--ac);opacity:0;animation:ripple 2.6s ease-out calc(var(--d) + .6s) infinite}.knot i.r2{animation-delay:calc(var(--d) + 1.9s)}
+.pchip{display:inline-flex;align-items:center;gap:8px;padding:5px 16px 5px 6px;border:1px solid color-mix(in srgb,var(--ac) 45%,var(--line));border-radius:999px;background:color-mix(in srgb,var(--card) 85%,transparent);font:600 16px var(--serif);animation:pop .6s ease var(--d) both}
+.mi{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:600 12px var(--sans);color:#262626;background:var(--g)}.hh{color:var(--ac);font-size:13px}
+.thread{width:2px;height:26px;margin:0 auto 12px;background:linear-gradient(var(--ac),transparent);transform-origin:top;animation:drawY .6s ease .5s both}
+.chain{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;margin-top:18px}.chain span{padding:4px 12px;border:1px solid var(--line);border-radius:999px;font-size:12px;opacity:0;animation:pop .5s ease var(--d) both}.chain u{text-decoration:none;color:var(--ac)}
+.lines{margin-top:22px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.ln{margin:0;max-width:660px;font:italic 500 clamp(17px,2.5vw,22px)/1.45 var(--serif);opacity:0;animation:lnIn .9s ease var(--d) both}
+.pnav{display:flex;align-items:center;justify-content:center;gap:14px;padding:10px 18px}#pCnt{min-width:64px;text-align:center;color:var(--mute);font-size:12px}
+#pBar{height:3px;background:var(--line)}#pBar i{display:block;height:100%;width:0;background:var(--ac);transition:width .4s}
+@keyframes sIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes fromL{from{opacity:0;transform:translateX(-70px)}to{opacity:1;transform:none}}
+@keyframes fromR{from{opacity:0;transform:translateX(70px)}to{opacity:1;transform:none}}
+@keyframes lnIn{from{opacity:0;transform:translateY(10px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+@keyframes growX{to{transform:scaleX(1)}}@keyframes drawY{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes beat{0%,100%{transform:scale(1)}14%{transform:scale(1.22)}28%{transform:scale(1)}42%{transform:scale(1.14)}}
+@keyframes ripple{0%{transform:scale(.4);opacity:.7}100%{transform:scale(1.9);opacity:0}}
+@keyframes sheen{to{background-position:200% 0}}
+@media(prefers-reduced-motion:reduce){.si,.pc,.thread,.knot::before,.knot span,.pchip,.chain span{animation:none!important;opacity:1}.knot::before{transform:none}.ln{animation:none;opacity:1}#pFx,.knot i{display:none}}
+@media(max-width:640px){.bar h1,#zIn,#zOut,.lg,#fs{display:none}.ib{width:36px;height:36px}#sBtn{margin-left:auto}#addBtn{height:40px;padding:0 18px;font-size:14px}#playBtn{width:40px;height:40px}
+#panel{width:100%;top:auto;height:80vh;border-left-width:0;border-top-width:1px;border-radius:18px 18px 0 0;transform:translateY(100%)}#srch{padding-top:70px}
+.pc{width:130px}.pc.sm{width:104px}.pc.xs{width:88px}.pc.m{width:132px;padding:14px 8px}.pc.m .av{width:56px;height:56px;font-size:22px}.pc.m b{font-size:19px}.knot{width:60px;height:60px}.knot span{font-size:26px}.knot i{inset:14px}#pRail .rd{width:19px;height:19px}#pRail s{width:9px}#pRail .rl2{margin:4px 0 0;flex-basis:100%;text-align:center}}
 </style>
 </head>
 <body>
@@ -105,7 +167,10 @@ input:hover,select:hover{border-color:var(--mute)}input:focus,select:focus{borde
   <button class="ib" id="fit" title="Fit to screen">⌂</button>
   <button class="ib" id="sBtn" title="Search (Ctrl+F)">⌕</button>
   <button class="ib" id="fs" title="Full screen">⛶</button>
-  <button class="btn pri" id="addBtn">＋ Add <span class="lg">member</span></button>
+  <div class="mid" id="mid">
+    <button class="btn pri" id="addBtn">＋ Add <span class="lg">member</span></button>
+    <button class="ib pri" id="playBtn" title="Play family story">▶</button>
+  </div>
 </div>
 
 <svg id="tree"><g id="layer"></g></svg>
@@ -120,17 +185,26 @@ input:hover,select:hover{border-color:var(--mute)}input:focus,select:focus{borde
   <button class="fam" id="newFam">＋ New family</button>
   <div class="lbl">Manage</div>
   <button class="fam" id="exp">Export</button>
-  <button class="fam" id="imp">Import</button>
+  <button class="fam" id="imp">Import file</button>
+  <button class="fam" id="impP">Import from clipboard</button>
   <button class="fam" id="thm">Switch theme</button>
   <input type="file" id="file" accept=".json,application/json" hidden>
 </aside>
 
 <div id="panel"></div>
-<div id="ctx"><div class="cr" id="cRel"></div><button id="cInfo">ⓘ Info &amp; relations</button><button id="cEdit">Edit member</button><button id="cDel">Delete member</button><label><input type="checkbox" id="cMe"> This is me</label></div>
+<div id="ctx"><div class="cr" id="cRel"></div><button id="cPlay">▶ Play story to here</button><button id="cInfo">ⓘ Info &amp; relations</button><button id="cEdit">Edit member</button><button id="cDel">Delete member</button><label><input type="checkbox" id="cMe"> This is me</label></div>
 <div id="tip"></div>
 <div id="srch"><div class="box"><input id="sq" placeholder="Search members…" autocomplete="off"><div class="stat" id="sc">Type a name</div></div></div>
-<div id="info"></div>
-<div id="dlg"></div>
+<div id="info" role="dialog" aria-modal="true"></div>
+<div id="dlg" role="dialog" aria-modal="true"></div>
+<div id="pres" role="dialog" aria-modal="true" aria-label="Family story">
+  <div id="pFx"></div>
+  <div class="ptop"><span id="pTitle"></span><button class="ib" id="pX" aria-label="Close presentation">×</button></div>
+  <div id="pRail"></div>
+  <div id="pBody"></div>
+  <div id="pBar"><i></i></div>
+  <div class="pnav"><button class="ib" id="pPrev" aria-label="Previous slide">‹</button><button class="ib" id="pPlay" aria-label="Play or pause">⏸</button><span id="pCnt"></span><button class="ib" id="pNext" aria-label="Next slide">›</button></div>
+</div>
 <div id="toast"></div>
 
 <script>
@@ -139,21 +213,39 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const uid=()=>"i"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const KEY="kinship_v2",TKEY="kinship_theme";
-let fams=[],aid=null,sel=null,k=1,tx=0,ty=0,focus=null,qs="",pos=new Map(),meRels=null,lpT=0,lpFired=false,rf="All";
+let fams=[],aid=null,sel=null,k=1,tx=0,ty=0,focus=null,qs="",pos=new Map(),meRels=null,meComp=null,lpT=0,lpFired=false,rf="All";
 const fam=()=>fams.find(f=>f.id===aid);
 const get=id=>fam()?.members.find(m=>m.id===id);
-const mk=(name,gender,extra={})=>({id:uid(),name,gender:gender||"Not specified",birth:"",death:"",dead:false,parents:[],spouses:[],...extra});
+const mk=(name,gender,extra={})=>({id:uid(),name,gender:gender||"Other",birth:"",death:"",dead:false,parents:[],spouses:[],...extra});
 const isDead=m=>!!(m.dead||m.death);
 const GC=g=>g==="Female"?"#f3a5c3":g==="Male"?"#9dc4f2":"#c4c4c4";
 const effP=m=>{const ps=m.parents.filter(p=>get(p));if(ps.length===1){const s=get(ps[0]).spouses;if(s.length===1&&get(s[0]))return[ps[0],s[0]]}return ps};
 const gi=g=>g==="Male"?0:g==="Female"?1:2;
-const ordCmp=ms=>(a,b)=>(a.rank&&b.rank&&a.rank!==b.rank)?a.rank-b.rank:(a.birth&&b.birth&&a.birth!==b.birth)?(a.birth<b.birth?-1:1):gi(a.gender)-gi(b.gender)||ms.indexOf(a)-ms.indexOf(b);
+const ordCmp=ms=>{const ix=new Map(ms.map((m,i)=>[m,i]));return(a,b)=>(a.rank&&b.rank&&a.rank!==b.rank)?a.rank-b.rank:(a.birth&&b.birth&&a.birth!==b.birth)?(a.birth<b.birth?-1:1):gi(a.gender)-gi(b.gender)||ix.get(a)-ix.get(b)};
 const parseNames=(s,g)=>String(s).split(",").map(x=>x.trim()).filter(Boolean).map(x=>{const t=x.match(/\s*\((m|f)\)$/i);return{name:t?x.slice(0,t.index).trim():x,gender:t?(t[1].toLowerCase()==="f"?"Female":"Male"):g}}).filter(x=>x.name);
 const lc=s=>s[0].toLowerCase()+s.slice(1);
-const od=n=>{const s=["th","st","nd","rd"],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0])};
+
+/* ---------- data hygiene ---------- */
+function clean(ms){
+  const seen=new Set();
+  ms=ms.filter(m=>m&&typeof m.id==="string"&&typeof m.name==="string"&&!seen.has(m.id)&&seen.add(m.id));
+  const ids=new Set(ms.map(m=>m.id));
+  const r=ms.map(m=>({id:m.id,name:m.name,gender:m.gender==="Male"||m.gender==="Female"?m.gender:"Other",birth:typeof m.birth==="string"?m.birth:"",death:typeof m.death==="string"?m.death:"",dead:!!(m.dead||m.death),
+    parents:[...new Set(Array.isArray(m.parents)?m.parents:[])].filter(x=>ids.has(x)&&x!==m.id).slice(0,2),
+    spouses:[...new Set(Array.isArray(m.spouses)?m.spouses:m.spouse?[m.spouse]:[])].filter(x=>ids.has(x)&&x!==m.id),
+    ...(Number.isInteger(m.rank)&&m.rank>0?{rank:m.rank}:{})}));
+  const by=new Map(r.map(m=>[m.id,m]));
+  r.forEach(m=>m.spouses=m.spouses.filter(s=>by.get(s).spouses.includes(m.id)));
+  return r;
+}
+function cyc(ms){
+  const by=new Map(ms.map(m=>[m.id,m]));
+  const reach=(a,t,v=new Set())=>{if(a===t)return true;if(v.has(a))return false;v.add(a);return by.get(a).parents.some(x=>reach(x,t,v))};
+  return ms.some(m=>m.parents.some(p=>reach(p,m.id)));
+}
 
 /* ---------- storage ---------- */
-function save(){try{localStorage.setItem(KEY,JSON.stringify({fams,aid}))}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({fams,aid}))}catch(e){if(!save.w){save.w=1;toast("Couldn’t save to this browser — export a backup")}}}
 function seed(){
   const D=(id,n,g,p,s,x)=>({id,name:n,gender:g,birth:"",death:"",dead:!!x,parents:p,spouses:s}),M="Male",F="Female";
   return{id:uid(),name:"Mahabharata",members:[
@@ -172,11 +264,21 @@ function seed(){
   ]};
 }
 function load(){
-  try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&Array.isArray(d.fams)&&d.fams.length){fams=d.fams;aid=fams.some(f=>f.id===d.aid)?d.aid:fams[0].id}}catch(e){}
+  let raw=null;
+  try{
+    raw=localStorage.getItem(KEY);const d=JSON.parse(raw);
+    if(d&&Array.isArray(d.fams)){
+      fams=d.fams.filter(f=>f&&typeof f.id==="string"&&typeof f.name==="string"&&Array.isArray(f.members)).map(f=>({id:f.id,name:f.name,me:typeof f.me==="string"?f.me:"",members:clean(f.members)})).filter(f=>!cyc(f.members));
+      fams.forEach(f=>{if(!f.members.some(m=>m.id===f.me))f.me=""});
+      if(fams.length)aid=fams.some(f=>f.id===d.aid)?d.aid:fams[0].id;
+    }
+  }catch(e){fams=[]}
   const n0=fams.length;
   fams=fams.filter(f=>!(f.name==="Sharma Family"&&f.members.length===6&&f.members[0].id==="a"));
-  if(!fams.length||fams.length<n0){const f=seed();fams.unshift(f);aid=f.id;save()}
-  fams.forEach(f=>f.members.forEach(m=>{if(!Array.isArray(m.spouses))m.spouses=m.spouse?[m.spouse]:[];delete m.spouse;delete m.notes;m.parents=m.parents||[];m.birth=m.birth||"";m.death=m.death||""}));
+  if(!fams.length||fams.length<n0){
+    if(raw&&!fams.length){try{localStorage.setItem(KEY+"_bak",raw)}catch(e){}}
+    const f=seed();fams.unshift(f);aid=f.id;save();
+  }
   try{const t=localStorage.getItem(TKEY);if(t)document.documentElement.dataset.theme=t}catch(e){}
 }
 
@@ -235,18 +337,18 @@ function relsOf(m){
   dn[1].forEach(c=>sp(c).forEach(x=>add(x,G(x,"Son-in-law","Daughter-in-law","Child-in-law"),"In-laws")));
   return out.sort((a,b)=>CATS.indexOf(a.cat)-CATS.indexOf(b.cat)||cmp(a.m,b.m));
 }
-function connected(a,b){
-  const ms=fam().members,adj=new Map(ms.map(m=>[m.id,new Set()]));
-  ms.forEach(m=>[...m.parents,...m.spouses].forEach(x=>{if(adj.has(x)){adj.get(m.id).add(x);adj.get(x).add(m.id)}}));
+function comp(a){
+  const ms=fam().members,adj=new Map(ms.map(m=>[m.id,[]]));
+  ms.forEach(m=>[...m.parents,...m.spouses].forEach(x=>{if(adj.has(x)){adj.get(m.id).push(x);adj.get(x).push(m.id)}}));
   const seen=new Set([a]),st=[a];
-  while(st.length){const x=st.pop();if(x===b)return true;adj.get(x)?.forEach(y=>{if(!seen.has(y)){seen.add(y);st.push(y)}})}
-  return false;
+  while(st.length)for(const y of adj.get(st.pop())||[])if(!seen.has(y)){seen.add(y);st.push(y)}
+  return seen;
 }
 function relLabel(id){
   const f=fam();if(!meRels||!f.me)return null;
   if(id===f.me)return"You";
   if(meRels.has(id))return"Your "+lc(meRels.get(id));
-  return connected(f.me,id)?"Relative":"Not connected";
+  return meComp&&meComp.has(id)?"Relative":"Not connected";
 }
 
 /* ---------- layout ---------- */
@@ -262,7 +364,7 @@ function layout(ms){
   });
   units.forEach(u=>{
     const seen=new Set(),list=[];
-    u.m.forEach(p=>ms.forEach(c=>{if(c.parents.includes(p.id)){const cu=unitOf.get(c.id);if(cu!==u&&!seen.has(cu)){seen.add(cu);list.push({cu,c,k:c.parents.map(x=>u.m.findIndex(y=>y.id===x)).sort().join()})}}}));
+    u.m.forEach(p=>ms.forEach(c=>{if(c.parents.includes(p.id)){const cu=unitOf.get(c.id);if(cu!==u&&!seen.has(cu)){seen.add(cu);list.push({cu,c,k:c.parents.map(x=>u.m.findIndex(y=>y.id===x)).sort((a,b)=>a-b).join()})}}}));
     list.sort((a,b)=>a.k<b.k?-1:a.k>b.k?1:cmp(a.c,b.c));
     u.ch=list.map(x=>x.cu);
   });
@@ -290,7 +392,7 @@ function layout(ms){
 }
 
 /* ---------- render ---------- */
-const NS="http://www.w3.org/2000/svg",FC=["#e0708a","#5b9bea","#d9a441","#4fb69a","#9a7bd9","#d9794a"];
+const NS="http://www.w3.org/2000/svg";
 function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const a in attrs)e.setAttribute(a,attrs[a]);if(text!==undefined)e.textContent=text;parent&&parent.appendChild(e);return e}
 function heart(a,b){const adj=Math.abs(a.x-b.x)<=W+S+1&&a.y===b.y;return{x:(a.x+b.x+W)/2,y:adj?a.y+H/2:Math.max(a.y,b.y)+H+22,adj}}
 function familiesOf(ms){const ids=new Set(ms.map(m=>m.id)),r=new Map();ms.forEach(c=>{const ps=effP(c).filter(p=>ids.has(p)).sort();if(!ps.length)return;const id=ps.join("+");if(!r.has(id))r.set(id,{id,parents:ps,kids:[]});r.get(id).kids.push(c.id)});return r}
@@ -306,7 +408,7 @@ function ordBox(m){
   const ms=fam().members,mp=effP(m),sibs=ms.filter(c=>c.id!==m.id&&effP(c).some(i=>mp.includes(i))),B=$('oBox');
   if(!sibs.length){B.innerHTML='';return}
   const grp=[m,...sibs].sort(ordCmp(ms)),n=grp.length,pick=ordPick.length>0;
-  B.innerHTML=`<div class='lbl'>Birth order</div><div class='stat'>${pick?`Tap the next sibling · ${n-ordPick.length} left`:'Tap siblings one by one, eldest first, to set the order'}</div><div class='obw'>${grp.map((x,j)=>{const i=ordPick.indexOf(x.id),num=pick?(i>=0?i+1:''):j+1;return `<button class='ob${x===m?' me':''}${pick&&i<0?' cur':''}' data-i='${x.id}'>${num?`<b>${num}</b>`:''}${esc(x.name)}${!pick&&j===0?' · eldest':!pick&&j===n-1?' · youngest':''}</button>`}).join('')}</div><div class='row' style='margin-top:0'><button class='btn' id='oRst'>Reset</button></div>`;
+  B.innerHTML=`<div class='lbl'>Birth order</div><div class='stat'>${pick?`Tap the next sibling · ${n-ordPick.length} left`:'Tap siblings one by one, eldest first, to set the order'}</div><div class='obw'>${grp.map((x,j)=>{const i=ordPick.indexOf(x.id),num=pick?(i>=0?i+1:''):j+1;return `<button class='ob${x===m?' me':''}${pick&&i<0?' cur':''}' data-i='${esc(x.id)}'>${num?`<b>${num}</b>`:''}${esc(x.name)}${!pick&&j===0?' · eldest':!pick&&j===n-1?' · youngest':''}</button>`}).join('')}</div><div class='row' style='margin-top:0'><button class='btn' id='oRst'>Reset</button></div>`;
   B.querySelectorAll('.ob').forEach(b=>b.onclick=()=>{
     if(ordPick.includes(b.dataset.i))return;
     ordPick.push(b.dataset.i);
@@ -320,7 +422,7 @@ function openInfo(id){
   if(hlBase!==id){hlBase=id;hlCats=new Set()}
   const all=relsOf(m),cnt={};all.forEach(o=>cnt[o.cat]=(cnt[o.cat]||0)+1);
   const cats=CATS.filter(c=>cnt[c]),I=$('info');
-  I.innerHTML=`<div class='box'><div class='ph' style='margin:0'><h3>${esc(m.name)}</h3><button class='ib' id='iX'>×</button></div><div class='stat'>${all.length} relatives · tick a row to highlight them on the tree</div><div class='il'><label class='ir'><input type='checkbox' id='iAll'><i style='background:var(--fg)'></i><span>All relatives</span><b>${all.length}</b></label>${cats.map(c=>`<label class='ir'><input type='checkbox' data-c='${esc(c)}'${hlCats.has(c)?' checked':''}><i style='background:${RC[c]}'></i><span>${esc(c)}</span><b>${cnt[c]}</b></label>`).join('')}</div><div class='row'><button class='btn' id='iClr'>Clear</button><button class='btn pri' id='iOk'>Done</button></div></div>`;
+  I.innerHTML=`<div class='box'><div class='ph' style='margin:0'><h3>${esc(m.name)}</h3><button class='ib' id='iX' aria-label='Close'>×</button></div><div class='stat'>${all.length} relatives · tick a row to highlight them on the tree</div><div class='il'><label class='ir'><input type='checkbox' id='iAll'><i style='background:var(--fg)'></i><span>All relatives</span><b>${all.length}</b></label>${cats.map(c=>`<label class='ir'><input type='checkbox' data-c='${esc(c)}'${hlCats.has(c)?' checked':''}><i style='background:${RC[c]}'></i><span>${esc(c)}</span><b>${cnt[c]}</b></label>`).join('')}</div><div class='row'><button class='btn' id='iClr'>Clear</button><button class='btn pri' id='iOk'>Done</button></div></div>`;
   I.classList.add('open');
   const sync=()=>{hlCats=new Set([...I.querySelectorAll('input[data-c]:checked')].map(i=>i.dataset.c));$('iAll').checked=cats.length>0&&hlCats.size===cats.length;renderTree()};
   I.querySelectorAll('input[data-c]').forEach(i=>i.onchange=sync);
@@ -337,10 +439,10 @@ function renderTree(refit){
   const ms=f.members;
   $('empty').style.display=ms.length?'none':'grid';
   $('tree').style.display=ms.length?'block':'none';
-  $('addBtn').style.display=ms.length?'':'none';
+  $('mid').style.display=ms.length?'':'none';
   if(!ms.length)return;
   pos=layout(ms);
-  const mm=f.me&&get(f.me);meRels=mm?new Map(relsOf(mm).map(o=>[o.m.id,o.l])):null;
+  const mm=f.me&&get(f.me);meRels=mm?new Map(relsOf(mm).map(o=>[o.m.id,o.l])):null;meComp=mm?comp(mm.id):null;
   const hlMap=new Map();
   if(hlBase&&hlCats.size&&get(hlBase))relsOf(get(hlBase)).forEach(o=>{if(hlCats.has(o.cat))hlMap.set(o.m.id,RC[o.cat])});
   const fl=familiesOf(ms),keys=[...fl.keys()];
@@ -400,10 +502,10 @@ function renderTree(refit){
     const g=el('g',{class:'card'+(sel===m.id?' sel':'')+(f.me===m.id?' me':'')+dm(m.id)+(hc?' hl':'')+(qs&&m.name.toLowerCase().includes(qs)?' hit':''),transform:`translate(${p.x},${p.y})`,style:hc?`--c:${hc}`:''},L);
     el('rect',{width:W,height:H,rx:10},g);
     el('circle',{cx:30,cy:H/2,r:16,fill:isDead(m)?'#8c8c8c':GC(m.gender)},g);
-    el('text',{x:30,y:H/2+5,class:'avt'},g,(m.name.trim()[0]||'?').toUpperCase());
-    el('text',{x:56,y:28,class:'nm'},g,m.name.length>18?m.name.slice(0,17)+'…':m.name);
-    const yrs=(m.birth?m.birth.slice(0,4):'')+(m.death?' – '+m.death.slice(0,4):isDead(m)?' †':'');
-    el('text',{x:56,y:46,class:'dt'},g,yrs.trim()||'—');
+    el('text',{x:30,y:H/2+5,class:'avt'},g,(Array.from(m.name.trim())[0]||'?').toUpperCase());
+    el('text',{x:56,y:28,class:'nm'},g,Array.from(m.name).length>18?Array.from(m.name).slice(0,17).join('')+'…':m.name);
+    const yr=(m.birth?m.birth.slice(0,4):'')+(m.death?' – '+m.death.slice(0,4):isDead(m)?' †':'');
+    el('text',{x:56,y:46,class:'dt'},g,yr.trim()||'—');
     if(f.me===m.id)el('text',{x:W-9,y:14,class:'you'},g,'YOU');
     const ar=(x,y,t,d)=>{const a=el('g',{class:'arw',transform:`translate(${x},${y})`},g);el('circle',{r:11},a);el('text',{},a,t);a.addEventListener('click',ev=>{ev.stopPropagation();quickAdd(m,d)});a.addEventListener('pointerdown',ev=>ev.stopPropagation())};
     ar(W/2,H+11,'↓','down');
@@ -414,65 +516,7 @@ function renderTree(refit){
     g.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')hoverFams(cf,true)});
     g.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')return;lpFired=false;clearTimeout(lpT);const sx=e.clientX,sy=e.clientY;g._s={sx,sy};lpT=setTimeout(()=>{lpFired=true;openCtx(m,sx,sy)},520)});
     g.addEventListener('pointermove',e=>{if(e.pointerType==='mouse')showTip(m,e);else if(g._s&&Math.hypot(e.clientX-g._s.sx,e.clientY-g._s.sy)>10)clearTimeout(lpT)});
-    ['pointerup','pointercancel','pointerleave'].forEach(t=>g.addEventListener(t,()=>{clearTimeout(lpT);if(t==='pointerleave'){hideTip();hoverFams(cf,false)}}));
-  });
-  if(FS&&refit)fitView(FS);else if(refit)fitView();else applyT();
-}
-function renderTreeOld(refit){
-  const f=fam(),L=$("layer");L.innerHTML="";
-  const ms=f.members;
-  $("empty").style.display=ms.length?"none":"grid";
-  $("tree").style.display=ms.length?"block":"none";
-  if(!ms.length)return;
-  pos=layout(ms);
-  const mm=f.me&&get(f.me);meRels=mm?new Map(relsOf(mm).map(o=>[o.m.id,o.l])):null;
-  const fl=familiesOf(ms),FS=focus&&fl.get(focus)?new Set([...fl.get(focus).parents,...fl.get(focus).kids]):null;
-  if(focus&&!FS)focus=null;
-  const dm=id=>FS&&!FS.has(id)?" dim":"";
-  const arr=[...fl.values()].filter(x=>x.parents.every(p=>pos.has(p))&&x.kids.every(c=>pos.has(c))).map(x=>({x,cx:x.kids.reduce((s,c)=>s+pos.get(c).x,0)/x.kids.length}));
-  arr.sort((a,b)=>a.cx-b.cx);
-  const used=new Map();let ci=0;
-  arr.forEach(({x})=>{let l=0;while(x.parents.some(p=>used.get(p)&&used.get(p).has(l)))l++;x.lane=l;x.parents.forEach(p=>{if(!used.has(p))used.set(p,new Set());used.get(p).add(l)});x.col=x.parents.some(p=>get(p).spouses.length>1)?FC[ci++%FC.length]:null});
-  arr.map(o=>o.x).sort((a,b)=>pos.get(a.parents[0]).y-pos.get(b.parents[0]).y).forEach(g=>{
-    const ids=[...g.parents,...g.kids],xs=ids.map(i=>pos.get(i).x),ys=ids.map(i=>pos.get(i).y),x0=Math.min(...xs)-16,y0=Math.min(...ys)-16;
-    el("rect",{x:x0,y:y0,width:Math.max(...xs)+W+16-x0,height:Math.max(...ys)+H+16-y0,rx:18,class:"hull"+(focus===g.id?" on":"")+(FS&&focus!==g.id?" dim":""),"data-f":g.id},L);
-  });
-  ms.forEach(c=>{
-    const cp=pos.get(c.id),ps=effP(c).map(get).filter(Boolean);
-    if(!cp||!ps.length)return;
-    const fq=fl.get(ps.map(p=>p.id).sort().join("+"))||{lane:0},ty0=cp.y,tx0=cp.x+W/2,my=ty0-60+Math.min(fq.lane||0,5)*9;
-    const ec="ed"+(FS&&!(FS.has(c.id)&&ps.some(p=>FS.has(p.id)))?" dim":""),st=fq.col?`stroke:${fq.col};stroke-width:1.9`:"";
-    if(ps.length===2&&ps[0].spouses.includes(ps[1].id)){const h=heart(pos.get(ps[0].id),pos.get(ps[1].id));el("path",{d:`M${h.x} ${h.y+14}V${my}H${tx0}V${ty0}`,class:ec,style:st},L)}
-    else ps.forEach(p=>{const pp=pos.get(p.id);el("path",{d:`M${pp.x+W/2} ${pp.y+H}V${my}H${tx0}V${ty0}`,class:ec,style:st},L)});
-  });
-  ms.forEach(m=>m.spouses.forEach(s=>{
-    if(m.id>s||!pos.has(s))return;
-    const a=pos.get(m.id),b=pos.get(s),h=heart(a,b),c0=a.x+W/2,c1=b.x+W/2;
-    const g=el("g",{class:FS&&!(FS.has(m.id)&&FS.has(s))?"dim":""},L);
-    if(h.adj){const l=a.x<b.x?a:b,r=a.x<b.x?b:a;el("path",{d:`M${l.x+W} ${l.y+H/2}H${r.x}`,class:"sp"},g)}
-    else el("path",{d:`M${c0} ${a.y+H}C${c0} ${h.y+7} ${c1} ${h.y+7} ${c1} ${b.y+H}`,class:"ed"},g);
-    el("circle",{cx:h.x,cy:h.y,r:13,class:"hb"},g);
-    el("text",{x:h.x,y:h.y+1,class:"ht"},g,"♥");
-  }));
-  ms.forEach(m=>{
-    const p=pos.get(m.id);
-    const g=el("g",{class:"card"+(sel===m.id?" sel":"")+(f.me===m.id?" me":"")+dm(m.id)+(qs&&m.name.toLowerCase().includes(qs)?" hit":""),transform:`translate(${p.x},${p.y})`},L);
-    el("rect",{width:W,height:H,rx:10},g);
-    el("circle",{cx:30,cy:H/2,r:16,fill:isDead(m)?"#8c8c8c":GC(m.gender)},g);
-    el("text",{x:30,y:H/2+5,class:"avt"},g,(m.name.trim()[0]||"?").toUpperCase());
-    el("text",{x:56,y:28,class:"nm"},g,m.name.length>18?m.name.slice(0,17)+"…":m.name);
-    const yrs=(m.birth?m.birth.slice(0,4):"")+(m.death?" – "+m.death.slice(0,4):isDead(m)?" †":"");
-    el("text",{x:56,y:46,class:"dt"},g,yrs.trim()||"—");
-    if(f.me===m.id)el("text",{x:W-9,y:14,class:"you"},g,"YOU");
-    const ar=(x,y,t,d)=>{const a=el("g",{class:"arw",transform:`translate(${x},${y})`},g);el("circle",{r:11},a);el("text",{},a,t);a.addEventListener("click",ev=>{ev.stopPropagation();quickAdd(m,d)});a.addEventListener("pointerdown",ev=>ev.stopPropagation())};
-    ar(W/2,H+11,"↓","down");
-    if(m.gender!=="Female")ar(W+11,H/2,"→","right");
-    if(m.gender!=="Male")ar(-11,H/2,"←","left");
-    g.addEventListener("click",e=>{e.stopPropagation();if(lpFired){lpFired=false;return}openMember(m.id)});
-    g.addEventListener("contextmenu",e=>{e.preventDefault();e.stopPropagation();openCtx(m,e.clientX,e.clientY)});
-    g.addEventListener("pointerdown",e=>{if(e.pointerType==="mouse")return;lpFired=false;clearTimeout(lpT);const sx=e.clientX,sy=e.clientY;g._s={sx,sy};lpT=setTimeout(()=>{lpFired=true;openCtx(m,sx,sy)},520)});
-    g.addEventListener("pointermove",e=>{if(e.pointerType==="mouse")showTip(m,e);else if(g._s&&Math.hypot(e.clientX-g._s.sx,e.clientY-g._s.sy)>10)clearTimeout(lpT)});
-    ["pointerup","pointercancel","pointerleave"].forEach(t=>g.addEventListener(t,()=>{clearTimeout(lpT);if(t==="pointerleave")hideTip()}));
+    ['pointerup','pointercancel','pointerleave'].forEach(t=>g.addEventListener(t,()=>{clearTimeout(lpT);if(lpFired&&t!=='pointerleave')setTimeout(()=>{lpFired=false},400);if(t==='pointerleave'){hideTip();hoverFams(cf,false)}}));
   });
   if(FS&&refit)fitView(FS);else if(refit)fitView();else applyT();
 }
@@ -515,6 +559,7 @@ function hideCtx(){$("ctx").style.display="none"}
 function openCtx(m,x,y){
   const c=$("ctx"),f=fam(),l=relLabel(m.id);hideTip();
   $("cRel").innerHTML=`<b>${esc(m.name)}</b>${l?esc(l):"Set “This is me” to see relations"}`;
+  $("cPlay").onclick=()=>{hideCtx();openPres(storyTo(m),m.name+" · lineage")};
   $("cEdit").onclick=()=>{hideCtx();openMember(m.id)};
   $("cInfo").onclick=()=>{hideCtx();openInfo(m.id)};
   $("cDel").onclick=()=>{hideCtx();delMember(m.id)};
@@ -527,26 +572,20 @@ function openCtx(m,x,y){
 document.addEventListener("pointerdown",e=>{if(!e.target.closest("#ctx"))hideCtx()},true);
 
 /* ---------- member panel ---------- */
-function ordHtml(m){
-  const ms=fam().members,mp=effP(m),sibs=ms.filter(c=>c.id!==m.id&&effP(c).some(i=>mp.includes(i)));
-  if(!sibs.length)return"";
-  const all=[m,...sibs].sort(ordCmp(ms)),i=all.indexOf(m);
-  return `<div class="lbl">Birth order · ${od(i+1)} of ${all.length}</div><div class="ord">${all.map((x,j)=>`<div class="or${x===m?" me":""}"><span>${j+1}. ${esc(x.name)}</span><small>${j===0?"Eldest":j===all.length-1?"Youngest":od(j+1)}</small></div>`).join("")}</div>`;
-}
 function relList(m){
   const all=relsOf(m),cnt={};all.forEach(o=>cnt[o.cat]=(cnt[o.cat]||0)+1);
   if(rf!=="All"&&!cnt[rf])rf="All";
   $("rTabs").innerHTML=["All",...CATS.filter(c=>cnt[c])].map(c=>`<button class="rc${rf===c?" on":""}" style="--c:${RC[c]}" data-t="${esc(c)}">${esc(c)} ${c==="All"?all.length:cnt[c]}</button>`).join("");
   $("rTabs").querySelectorAll("button").forEach(b=>b.onclick=()=>{rf=b.dataset.t;relList(m)});
   const l=all.filter(o=>rf==="All"||o.cat===rf);
-  $("rList").innerHTML=l.length?l.map(o=>`<button class="ri rc" style="--c:${RC[o.cat]}" data-i="${o.m.id}"><span>${esc(o.m.name)}</span><small>${esc(o.l)}</small></button>`).join(""):'<div class="stat">No relations yet</div>';
+  $("rList").innerHTML=l.length?l.map(o=>`<button class="ri rc" style="--c:${RC[o.cat]}" data-i="${esc(o.m.id)}"><span>${esc(o.m.name)}</span><small>${esc(o.l)}</small></button>`).join(""):'<div class="stat">No relations yet</div>';
   $("rList").querySelectorAll("button").forEach(b=>b.onclick=()=>openMember(b.dataset.i));
 }
 function openMember(id){
   sel=id;const m=get(id);if(!m)return;hideCtx();
   const P=$("panel"),dead=isDead(m);
   P.innerHTML=`
-  <div class="ph"><h2>${esc(m.name)}</h2><button class="ib" id="pX">×</button></div>
+  <div class="ph"><h2>${esc(m.name)}</h2><button class="ib" id="pX2" aria-label="Close">×</button></div>
   <div class="fg">
     <label>Name<input id="mName" value="${esc(m.name)}" maxlength="100"></label>
     <div class="rgw"><span class="rgl">Gender</span>${radios("mGen",["Male","Female","Other"],m.gender)}</div>
@@ -565,12 +604,15 @@ function openMember(id){
     <label id="rPN" style="display:none">Other parent (optional)<input id="rPNi" placeholder="Name" autocomplete="off"></label></div>
     <div class="row"><button class="btn pri" id="rAdd">Add</button></div></div>
   <div class="add"><h3>Link to existing member</h3><div class="fg"><label>This person is<select id="lRel"><option>Child of</option><option>Parent of</option><option>Spouse of</option><option>Sibling of</option></select></label><label>Member<select id="lWho"></select></label></div><div class="row"><button class="btn pri" id="lGo">Link</button></div></div>
-  <div style="margin-top:18px"><button class="dng" id="mDel">Delete member</button></div>`;
+  <div style="margin-top:18px"><button class="dng" id="mDel">Delete member</button></div>
+  <div class="bp"><button class="btn pri" id="mPlay">▶ Play story to ${esc(m.name)}</button></div>`;
   P.classList.add("open");$("shade").classList.add("on");renderTree();
-  $("pX").onclick=closePanel;
+  $("pX2").onclick=closePanel;
+  $("mPlay").onclick=()=>openPres(storyTo(m),m.name+" · lineage");
   $("mDead").onchange=()=>{$("dWrap").style.display=$("mDead").checked?"flex":"none"};
   $("mSave").onclick=()=>{
-    const n=$("mName").value.trim(),b=$("mBirth").value,d=$("mDeath").value,dd=$("mDead").checked;
+    const n=$("mName").value.trim(),dd=$("mDead").checked;
+    const b=$("mBirth").value||(m.birth.length!==10?m.birth:""),d=$("mDeath").value||(m.death.length!==10?m.death:"");
     if(!n)return toast("Name is required");
     if(dd&&b&&d&&d<b)return toast("Death precedes birth");
     Object.assign(m,{name:n,gender:getR("mGen")||m.gender,birth:b,death:dd?d:"",dead:dd});
@@ -580,14 +622,19 @@ function openMember(id){
     if(r==="Spouse")setR("rGen",m.gender==="Male"?"Female":m.gender==="Female"?"Male":getR("rGen"));
     $("rPW").style.display=r==="Child"&&m.spouses.length>1?"flex":"none";
     $("rPN").style.display=r==="Child"&&!m.spouses.length?"flex":"none"};
-  $("rPar").innerHTML=m.spouses.map(get).filter(Boolean).map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join("");
+  $("rPar").innerHTML=m.spouses.map(get).filter(Boolean).map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join("");
   document.querySelectorAll('input[name="rel"]').forEach(r=>r.onchange=sync);sync();
   const readAdd=()=>[document.querySelector('input[name="rel"]:checked').value,$("rName").value,getR("rGen"),m.spouses.length===1?m.spouses[0]:$("rPar").value,$("rPNi").value];
   $("rAdd").onclick=()=>{const a=readAdd();if(!a[1].trim())return toast("Enter a name");addRelative(m,...a)};
-  $("lWho").innerHTML=fam().members.filter(x=>x.id!==m.id).sort((a,b)=>a.name.localeCompare(b.name)).map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join("");
+  $("lWho").innerHTML=fam().members.filter(x=>x.id!==m.id).sort((a,b)=>a.name.localeCompare(b.name)).map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("");
   $("lGo").onclick=()=>linkRel(m,$("lRel").value,$("lWho").value);
   $("mDel").onclick=()=>delMember(id);
-  P.onkeydown=e=>{if(e.key!=="Enter"||e.target.tagName!=="INPUT"||["checkbox","radio"].includes(e.target.type))return;e.preventDefault();const a=readAdd();$("mSave").click();if(a[1].trim())addRelative(m,...a)};
+  P.onkeydown=e=>{
+    if(e.key!=="Enter"||e.target.tagName!=="INPUT"||["checkbox","radio"].includes(e.target.type))return;
+    e.preventDefault();
+    if(e.target.closest(".add")){const a=readAdd();if(a[1].trim())addRelative(m,...a);else toast("Enter a name")}
+    else $("mSave").click();
+  };
   ordPick=[];relList(m);ordBox(m);
 }
 async function delMember(id){
@@ -635,18 +682,208 @@ async function addMember(){
   if(!r||!r.n)return;
   if(!ms.length){parseNames(r.n,r.g).forEach(x=>ms.push(mk(x.name,x.gender)));save();renderAll(true);return toast("Member added")}
   const y=get(r.w);if(!y)return;
-  addRelative(y,{"Child of":"Child","Parent of":"Parent","Spouse of":"Spouse","Sibling of":"Sibling"}[r.r],r.n,r.g,y.spouses[0]||"");
+  let oth=y.spouses.length===1?y.spouses[0]:"";
+  if(r.r==="Child of"&&y.spouses.length>1){
+    const q=await dialog({title:"Other parent",text:y.name+" has more than one spouse.",fields:[{id:"o",label:"Which spouse?",options:y.spouses.map(get).filter(Boolean).map(s=>[s.id,s.name])}],ok:"Add"});
+    if(!q)return;oth=q.o;
+  }
+  addRelative(y,{"Child of":"Child","Parent of":"Parent","Spouse of":"Spouse","Sibling of":"Sibling"}[r.r],r.n,r.g,oth);
 }
-function linkRel(m,rel,id){
+async function linkRel(m,rel,id){
   const o=get(id);if(!o)return toast("Pick a member");
-  const anc=(x,t)=>effP(x).some(p=>p===t||anc(get(p),t));
+  const anc=(x,t,v=new Set())=>{if(!x||v.has(x.id))return false;v.add(x.id);return effP(x).some(p=>p===t||anc(get(p),t,v))};
   const join=(c,p)=>{if(c.parents.includes(p.id))return true;if(c.parents.length>=2){toast("Already has two parents");return false}const p0=get(c.parents[0]);c.parents.push(p.id);if(p0&&!p0.spouses.includes(p.id)){p0.spouses.push(p.id);p.spouses.push(p0.id)}return true};
   if(rel==="Child of"){if(anc(o,m.id))return toast("That would create a loop");if(!join(m,o))return}
   else if(rel==="Parent of"){if(anc(m,o.id))return toast("That would create a loop");if(!join(o,m))return}
   else if(rel==="Spouse of"){if(!m.spouses.includes(o.id)){m.spouses.push(o.id);o.spouses.push(m.id)}}
-  else{const p=effP(o);if(!p.length)return toast("Add parents to "+o.name+" first");if(p.some(x=>x===m.id||anc(get(x),m.id)))return toast("That would create a loop");m.parents=p.slice(0,2)}
+  else{
+    const p=effP(o);if(!p.length)return toast("Add parents to "+o.name+" first");
+    if(p.some(x=>x===m.id||anc(get(x),m.id)))return toast("That would create a loop");
+    const same=m.parents.length===p.length&&m.parents.every(x=>p.includes(x));
+    if(m.parents.length&&!same&&!await dialog({title:"Replace parents?",text:`${m.name} already has parents. They will be replaced with ${o.name}’s parents.`,ok:"Replace"}))return;
+    m.parents=p.slice(0,2);
+  }
   save();renderAll(true);openMember(m.id);note("Linked",m.name+" is now "+rel.toLowerCase()+" "+o.name+".");
 }
+
+/* ---------- presentation ---------- */
+const gend=(m,a,b,c)=>m.gender==="Male"?a:m.gender==="Female"?b:c;
+const PR={Male:["he","his","him"],Female:["she","her","her"]},pr=(m,i)=>(PR[m.gender]||["they","their","them"])[i];
+const lst=a=>a.length<2?a.join(""):a.slice(0,-1).join(", ")+" and "+a[a.length-1];
+const yrs=m=>(m.birth?m.birth.slice(0,4):"")+(m.death?" – "+m.death.slice(0,4):isDead(m)?" †":"");
+const plural=(n,w)=>n+" "+w+(n===1?"":"s");
+const kc=n=>n===1?"1 child":n+" children";
+const OW=["first","second","third","fourth","fifth","sixth","seventh","eighth","ninth","tenth"],ordw=n=>OW[n-1]||n+"th";
+const ordn=n=>{const s=["th","st","nd","rd"],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0])};
+const nms=ps=>ps.map(p=>p.name).join(" & ");
+const AC={t:"#9a7bd9",m:"#e0708a",k:"#d9a441",e:"#4fb69a"};
+const CL=["Each child carried a little of their parents’ hearts into the future.","Laughter, first steps, whispered lullabies — the family grew.","And so the family tree grew another branch."];
+const kidsOf=(ms,u)=>ms.filter(c=>!u.includes(c)&&effP(c).some(p=>u.some(x=>x.id===p)));
+const pairKids=(ms,a,b)=>ms.filter(c=>{const p=effP(c);return p.includes(a.id)&&p.includes(b.id)});
+const parNote=x=>{const ps=effP(x).map(get).filter(Boolean);return ps.length?gend(x,"Son","Daughter","Child")+" of "+nms(ps):""};
+/* birth order: explicit rank, else birth dates (if all given), else the order they were added */
+function sorder(ms,l){
+  const ix=new Map(ms.map((m,i)=>[m,i])),all=f=>l.length&&l.every(f);
+  const key=all(m=>m.rank)?m=>m.rank:all(m=>m.birth)?m=>m.birth:m=>ix.get(m);
+  return[...l].sort((a,b)=>{const x=key(a),y=key(b);return x<y?-1:x>y?1:ix.get(a)-ix.get(b)});
+}
+function unitOf(m){
+  const out=[m],seen=new Set([m.id]);
+  for(let i=0;i<out.length;i++)out[i].spouses.forEach(s=>{const x=get(s);if(x&&!seen.has(x.id)){seen.add(x.id);out.push(x)}});
+  const hub=out.reduce((a,b)=>b.spouses.length>a.spouses.length?b:a);
+  return[hub,...out.filter(x=>x!==hub)];
+}
+function mkGen(){const gm=new Map();const g=m=>{if(gm.has(m.id))return gm.get(m.id);gm.set(m.id,1);const v=1+Math.max(0,...effP(m).map(get).filter(Boolean).map(g));gm.set(m.id,v);return v};return g}
+
+/* slide: a marriage */
+function mSlide(a,b,o){
+  const anchor=b.spouses.length>a.spouses.length?b:a,tot=anchor.spouses.length,n=anchor.spouses.indexOf((anchor===a?b:a).id)+1;
+  const L=[["Two lives, once separate, began to walk the same road.","Some stories begin with a single promise.",`Love found ${a.name} and ${b.name}, and a new chapter began.`,"A glance, a promise — and two families became one."][o.idx%4]];
+  L.push(tot>1?(n===1?`This was ${anchor.name}’s first marriage — the first of ${tot} unions in ${pr(anchor,1)} story.`:`This was ${anchor.name}’s ${ordw(n)} marriage — another heart welcomed into ${pr(anchor,1)} life.`):"Hand in hand, they promised to build a home filled with warmth.");
+  L.push(o.kn>1?`Soon, ${o.kn} little ones would fill their home with laughter.`:o.kn===1?"Soon, a little one would make their house a home.":"Their love, quiet and true, became part of this family’s story.");
+  const card=x=>({m:x,role:gend(x,"Groom","Bride","Partner"),note:parNote(x)||(o.root?"Root ancestor":"Joined the family")});
+  return{t:"m",ac:AC.m,g:o.g,G:o.G,kicker:`Chapter ${o.ch} · Generation ${o.g}`,chip:tot>1?`${anchor.name} · marriage ${n} of ${tot}`:"A marriage",title:`${a.name} & ${b.name}`,a:[card(a),card(b)],lines:L};
+}
+/* slide: children born, in birth order */
+function kSlide(ks,ps,o){
+  const n=ks.length,nm=nms(ps),th=ps.length>1?"their":pr(ps[0],1),cl=CL[o.idx%3],g=Math.max(...ks.map(o.gen)),L=[];
+  if(o.only)L.push(`${nm} had ${lst(ks.map(c=>c.name))}, ${n>1?"through whom":"the child through whom"} the story would flow on.`,cl);
+  else if(n===1)L.push(`${nm} welcomed a little blessing into ${th} home: ${ks[0].name}.`,"A tiny heartbeat turned a house into a home.");
+  else if(n===2)L.push(`In the home of ${nm}, two little blessings arrived.`,`First came ${ks[0].name}, and then ${ks[1].name}.`,cl);
+  else L.push(`In the home of ${nm}, ${n} little blessings arrived, one after another.`,`First came ${ks[0].name}, and last of all ${ks[n-1].name}, the youngest, completing the circle.`,cl);
+  return{t:"k",ac:AC.k,g,G:o.G,kicker:`Chapter ${o.ch} · Generation ${g}`,chip:`${kc(n)} · ${n>1&&!o.only?"in order of birth":"a precious beginning"}`,title:`Children of ${nm}`,pr:ps,lines:L,
+    kids:ks.map((c,i)=>({m:c,role:gend(c,"Son","Daughter","Child"),ord:o.only?"Carries the line":n===1?"Only child":i===0?"First-born":i===n-1?"Youngest":ordn(i+1)+" born",tgt:o.hl?o.hl(c):false}))};
+}
+
+/* the whole family: root ancestor outward — marriage, then the children born of it */
+function storyAll(){
+  const f=fam(),ms=f.members;if(!ms.length)return[];
+  const gen=mkGen(),G=Math.max(...ms.map(gen)),covered=new Set(),shown=new Set(),sl=[];let ch=0,idx=0,first=null;
+  const dc=(x,v=new Set())=>{if(!v.has(x.id)){v.add(x.id);kidsOf(ms,[x]).forEach(c=>dc(c,v))}return v};
+  const score=m=>unitOf(m).reduce((s,x)=>s+dc(x).size,0);
+  const run=head=>{
+    const q=[head];
+    while(q.length){
+      const u=unitOf(q.shift());if(u.some(x=>covered.has(x.id)))continue;
+      u.forEach(x=>{covered.add(x.id);shown.add(x.id)});ch++;
+      const root=u.every(x=>!effP(x).length),g=Math.max(...u.map(gen)),used=new Set(),order=[],pairs=[],sp=new Set();
+      u.forEach(x=>x.spouses.map(get).filter(s=>s&&u.includes(s)).forEach(s=>{const key=[x.id,s.id].sort().join("+");if(!sp.has(key)){sp.add(key);pairs.push([x,s])}}));
+      pairs.forEach(([a,b])=>{
+        const ks=sorder(ms,pairKids(ms,a,b));
+        sl.push(mSlide(a,b,{idx:idx++,ch,g,G,kn:ks.length,root}));
+        if(ks.length){sl.push(kSlide(ks,[a,b],{idx:idx++,ch,G,gen}));ks.forEach(c=>{used.add(c.id);order.push(c)})}
+      });
+      const rest=kidsOf(ms,u).filter(c=>!used.has(c.id));
+      u.forEach(p=>{
+        const ks=sorder(ms,rest.filter(c=>!used.has(c.id)&&effP(c).includes(p.id)));
+        if(ks.length){sl.push(kSlide(ks,[p],{idx:idx++,ch,G,gen}));ks.forEach(c=>{used.add(c.id);order.push(c)})}
+      });
+      if(!pairs.length&&!order.length)sl.push({t:"m",ac:AC.t,g,G,kicker:`Chapter ${ch} · Generation ${g}`,chip:"A quiet branch",title:u[0].name,a:[{m:u[0],role:"",note:parNote(u[0])}],lines:[`${u[0].name} stands quietly in this family’s story.`]});
+      order.forEach(c=>{shown.add(c.id);if(!covered.has(c.id)&&(unitOf(c).length>1||kidsOf(ms,[c]).length))q.push(c)});
+    }
+  };
+  ms.filter(m=>!effP(m).length).sort((a,b)=>score(b)-score(a)).forEach(r=>{if(covered.has(r.id))return;if(!first)first=unitOf(r);run(r)});
+  ms.forEach(m=>{if(!covered.has(m.id)&&!shown.has(m.id))run(m)});
+  const roots=first?first.map(x=>x.name):[],young=sorder(ms,ms.filter(m=>gen(m)===G));
+  return[{t:"t",big:1,ac:AC.t,kicker:"A family story",title:f.name,lines:["Every family is a story, told one generation at a time.",`${plural(ms.length,"life")}, woven together across ${plural(G,"generation")}.`,roots.length?`It all begins with ${lst(roots)}.`:""].filter(Boolean)},
+    ...sl,
+    {t:"e",big:1,ac:AC.e,kicker:"The story goes on",title:"With love, onward",kids:young.slice(0,8).map(x=>({m:x,role:"",note:parNote(x)})),
+      lines:[`From ${roots.length?lst(roots):"the very first ancestor"} to ${young.length>3?young.slice(0,3).map(x=>x.name).join(", ")+" and more":lst(young.map(x=>x.name))}, the story has travelled ${plural(G,"generation")}.`,`${plural(ms.length,"life")} bound by love — and every new birth adds another page.`]}];
+}
+
+/* direct line only: root ancestor → … → member (no cousins or other branches) */
+function storyTo(m){
+  const ms=fam().members,gen=mkGen(),A=new Map();
+  const walk=(x,d)=>effP(x).map(get).filter(Boolean).forEach(p=>{if((A.get(p.id)||0)<d+1){A.set(p.id,d+1);walk(p,d+1)}});
+  walk(m,0);
+  const anc=[...A.keys()].map(get),depth=Math.max(0,...A.values()),G=Math.max(...ms.map(gen)),cps=new Map();
+  [m,...anc].forEach(x=>{
+    const ps=effP(x).map(get).filter(Boolean);if(!ps.length)return;
+    const key=ps.map(p=>p.id).sort().join("+");
+    if(!cps.has(key))cps.set(key,{ps,kids:[],d:0});
+    const c=cps.get(key);c.kids.push(x);c.d=Math.max(c.d,...ps.map(p=>A.get(p.id)||0));
+  });
+  const roots=anc.filter(a=>!effP(a).length);
+  const sl=[{t:"t",big:1,ac:AC.t,kicker:"A lineage story",title:m.name,lines:["Every life begins long before its first breath.",roots.length?`This is the road from ${lst(roots.map(r=>r.name))} to ${m.name} — ${plural(depth,"generation")} of love.`:`${m.name} stands at the very beginning of this family.`,"Only the direct line is told here; cousins and other branches rest quietly in the background."]}];
+  let ch=0,idx=0;
+  [...cps.values()].sort((a,b)=>b.d-a.d).forEach(c=>{
+    ch++;const own=c.kids.includes(m),ks=sorder(ms,own?(c.ps.length===2?pairKids(ms,c.ps[0],c.ps[1]):kidsOf(ms,c.ps)):c.kids),g=Math.max(...c.ps.map(gen)),root=c.ps.every(p=>!effP(p).length);
+    if(c.ps.length===2&&c.ps[0].spouses.includes(c.ps[1].id))sl.push(mSlide(c.ps[0],c.ps[1],{idx:idx++,ch,g,G,kn:pairKids(ms,c.ps[0],c.ps[1]).length,root}));
+    sl.push(kSlide(ks,c.ps,{idx:idx++,ch,G,gen,only:!own,hl:own?x=>x===m:()=>true}));
+  });
+  const chain=[m];let c=m;
+  for(;;){const ps=effP(c).map(get).filter(Boolean).sort((a,b)=>(a.gender==="Male"?0:1)-(b.gender==="Male"?0:1));if(!ps.length||chain.includes(ps[0]))break;c=ps[0];chain.unshift(c)}
+  sl.push({t:"e",ac:AC.e,g:gen(m),G,kicker:`Generation ${gen(m)}`,title:`${m.name} arrives`,chip:A.size?`${plural(A.size,"ancestor")} · ${plural(depth,"generation")}`:"The beginning",a:[{m,tgt:1,role:"",note:parNote(m)}],chain:chain.length>1?chain.map(x=>x.name):null,
+    lines:[`And so ${m.name} came into the world${m.birth?" in "+m.birth.slice(0,4):""}.`,A.size?`Behind ${pr(m,2)} stand ${plural(A.size,"ancestor")}, each one a link in a chain of love.`:`${m.name} stands at the root of this family.`,"Every step you just saw led here."]});
+  return sl;
+}
+
+function slideHTML(s){
+  const ini=m=>esc((Array.from(m.name.trim())[0]||"?").toUpperCase()),col=m=>isDead(m)?"#8c8c8c":GC(m.gender);
+  const card=(c,cls,d)=>`<div class="pc ${cls}${c.tgt?" tgt":""}" style="--d:${d}s"><div class="av" style="--g:${col(c.m)}">${ini(c.m)}</div><b>${esc(c.m.name)}</b>${yrs(c.m)?`<small>${esc(yrs(c.m))}</small>`:""}${c.role?`<em>${esc(c.role)}</em>`:""}${c.note?`<span class="nt">${esc(c.note)}</span>`:""}${c.ord?`<u class="od">${esc(c.ord)}</u>`:""}</div>`;
+  let body="",t0=.6;
+  if(s.a){
+    body=s.a.length===2?`<div class="mrow">${card(s.a[0],"m fl",.3)}<div class="knot" style="--d:.9s"><i></i><i class="r2"></i><span>♥</span></div>${card(s.a[1],"m fr",.3)}</div>`:`<div class="mrow">${card(s.a[0],"m",.3)}</div>`;
+    t0=s.a.length===2?1.9:1;
+  }
+  if(s.kids){
+    const n=s.kids.length,st=Math.min(.6,4/n),sz=n>9?"xs":n>5?"sm":"";
+    if(s.pr)body+=`<div class="pchip" style="--d:.2s">${s.pr.map(p=>`<span class="mi" style="--g:${col(p)}">${ini(p)}</span>${esc(p.name)}`).join('<span class="hh">♥</span>')}</div><div class="thread"></div>`;
+    body+=`<div class="prow">${s.kids.map((c,i)=>card(c,sz,(1+i*st).toFixed(2))).join("")}</div>`;
+    t0=1+n*st+.5;
+  }
+  let chain="";
+  if(s.chain){chain=`<div class="chain">${s.chain.map((x,i)=>`<span style="--d:${(t0+i*.25).toFixed(2)}s">${esc(x)}</span>`).join("<u>→</u>")}</div>`;t0+=s.chain.length*.25+.3}
+  const lines=`<div class="lines">${s.lines.map((t,i)=>`<p class="ln" style="--d:${(t0+i*1.3).toFixed(2)}s">${esc(t)}</p>`).join("")}</div>`;
+  return{html:`<div class="sl${s.big?" big":""}"><div class="si"><div class="sk">${esc(s.kicker)}</div><h2>${esc(s.title)}</h2>${s.chip?`<div class="chip">${esc(s.chip)}</div>`:""}${body}${chain}${lines}</div></div>`,dur:Math.min(26000,Math.max(8000,(t0+s.lines.length*1.3+3)*1000))};
+}
+function rail(s){
+  const el=$("pRail");if(!s.g){el.innerHTML="";return}
+  let h="";if(s.G<=10)for(let i=1;i<=s.G;i++)h+=(i>1?`<s class="${i<=s.g?"on":""}"></s>`:"")+`<span class="rd${i<=s.g?" on":""}${i===s.g?" cur":""}">${i}</span>`;
+  el.innerHTML=h+`<span class="rl2">Generation ${s.g} of ${s.G}</span>`;
+}
+function fx(s){
+  const gl={m:["♥","✦","❀"],k:["✦","✿","·"],t:["✦","❀","♥"],e:["✦","♥","✿"]}[s.t]||["✦"];let h="";
+  for(let i=0;i<16;i++){const t=14+Math.random()*12;h+=`<i style="--x:${(Math.random()*100).toFixed(1)}%;--s:${(10+Math.random()*18).toFixed(0)}px;--t:${t.toFixed(1)}s;--dl:${(-Math.random()*t).toFixed(1)}s;--r:${(Math.random()*360-180).toFixed(0)}deg">${gl[i%gl.length]}</i>`}
+  $("pFx").innerHTML=h;
+}
+/* keep every slide inside the viewport: scale the slide down to fit, never scroll */
+function fit(){
+  const b=$("pBody"),s=b.firstElementChild;if(!s)return;
+  s.style.setProperty("--sc",1);
+  const sc=Math.min(1,(b.clientHeight-12)/s.offsetHeight,(b.clientWidth-12)/Math.max(s.offsetWidth,s.scrollWidth));
+  s.style.setProperty("--sc",Math.max(.4,sc).toFixed(3));
+}
+let pS=[],pI=0,pT=0,pOn=true,pDur=8000;
+function openPres(slides,title){
+  if(!slides||!slides.length)return toast("Nothing to play yet");
+  pS=slides;pI=0;pOn=true;$("pTitle").textContent=title;$("pres").classList.add("open");hideCtx();showSlide();
+}
+function closePres(){clearTimeout(pT);$("pres").classList.remove("open")}
+function arm(){
+  clearTimeout(pT);$("pPlay").textContent=pOn?"⏸":"▶";
+  if(!pOn)return;
+  if(pI>=pS.length-1){pOn=false;$("pPlay").textContent="▶";return}
+  pT=setTimeout(()=>go(1),pDur);
+}
+function showSlide(){
+  const s=pS[pI],r=slideHTML(s);pDur=r.dur;
+  $("pBody").innerHTML=r.html;$("pres").style.setProperty("--ac",s.ac);
+  rail(s);fx(s);fit();
+  $("pCnt").textContent=`${pI+1} / ${pS.length}`;
+  $("pBar").firstChild.style.width=((pI+1)/pS.length*100)+"%";
+  $("pPrev").disabled=pI===0;$("pNext").disabled=pI===pS.length-1;arm();
+}
+function go(d){const n=pI+d;if(n<0||n>=pS.length)return;pI=n;showSlide()}
+$("pX").onclick=closePres;
+$("pPrev").onclick=()=>go(-1);$("pNext").onclick=()=>go(1);
+$("pPlay").onclick=()=>{if(pOn)pOn=false;else{pOn=true;if(pI>=pS.length-1){pI=0;showSlide();return}}arm()};
+let sx0=null;
+$("pBody").addEventListener("touchstart",e=>{sx0=e.touches[0].clientX},{passive:true});
+$("pBody").addEventListener("touchend",e=>{if(sx0===null)return;const dx=e.changedTouches[0].clientX-sx0;sx0=null;if(Math.abs(dx)>50)go(dx<0?1:-1)});
+$("playBtn").onclick=()=>openPres(storyAll(),fam().name);
+addEventListener("resize",()=>{if($("pres").classList.contains("open"))fit()});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if($("pres").classList.contains("open"))fit()});
 
 /* ---------- families & chrome ---------- */
 function renderAll(refit){
@@ -654,7 +891,7 @@ function renderAll(refit){
   $("famList").innerHTML="";
   fams.forEach(x=>{
     const r=document.createElement("div");r.className="frow";
-    r.innerHTML=`<button class="fam${x.id===aid?" on":""}"></button><span class="fa"><button data-a="r" title="Rename">✎</button><button data-a="d" title="Delete">✕</button></span>`;
+    r.innerHTML=`<button class="fam${x.id===aid?" on":""}"></button><span class="fa"><button data-a="r" title="Rename" aria-label="Rename">✎</button><button data-a="d" title="Delete" aria-label="Delete">✕</button></span>`;
     const b=r.firstChild;b.textContent=x.name;
     b.onclick=()=>{aid=x.id;sel=null;focus=null;$("panel").classList.remove("open");save();renderAll(true);drawer(false)};
     r.querySelector('[data-a="r"]').onclick=e=>{e.stopPropagation();renFam(x.id)};
@@ -696,35 +933,37 @@ $("thm").onclick=()=>{
 };
 
 /* ---------- import / export ---------- */
-$("exp").onclick=()=>{
+$("exp").onclick=async()=>{
   drawer(false);
-  const f=fam(),b=new Blob([JSON.stringify({app:"Kinship",version:3,family:f},null,2)],{type:"application/json"});
-  const u=URL.createObjectURL(b),a=document.createElement("a");
-  a.href=u;a.download=f.name.replace(/[^a-z0-9]/gi,"_")+".json";a.click();URL.revokeObjectURL(u);toast("Exported");
+  const f=fam(),txt=JSON.stringify({app:"Kinship",version:3,family:f},null,2);
+  try{
+    const u=URL.createObjectURL(new Blob([txt],{type:"application/json"})),a=document.createElement("a");
+    a.href=u;a.download=(f.name.replace(/[\\\/:*?"<>|\u0000-\u001f]/g,"").trim()||"family")+".json";
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);
+  }catch(e){}
+  let copied=false;try{await navigator.clipboard.writeText(txt);copied=true}catch(e){}
+  toast(copied?"Download started · JSON also copied to clipboard":"Download started");
 };
+async function importText(txt){
+  try{
+    const p=JSON.parse(txt),inc=p&&(p.family||p);
+    if(!inc||typeof inc.name!=="string"||!Array.isArray(inc.members))throw new Error("This is not a valid family file.");
+    const ms=clean(inc.members);
+    if(ms.length!==inc.members.length)throw new Error("The file has an invalid or duplicate member.");
+    if(cyc(ms))throw new Error("The file contains circular parent links.");
+    const mp=new Map(ms.map(m=>[m.id,uid()])),me=mp.get(inc.me)||"";
+    ms.forEach(m=>{m.id=mp.get(m.id);m.parents=m.parents.map(x=>mp.get(x));m.spouses=m.spouses.map(x=>mp.get(x))});
+    if(!await dialog({title:"Import family?",text:`“${inc.name}” will be added as a new family.`,ok:"Import"}))return;
+    const f={id:uid(),name:inc.name,members:ms,me};fams.push(f);aid=f.id;save();renderAll(true);toast("Imported");
+  }catch(err){note("Import failed",err.message)}
+}
 $("imp").onclick=()=>{drawer(false);$("file").click()};
+$("impP").onclick=async()=>{drawer(false);let t="";try{t=await navigator.clipboard.readText()}catch(e){return note("Import failed","Clipboard access isn’t available here. Use Import file instead.")}importText(t)};
 $("file").onchange=e=>{
   const file=e.target.files?.[0];if(!file)return;
   const rd=new FileReader();
-  rd.onload=async()=>{
-    try{
-      const p=JSON.parse(rd.result),inc=p.family||p;
-      if(!inc||typeof inc.name!=="string"||!Array.isArray(inc.members))throw new Error("This is not a valid family file.");
-      const ids=new Set();
-      inc.members.forEach(m=>{if(!m||typeof m.id!=="string"||typeof m.name!=="string"||ids.has(m.id))throw new Error("The file has an invalid or duplicate member.");ids.add(m.id)});
-      const ms=inc.members.map(m=>({id:m.id,name:m.name,gender:m.gender||"Not specified",birth:m.birth||"",death:m.death||"",dead:!!(m.dead||m.death),
-        parents:Array.isArray(m.parents)?[...new Set(m.parents)].filter(x=>ids.has(x)&&x!==m.id).slice(0,2):[],
-        spouses:[...new Set(Array.isArray(m.spouses)?m.spouses:m.spouse?[m.spouse]:[])].filter(x=>ids.has(x)&&x!==m.id)}));
-      const by=new Map(ms.map(m=>[m.id,m]));
-      const reach=(a,t,v=new Set())=>{if(a===t)return true;if(v.has(a))return false;v.add(a);return by.get(a).parents.some(x=>reach(x,t,v))};
-      if(ms.some(m=>m.parents.some(p=>reach(p,m.id))))throw new Error("The file contains circular parent links.");
-      ms.forEach(m=>m.spouses=m.spouses.filter(s=>by.get(s).spouses.includes(m.id)));
-      if(!await dialog({title:"Import family?",text:`“${inc.name}” will be added as a new family.`,ok:"Import"}))return;
-      const f={id:uid(),name:inc.name,members:ms,me:ids.has(inc.me)?inc.me:""};fams.push(f);aid=f.id;save();renderAll(true);toast("Imported");
-    }catch(err){note("Import failed",err.message)}
-    finally{e.target.value=""}
-  };
-  rd.onerror=()=>note("Import failed","The file could not be read.");
+  rd.onload=()=>{importText(rd.result);e.target.value=""};
+  rd.onerror=()=>{note("Import failed","The file could not be read.");e.target.value=""};
   rd.readAsText(file);
 };
 
@@ -738,10 +977,18 @@ $("sq").onkeydown=e=>{if(e.key==="Enter"){const h=hits();if(h[0]){closeSearch(fa
 $("srch").onclick=e=>{if(e.target===$("srch"))closeSearch(false)};
 $("sBtn").onclick=openSearch;
 document.addEventListener("keydown",e=>{
+  if($("pres").classList.contains("open")){
+    if(e.key==="Escape")closePres();
+    else if(["ArrowRight","ArrowDown","PageDown"," "].includes(e.key)){e.preventDefault();go(1)}
+    else if(["ArrowLeft","ArrowUp","PageUp"].includes(e.key)){e.preventDefault();go(-1)}
+    return;
+  }
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="f"){e.preventDefault();openSearch();return}
   if(e.key==="Escape"&&!$("dlg").classList.contains("open")){hideCtx();closeInfo(true);drawer(false);$("srch").classList.remove("open");if(qs){qs="";renderTree()}if(focus)clearFocus();if($("panel").classList.contains("open"))closePanel()}
 });
-addEventListener("resize",()=>fitView());
+let lw=innerWidth;
+addEventListener("resize",()=>{if(innerWidth!==lw){lw=innerWidth;fitView()}});
+document.querySelectorAll(".ib[title]").forEach(b=>b.setAttribute("aria-label",b.title));
 
 load();renderAll(true);
 </script>
