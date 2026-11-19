@@ -7,32 +7,83 @@
     <title>Favorites</title>
     <style>
          :root {
-            --bg: #f5f4f0;
-            --surface: #ffffff;
-            --ink: #1b1c1f;
-            --muted: #85858c;
-            --line: #e4e2db;
-            --accent: #3b4cca;
-            --accent-ink: #ffffff;
+            --bg: #f7f3e8;
+            --surface: #fffdf7;
+            --ink: #241d0c;
+            --muted: #8d8468;
+            --line: #e8dfc6;
+            --accent: #c8921a;
+            --accent-ink: #1c1400;
             --danger: #d6455d;
-            --scrim: rgba(24, 24, 30, .38);
-            --shadow: 0 1px 2px rgba(20, 20, 30, .04), 0 10px 28px -14px rgba(20, 20, 30, .16);
-            --pop: 0 18px 50px -12px rgba(20, 20, 30, .28);
-            --font: ui-rounded, "SF Pro Rounded", "Segoe UI Variable Display", "Avenir Next", "Nunito", "Helvetica Neue", system-ui, sans-serif;
+            --scrim: rgba(30, 24, 8, .4);
+            --edge: color-mix(in srgb, var(--line) 60%, #000 40%);
+            --pop: 0 18px 50px -12px rgba(30, 24, 8, .3);
+            --font: ui-rounded, "SF Pro Rounded", "Segoe UI Variable Display", "Avenir Next", Nunito, "Helvetica Neue", system-ui, sans-serif
         }
         
-        :root[data-theme="dark"] {
-            --bg: #121317;
-            --surface: #1b1c22;
-            --ink: #ececf0;
-            --muted: #7f808a;
-            --line: #2b2c35;
-            --accent: #8c9bff;
-            --accent-ink: #12131a;
+        :root[data-mode=dark] {
+            --bg: #14120c;
+            --surface: #1e1b12;
+            --ink: #f1ead6;
+            --muted: #928a70;
+            --line: #34301f;
+            --accent: #e6b13a;
+            --accent-ink: #1a1300;
             --danger: #ff6b85;
             --scrim: rgba(0, 0, 0, .6);
-            --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 30px -14px rgba(0, 0, 0, .6);
-            --pop: 0 18px 50px -12px rgba(0, 0, 0, .7);
+            --pop: 0 18px 50px -12px rgba(0, 0, 0, .7)
+        }
+        
+        :root[data-theme=love] {
+            --accent: #e0457b;
+            --accent-ink: #fff;
+            --bg: #fbeff3;
+            --surface: #fffafb;
+            --line: #f3d3de;
+            --ink: #3a1423;
+            --muted: #a77a89
+        }
+        
+        :root[data-theme=love][data-mode=dark] {
+            --accent: #ff7aa5;
+            --accent-ink: #2a0a16;
+            --bg: #1a0e13;
+            --surface: #251319;
+            --line: #40202c;
+            --ink: #fde8ef;
+            --muted: #b0808f
+        }
+        
+        :root[data-theme=github] {
+            --accent: #0969da;
+            --accent-ink: #fff;
+            --bg: #f6f8fa;
+            --surface: #fff;
+            --line: #d0d7de;
+            --ink: #1f2328;
+            --muted: #656d76
+        }
+        
+        :root[data-theme=github][data-mode=dark] {
+            --accent: #2f81f7;
+            --accent-ink: #fff;
+            --bg: #0d1117;
+            --surface: #161b22;
+            --line: #30363d;
+            --ink: #e6edf3;
+            --muted: #7d8590
+        }
+        
+        :root[data-theme=hacker],
+        :root[data-theme=hacker][data-mode=dark] {
+            --accent: #00ff66;
+            --accent-ink: #001a08;
+            --bg: #020a04;
+            --surface: #06140a;
+            --line: #0f3a1c;
+            --ink: #b7ffcf;
+            --muted: #3f9a5e;
+            --font: ui-monospace, "SF Mono", Menlo, Consolas, monospace
         }
         
         * {
@@ -44,7 +95,8 @@
             color-scheme: light
         }
         
-        :root[data-theme="dark"] {
+        :root[data-mode=dark],
+        :root[data-theme=hacker] {
             color-scheme: dark
         }
         
@@ -62,9 +114,40 @@
         }
         
         button,
-        input {
+        input,
+        select {
             font: inherit;
             color: inherit
+        }
+        
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: color-mix(in srgb, var(--accent) 55%, transparent) transparent
+        }
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px
+        }
+        
+        ::-webkit-scrollbar-button {
+            display: none;
+            width: 0;
+            height: 0
+        }
+        
+        ::-webkit-scrollbar-track,
+        ::-webkit-scrollbar-corner {
+            background: transparent
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: color-mix(in srgb, var(--accent) 55%, transparent);
+            border-radius: 99px
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent)
         }
         
         .wrap {
@@ -77,8 +160,15 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 52px;
+            margin-bottom: 44px;
             gap: 12px
+        }
+        
+        .ttl {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0
         }
         
         h1 {
@@ -116,7 +206,7 @@
         }
         
         .pill:hover {
-            border-color: var(--muted)
+            border-color: var(--accent)
         }
         
         .pill.on {
@@ -126,36 +216,26 @@
         }
         
         .pill svg {
-            width: 16px;
-            height: 16px;
+            width: 17px;
+            height: 17px;
             flex: none
         }
         
-        .theme {
+        .sq {
             width: 40px;
             padding: 0;
             justify-content: center
-        }
-        
-        .theme svg {
-            width: 18px;
-            height: 18px;
-            transition: transform .25s
-        }
-        
-        .theme:hover svg {
-            transform: rotate(25deg)
         }
         
         .sun {
             display: none
         }
         
-        :root[data-theme="dark"] .sun {
+        :root[data-mode=dark] .sun {
             display: block
         }
         
-        :root[data-theme="dark"] .moon {
+        :root[data-mode=dark] .moon {
             display: none
         }
         
@@ -166,7 +246,7 @@
             border: 1px solid var(--line);
             border-radius: 999px;
             padding: 6px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 5px 0 var(--edge), 0 14px 24px -10px rgba(0, 0, 0, .25);
             transition: border-color .2s
         }
         
@@ -203,14 +283,10 @@
             align-items: center;
             justify-content: space-between;
             gap: 8px;
-            text-align: left;
-            transition: color .2s
+            text-align: left
         }
         
-        .catbtn:hover {
-            color: var(--ink)
-        }
-        
+        .catbtn:hover,
         .catbtn.has {
             color: var(--ink)
         }
@@ -278,23 +354,15 @@
         
         .chips {
             position: relative;
-            margin: 22px -24px 30px
+            margin: 18px -24px 28px
         }
         
         .chips-in {
             display: flex;
             gap: 8px;
             overflow-x: auto;
-            padding: 4px 24px;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            scroll-behavior: smooth;
-            -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
-            mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%)
-        }
-        
-        .chips-in::-webkit-scrollbar {
-            display: none
+            padding: 4px 24px 8px;
+            scroll-behavior: smooth
         }
         
         .chip {
@@ -303,28 +371,32 @@
             background: var(--surface);
             color: var(--muted);
             border-radius: 999px;
-            padding: 8px 18px;
+            padding: 8px 16px;
             font-size: 14px;
             cursor: pointer;
             white-space: nowrap;
+            display: inline-flex;
+            gap: 7px;
+            align-items: center;
             transition: all .2s
         }
         
         .chip:hover {
             color: var(--ink);
-            border-color: var(--muted)
+            border-color: var(--accent)
         }
         
         .chip.on {
-            background: var(--ink);
-            color: var(--bg);
-            border-color: var(--ink)
+            background: var(--accent);
+            color: var(--accent-ink);
+            border-color: var(--accent)
         }
         
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-            gap: 16px
+            gap: 20px;
+            perspective: 1100px
         }
         
         .card {
@@ -333,20 +405,27 @@
             flex-direction: column;
             gap: 22px;
             padding: 22px;
-            background: var(--surface);
+            background: linear-gradient(160deg, color-mix(in srgb, var(--surface) 88%, #fff), var(--surface));
             border: 1px solid var(--line);
             border-radius: 18px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 6px 0 var(--edge), 0 16px 22px -10px rgba(0, 0, 0, .28);
             text-decoration: none;
             color: inherit;
-            transition: transform .25s cubic-bezier(.2, .8, .2, 1), border-color .2s, box-shadow .2s;
+            transform-style: preserve-3d;
+            transition: transform .25s cubic-bezier(.2, .8, .2, 1), box-shadow .25s, border-color .2s;
             -webkit-touch-callout: none;
             user-select: none
         }
         
         .card:hover {
-            transform: translateY(-4px);
-            border-color: var(--muted)
+            transform: rotateX(7deg) rotateY(-4deg) translateY(-4px);
+            box-shadow: 0 10px 0 var(--edge), 0 24px 28px -12px rgba(0, 0, 0, .35);
+            border-color: var(--accent)
+        }
+        
+        .card:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 var(--edge)
         }
         
         .card.ctx {
@@ -359,7 +438,6 @@
         .btn:focus-visible,
         .mi:focus-visible,
         .catbtn:focus-visible,
-        h1 a:focus-visible,
         .glink:focus-visible {
             outline: 2px solid var(--accent);
             outline-offset: 2px
@@ -385,10 +463,9 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            padding: 10px;
-            background: var(--surface);
-            border: 1px solid var(--line);
-            border-radius: inherit
+            padding: 6px;
+            background: none;
+            border: 0
         }
         
         .ico.s {
@@ -399,7 +476,7 @@
         }
         
         .ico.s img {
-            padding: 4px
+            padding: 2px
         }
         
         .t {
@@ -435,10 +512,10 @@
         
         .check {
             position: absolute;
-            top: 18px;
-            right: 18px;
-            width: 26px;
-            height: 26px;
+            top: 14px;
+            right: 14px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             border: 2px solid var(--line);
             background: var(--bg);
@@ -448,8 +525,8 @@
         }
         
         .check svg {
-            width: 14px;
-            height: 14px;
+            width: 13px;
+            height: 13px;
             opacity: 0;
             stroke: var(--accent-ink);
             transform: scale(.6);
@@ -462,7 +539,7 @@
         
         .card.picked {
             border-color: var(--accent);
-            box-shadow: 0 0 0 1px var(--accent), var(--shadow)
+            box-shadow: 0 0 0 1px var(--accent), 0 6px 0 var(--edge)
         }
         
         .card.picked .check {
@@ -501,21 +578,13 @@
             z-index: 40;
             height: 44px;
             padding: 0 22px;
-            box-shadow: var(--pop);
-            animation: drop .25s cubic-bezier(.2, .9, .3, 1.2)
-        }
-        
-        @keyframes drop {
-            from {
-                transform: translate(-50%, -14px);
-                opacity: 0
-            }
+            box-shadow: var(--pop)
         }
         
         .groups {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 16px
+            gap: 20px
         }
         
         .gcard {
@@ -523,8 +592,7 @@
             border: 1px solid var(--line);
             border-radius: 20px;
             padding: 22px;
-            box-shadow: var(--shadow);
-            transition: border-color .2s
+            box-shadow: 0 6px 0 var(--edge), 0 16px 22px -10px rgba(0, 0, 0, .25)
         }
         
         .gcard.ctx {
@@ -543,7 +611,6 @@
             font-size: 18px;
             font-weight: 700;
             letter-spacing: -.015em;
-            line-height: 1.25;
             word-break: break-word
         }
         
@@ -567,8 +634,7 @@
             margin: 0 -8px;
             border-radius: 12px;
             text-decoration: none;
-            color: inherit;
-            transition: background .15s
+            color: inherit
         }
         
         .glink:hover {
@@ -591,15 +657,7 @@
             border: 1px solid var(--line);
             border-radius: 14px;
             box-shadow: var(--pop);
-            transform-origin: top left;
-            animation: menu .14s ease-out
-        }
-        
-        @keyframes menu {
-            from {
-                transform: scale(.94);
-                opacity: 0
-            }
+            animation: fade .14s
         }
         
         .mi {
@@ -637,7 +695,6 @@
             z-index: 60;
             background: var(--scrim);
             backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
             display: grid;
             place-items: center;
             padding: 20px;
@@ -652,22 +709,14 @@
         
         .modal {
             width: 100%;
-            max-width: 420px;
+            max-width: 440px;
             max-height: calc(100vh - 40px);
             overflow-y: auto;
             background: var(--surface);
             border: 1px solid var(--line);
             border-radius: 24px;
             padding: 26px;
-            box-shadow: var(--pop);
-            animation: rise .28s cubic-bezier(.2, .9, .3, 1.1)
-        }
-        
-        @keyframes rise {
-            from {
-                transform: translateY(14px) scale(.96);
-                opacity: 0
-            }
+            box-shadow: var(--pop)
         }
         
         .mh {
@@ -679,8 +728,14 @@
         
         .modal h2 {
             font-size: 19px;
-            font-weight: 700;
-            letter-spacing: -.015em
+            font-weight: 700
+        }
+        
+        .modal h3 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+            margin: 20px 0 10px
         }
         
         .mh .cnt {
@@ -696,8 +751,7 @@
         }
         
         .modal p b {
-            color: var(--ink);
-            font-weight: 600
+            color: var(--ink)
         }
         
         .f {
@@ -718,8 +772,7 @@
             border: 1px solid transparent;
             border-radius: 12px;
             padding: 12px 14px;
-            outline: 0;
-            transition: border-color .2s
+            outline: 0
         }
         
         .f input:focus {
@@ -730,11 +783,17 @@
             display: flex;
             gap: 10px;
             justify-content: flex-end;
-            margin-top: 22px
+            margin-top: 22px;
+            flex-wrap: wrap
+        }
+        
+        .row.l {
+            justify-content: flex-start;
+            margin-top: 0
         }
         
         .row .btn {
-            padding: 0 22px
+            padding: 0 20px
         }
         
         .merr {
@@ -780,17 +839,13 @@
         
         .opt:hover span {
             color: var(--ink);
-            border-color: var(--muted)
+            border-color: var(--accent)
         }
         
         .opt input:checked+span {
             background: var(--accent);
             border-color: var(--accent);
             color: var(--accent-ink)
-        }
-        
-        .opt input:disabled {
-            cursor: not-allowed
         }
         
         .opt input:disabled+span {
@@ -819,10 +874,79 @@
             font-size: 15px
         }
         
-        .selrow span {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap
+        .themes {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px
+        }
+        
+        .th {
+            border: 2px solid var(--line);
+            border-radius: 14px;
+            padding: 10px 4px;
+            background: var(--bg);
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px
+        }
+        
+        .th i {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: block
+        }
+        
+        .th.on {
+            border-color: var(--accent)
+        }
+        
+        .cust {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px
+        }
+        
+        .cust label {
+            flex: 1;
+            font-size: 13px;
+            color: var(--muted);
+            display: flex;
+            flex-direction: column;
+            gap: 4px
+        }
+        
+        .cust input[type=color] {
+            width: 100%;
+            height: 38px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: var(--bg);
+            padding: 2px
+        }
+        
+        .cc {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 6px 6px 12px;
+            border-radius: 999px;
+            background: var(--bg);
+            border: 1px solid var(--line);
+            font-size: 13px
+        }
+        
+        .cc button {
+            border: 0;
+            background: var(--line);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            line-height: 1
         }
         
         .toast {
@@ -837,17 +961,13 @@
             border-radius: 999px;
             font-size: 14px;
             box-shadow: var(--pop);
-            animation: drop2 .25s ease-out
+            max-width: 90vw
         }
         
-        @keyframes drop2 {
-            from {
-                transform: translate(-50%, 10px);
-                opacity: 0
+        @media(max-width:620px) {
+            .wrap {
+                padding: 20px 14px 90px
             }
-        }
-        
-        @media (max-width:620px) {
             .bar {
                 flex-wrap: wrap;
                 border-radius: 26px
@@ -868,12 +988,62 @@
             .pill {
                 padding: 0 12px
             }
+            .pill.sq {
+                padding: 0
+            }
             .gfab {
                 top: 70px
             }
+            .chips {
+                margin: 18px -14px 24px
+            }
+            .chips-in {
+                padding: 4px 14px 8px
+            }
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px
+            }
+            .card {
+                padding: 12px 6px;
+                gap: 8px;
+                align-items: center;
+                text-align: center;
+                border-radius: 14px;
+                box-shadow: 0 4px 0 var(--edge), 0 10px 14px -8px rgba(0, 0, 0, .28)
+            }
+            .card:hover {
+                transform: none
+            }
+            .card .ico {
+                width: 40px;
+                height: 40px;
+                font-size: 17px;
+                border-radius: 12px
+            }
+            .card>div:not(.ico) {
+                width: 100%;
+                min-width: 0
+            }
+            .t {
+                font-size: 12px
+            }
+            .h,
+            .c {
+                display: none
+            }
+            .check {
+                top: 6px;
+                right: 6px;
+                width: 20px;
+                height: 20px
+            }
+            .themes {
+                grid-template-columns: repeat(3, 1fr)
+            }
         }
         
-        @media (prefers-reduced-motion:reduce) {
+        @media(prefers-reduced-motion:reduce) {
             * {
                 animation: none!important;
                 transition: none!important
@@ -885,29 +1055,21 @@
 <body>
     <div class="wrap">
         <header>
-            <h1><a href="#" id="home-link">Favorites</a></h1>
+            <div class="ttl">
+                <a class="pill sq" id="back" href="#" aria-label="Back" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></a>
+                <h1><a href="#" id="title">Favorites</a></h1>
+            </div>
             <div class="tools">
-                <a class="pill" id="groupsLink" href="#groups" aria-label="Groups">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-                    <span class="lbl">Groups</span>
-                </a>
-                <button class="pill" id="groupMode" type="button" aria-pressed="false">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><rect x="3" y="3" width="18" height="18" rx="5"/></svg>
-        <span class="lbl">Group</span>
-      </button>
-                <button class="pill theme" id="theme" type="button" aria-label="Toggle theme">
-        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-      </button>
+                <a class="pill" id="groupsLink" href="#groups"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span class="lbl">Groups</span></a>
+                <button class="pill" id="groupMode" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><rect x="3" y="3" width="18" height="18" rx="5"/></svg><span class="lbl">Group</span></button>
+                <button class="pill sq" id="settings" type="button" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+                <button class="pill sq" id="theme" type="button" aria-label="Toggle light or dark"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
             </div>
         </header>
-
         <section id="homeView">
             <div class="bar">
-                <input id="url" type="text" placeholder="Paste a link you love" aria-label="Website link" autocomplete="off" spellcheck="false">
-                <button class="catbtn" id="catBtn" type="button"><span id="catLabel">Category</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
+                <input id="url" type="text" placeholder="Paste links, comma separated: aeon.co, ncase.me" aria-label="Website links" autocomplete="off" spellcheck="false">
+                <button class="catbtn" id="catBtn" type="button"><span id="catLabel">Category</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
                 <button class="btn" id="save" type="button">Save</button>
             </div>
             <div class="err" id="err" role="alert"></div>
@@ -916,24 +1078,48 @@
             </div>
             <main class="grid" id="grid"></main>
         </section>
-
         <section id="groupsView" hidden>
             <div class="groups" id="groups"></div>
         </section>
     </div>
-
     <button class="pill on gfab" id="gfab" type="button" hidden></button>
-
     <script>
         (function() {
             var KEY = 'favorites.v3',
                 OLD = 'favorites.v2',
                 GKEY = 'favorites.groups',
-                THEME = 'favorites.theme';
-            var MAX = 5;
-            var BASE = ['Work', 'Design', 'Development', 'News', 'Learning', 'Reading', 'Tools', 'Shopping', 'Entertainment', 'Music', 'Social', 'Finance', 'Travel', 'Health', 'Food', 'Inspiration'];
+                THEME = 'favorites.theme',
+                SKEY = 'favorites.settings',
+                MAX = 5;
+            var CI = {
+                Work: '💼',
+                Design: '🎨',
+                Development: '💻',
+                News: '📰',
+                Learning: '🎓',
+                Reading: '📚',
+                Tools: '🛠️',
+                Shopping: '🛍️',
+                Entertainment: '🎬',
+                Music: '🎵',
+                Social: '💬',
+                Finance: '💰',
+                Travel: '✈️',
+                Health: '❤️‍🩹',
+                Food: '🍜',
+                Inspiration: '✨'
+            };
+            var BASE = Object.keys(CI);
             var items = [],
                 groups = [],
+                S = {
+                    theme: 'gold',
+                    custom: {
+                        accent: '#c8921a',
+                        bg: '#f7f3e8'
+                    },
+                    cats: []
+                },
                 filter = 'All',
                 newCats = [],
                 grouping = false,
@@ -955,41 +1141,60 @@
                     } catch (e) {}
                 }
             };
-            try {
-                items = JSON.parse(store.get(KEY) || store.get(OLD)) || []
-            } catch (e) {
-                items = []
+
+            function load(k, d) {
+                try {
+                    var v = JSON.parse(store.get(k));
+                    return v == null ? d : v
+                } catch (e) {
+                    return d
+                }
             }
-            try {
-                groups = JSON.parse(store.get(GKEY)) || []
-            } catch (e) {
-                groups = []
-            }
+            items = load(KEY, null) || load(OLD, []);
+            groups = load(GKEY, []);
+            var sv = load(SKEY, null);
+            if (sv && typeof sv === 'object')
+                for (var k in sv) S[k] = sv[k];
             if (!Array.isArray(items)) items = [];
             if (!Array.isArray(groups)) groups = [];
+            if (!Array.isArray(S.cats)) S.cats = [];
             items.forEach(function(it) {
-                if (!it.cats) {
-                    it.cats = it.cat ? [it.cat] : []
-                }
+                if (!it.cats) it.cats = it.cat ? [it.cat] : [];
                 delete it.cat
             });
-
-            /* theme */
             var root = document.documentElement;
-            var st = store.get(THEME);
-            if (st) root.setAttribute('data-theme', st);
-            else if (window.matchMedia && matchMedia('(prefers-color-scheme:dark)').matches) root.setAttribute('data-theme', 'dark');
-            $('theme').addEventListener('click', function() {
-                var n = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                root.setAttribute('data-theme', n);
-                store.set(THEME, n);
-            });
 
-            /* helpers */
             function save() {
                 store.set(KEY, JSON.stringify(items));
-                store.set(GKEY, JSON.stringify(groups))
+                store.set(GKEY, JSON.stringify(groups));
+                store.set(SKEY, JSON.stringify(S))
             }
+
+            function lum(h) {
+                var n = parseInt(h.slice(1), 16);
+                return (.299 * (n >> 16) + .587 * (n >> 8 & 255) + .114 * (n & 255)) / 255
+            }
+
+            function applyTheme() {
+                root.setAttribute('data-theme', S.theme);
+                var st = root.style;
+                ['--accent', '--accent-ink', '--bg'].forEach(function(p) {
+                    st.removeProperty(p)
+                });
+                if (S.theme === 'custom') {
+                    st.setProperty('--accent', S.custom.accent);
+                    st.setProperty('--accent-ink', lum(S.custom.accent) > .6 ? '#111' : '#fff');
+                    st.setProperty('--bg', S.custom.bg)
+                }
+            }
+            var mode = store.get(THEME) || (window.matchMedia && matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
+            root.setAttribute('data-mode', mode);
+            applyTheme();
+            $('theme').addEventListener('click', function() {
+                mode = root.getAttribute('data-mode') === 'dark' ? 'light' : 'dark';
+                root.setAttribute('data-mode', mode);
+                store.set(THEME, mode)
+            });
 
             function esc(s) {
                 return String(s).replace(/[&<>"']/g, function(c) {
@@ -1018,6 +1223,10 @@
                 return [].slice.call(x)
             }
 
+            function ci(c) {
+                return CI[c] || '🏷️'
+            }
+
             function parse(raw) {
                 raw = (raw || '').trim();
                 if (!raw || /\s/.test(raw)) return null;
@@ -1025,7 +1234,7 @@
                 try {
                     var u = new URL(raw);
                     if (!/^(https?|ftp):$/.test(u.protocol) || !u.hostname) return null;
-                    return u;
+                    return u
                 } catch (e) {
                     return null
                 }
@@ -1039,37 +1248,35 @@
                 var host = hostOf(u);
                 if (/^[\d.]+$/.test(host) || host.indexOf(':') > -1 || host.indexOf('.') < 0) return host;
                 var p = host.split('.');
-                var base = (p.length > 2 && p[p.length - 2].length <= 3) ? p[p.length - 3] : p[p.length - 2];
-                return base.charAt(0).toUpperCase() + base.slice(1);
+                var b = (p.length > 2 && p[p.length - 2].length <= 3) ? p[p.length - 3] : p[p.length - 2];
+                return b.charAt(0).toUpperCase() + b.slice(1)
             }
 
             function icon(it, cls) {
-                return '<div class="ico ' + (cls || '') + '" style="background:hsl(' + hue(it.host) + ' 55% 52%)">' + esc((it.title[0] || '?').toUpperCase()) +
-                    '<img src="https://www.google.com/s2/favicons?sz=64&domain=' + encodeURIComponent(it.host) + '" alt="" onerror="this.remove()" onload="if(this.naturalWidth<=16)this.remove()"></div>';
+                return '<div class="ico ' + (cls || '') + '" style="background:hsl(' + hue(it.host) + ' 55% 52%)">' + esc((it.title[0] || '?').toUpperCase()) + '<img src="https://www.google.com/s2/favicons?sz=64&domain=' + encodeURIComponent(it.host) + '" alt="" onerror="this.remove()" onload="if(this.naturalWidth<=16)this.remove();else{this.parentNode.style.background=\'none\';this.parentNode.style.color=\'transparent\'}"></div>'
             }
 
             function allCats() {
-                var c = BASE.slice();
+                var c = BASE.concat(S.cats);
                 items.forEach(function(it) {
                     it.cats.forEach(function(x) {
                         if (c.indexOf(x) < 0) c.push(x)
                     })
                 });
-                return c;
+                return c
             }
 
-            function toast(msg) {
+            function toast(m) {
                 var t = document.createElement('div');
                 t.className = 'toast';
-                t.textContent = msg;
+                t.textContent = m;
                 document.body.appendChild(t);
                 setTimeout(function() {
                     t.remove()
-                }, 3000);
+                }, 3200)
             }
             var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
 
-            /* render home */
             function render() {
                 var used = [];
                 items.forEach(function(it) {
@@ -1079,32 +1286,26 @@
                 });
                 used.sort();
                 if (filter !== 'All' && used.indexOf(filter) < 0) filter = 'All';
-
                 var inner = $('chipsIn'),
                     prev = inner.scrollLeft;
                 $('chips').hidden = !used.length;
                 inner.innerHTML = ['All'].concat(used).map(function(c) {
-                    return '<button type="button" class="chip' + (c === filter ? ' on' : '') + '" data-c="' + esc(c) + '">' + esc(c) + '</button>';
+                    return '<button type="button" class="chip' + (c === filter ? ' on' : '') + '" data-c="' + esc(c) + '"><span>' + (c === 'All' ? '🌐' : ci(c)) + '</span>' + esc(c) + '</button>'
                 }).join('');
                 inner.style.scrollBehavior = 'auto';
                 inner.scrollLeft = prev;
                 inner.style.scrollBehavior = '';
-
                 var list = items.filter(function(x) {
                     return filter === 'All' || x.cats.indexOf(filter) > -1
                 });
                 $('grid').innerHTML = list.length ? list.map(function(x) {
                     var label = x.cats.length ? esc(x.cats[0]) + (x.cats.length > 1 ? ' +' + (x.cats.length - 1) : '') : '';
-                    return '<a class="card' + (sel[x.id] ? ' picked' : '') + '" href="' + esc(x.url) + '" target="_blank" rel="noopener noreferrer" data-id="' + x.id + '">' +
-                        icon(x) +
-                        '<div><div class="t">' + esc(x.title) + '</div><div class="h">' + esc(x.host) + '</div></div>' +
-                        (grouping ? '<span class="check">' + CHECK + '</span>' : (label ? '<span class="c">' + label + '</span>' : '')) + '</a>';
+                    return '<a class="card' + (sel[x.id] ? ' picked' : '') + '" href="' + esc(x.url) + '" target="_blank" rel="noopener noreferrer" data-id="' + x.id + '">' + icon(x) + '<div><div class="t">' + esc(x.title) + '</div><div class="h">' + esc(x.host) + '</div></div>' + (grouping ? '<span class="check">' + CHECK + '</span>' : (label ? '<span class="c">' + label + '</span>' : '')) + '</a>'
                 }).join('') : '<div class="empty">Your saved sites will appear here.</div>';
                 $('grid').classList.toggle('grouping', grouping);
                 updateFab();
             }
 
-            /* render groups */
             function renderGroups() {
                 groups = groups.filter(function(g) {
                     g.ids = g.ids.filter(function(id) {
@@ -1113,23 +1314,23 @@
                     return g.ids.length
                 });
                 $('groups').innerHTML = groups.length ? groups.map(function(g) {
-                    return '<div class="gcard" data-gid="' + g.id + '"><div class="ghead"><div><div class="gt">' + esc(g.title) + '</div><div class="gn">' + g.ids.length + (g.ids.length === 1 ? ' link' : ' links') + '</div></div>' +
-                        '<button class="btn sm" type="button" data-open="' + g.id + '">Open all</button></div><div class="glist">' +
+                    return '<div class="gcard" data-gid="' + g.id + '"><div class="ghead"><div><div class="gt">' + esc(g.title) + '</div><div class="gn">' + g.ids.length + (g.ids.length === 1 ? ' link' : ' links') + '</div></div><button class="btn sm" type="button" data-open="' + g.id + '">Open all</button></div><div class="glist">' +
                         g.ids.map(function(id) {
                             var it = find(id);
                             return '<a class="glink" href="' + esc(it.url) + '" target="_blank" rel="noopener noreferrer">' + icon(it, 's') + '<span>' + esc(it.title) + '</span></a>'
-                        }).join('') +
-                        '</div></div>';
+                        }).join('') + '</div></div>'
                 }).join('') : '<div class="empty" style="grid-column:1/-1">Groups you create will appear here.</div>';
             }
 
-            /* routing */
             function route() {
                 var g = location.hash === '#groups';
                 $('homeView').hidden = g;
                 $('groupsView').hidden = !g;
-                $('groupMode').hidden = g;
-                $('groupsLink').classList.toggle('on', g);
+                ['groupMode', 'settings', 'groupsLink'].forEach(function(i) {
+                    $(i).hidden = g
+                });
+                $('back').hidden = !g;
+                $('title').textContent = g ? 'Groups' : 'Favorites';
                 if (g) {
                     setGrouping(false);
                     renderGroups()
@@ -1138,36 +1339,54 @@
             }
             window.addEventListener('hashchange', route);
 
-            /* category label on add bar */
             function catLabel() {
                 var n = newCats.length;
-                $('catLabel').textContent = n === 0 ? 'Category' : n === 1 ? newCats[0] : n + ' categories';
-                $('catBtn').classList.toggle('has', n > 0);
+                $('catLabel').textContent = n === 0 ? 'Category' : n === 1 ? ci(newCats[0]) + ' ' + newCats[0] : n + ' categories';
+                $('catBtn').classList.toggle('has', n > 0)
             }
 
-            /* add */
             function add() {
-                var u = parse($('url').value);
-                if (!u) {
-                    $('err').textContent = 'That link doesn\u2019t look right. Try something like example.com';
+                var parts = $('url').value.split(',').map(function(s) {
+                        return s.trim()
+                    }).filter(Boolean),
+                    bad = [],
+                    n = 0;
+                if (!parts.length) {
+                    $('err').textContent = 'Enter a link, like example.com';
                     return
                 }
-                items.unshift({
-                    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
-                    url: u.href,
-                    host: hostOf(u),
-                    title: titleOf(u),
-                    cats: newCats.slice()
+                parts.reverse().forEach(function(p) {
+                    var u = parse(p);
+                    if (!u) {
+                        bad.push(p);
+                        return
+                    }
+                    items.unshift({
+                        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+                        url: u.href,
+                        host: hostOf(u),
+                        title: titleOf(u),
+                        cats: newCats.slice()
+                    });
+                    n++;
                 });
                 save();
-                $('err').textContent = '';
-                $('url').value = '';
-                newCats = [];
-                catLabel();
-                filter = 'All';
-                render();
-                var f = $('grid').querySelector('.card');
-                if (f) f.classList.add('pop');
+                if (bad.length) {
+                    $('err').textContent = 'Skipped invalid: ' + bad.reverse().join(', ');
+                    $('url').value = bad.join(', ')
+                } else {
+                    $('err').textContent = '';
+                    $('url').value = ''
+                }
+                if (n) {
+                    newCats = [];
+                    catLabel();
+                    filter = 'All';
+                    render();
+                    var f = $('grid').querySelector('.card');
+                    if (f) f.classList.add('pop');
+                    if (n > 1) toast(n + ' links saved')
+                }
                 $('url').focus();
             }
             $('save').addEventListener('click', add);
@@ -1180,8 +1399,6 @@
             $('url').addEventListener('input', function() {
                 $('err').textContent = ''
             });
-
-            /* chips */
             $('chipsIn').addEventListener('click', function(e) {
                 var b = e.target.closest('.chip');
                 if (!b) return;
@@ -1192,7 +1409,7 @@
                     inline: 'center',
                     block: 'nearest',
                     behavior: 'smooth'
-                });
+                })
             });
             $('chipsIn').addEventListener('wheel', function(e) {
                 if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
@@ -1203,7 +1420,6 @@
                 passive: false
             });
 
-            /* modal base */
             var scrim = null;
 
             function closeModal() {
@@ -1222,30 +1438,29 @@
                 scrim.addEventListener('mousedown', function(e) {
                     if (e.target === scrim) closeModal()
                 });
-                return scrim;
+                return scrim
             }
 
-            /* category picker */
             function pickerHTML(selected) {
                 return '<div class="picker">' + allCats().map(function(c) {
-                    return '<label class="opt"><input type="checkbox" value="' + esc(c) + '"' + (selected.indexOf(c) > -1 ? ' checked' : '') + '><span>' + esc(c) + '</span></label>';
-                }).join('') + '</div>';
+                    return '<label class="opt"><input type="checkbox" value="' + esc(c) + '"' + (selected.indexOf(c) > -1 ? ' checked' : '') + '><span>' + ci(c) + ' ' + esc(c) + '</span></label>'
+                }).join('') + '</div>'
             }
 
             function bindPicker(box, onChange) {
-                function sync(changed) {
-                    var boxes = arr(box.querySelectorAll('input')),
-                        n = boxes.filter(function(b) {
+                function sync(ch) {
+                    var bx = arr(box.querySelectorAll('input')),
+                        n = bx.filter(function(b) {
                             return b.checked
                         }).length;
-                    if (n > MAX && changed) {
-                        changed.checked = false;
+                    if (n > MAX && ch) {
+                        ch.checked = false;
                         n = MAX
                     }
-                    boxes.forEach(function(b) {
+                    bx.forEach(function(b) {
                         b.disabled = !b.checked && n >= MAX
                     });
-                    if (onChange) onChange(n);
+                    if (onChange) onChange(n)
                 }
                 box.addEventListener('change', function(e) {
                     sync(e.target)
@@ -1262,8 +1477,7 @@
             }
 
             function catModal() {
-                var s = openModal('<div class="mh"><h2>Choose categories</h2><span class="cnt" id="cc"></span></div>' + pickerHTML(newCats) +
-                    '<div class="row"><button class="btn ghost" type="button" id="cClear">Clear</button><button class="btn" type="button" id="cDone">Done</button></div>');
+                var s = openModal('<div class="mh"><h2>Choose categories</h2><span class="cnt" id="cc"></span></div>' + pickerHTML(newCats) + '<div class="row"><button class="btn ghost" type="button" id="cClear">Clear</button><button class="btn" type="button" id="cDone">Done</button></div>');
                 var box = s.querySelector('.picker');
                 bindPicker(box, function(n) {
                     s.querySelector('#cc').textContent = n + ' of ' + MAX
@@ -1272,7 +1486,7 @@
                     arr(box.querySelectorAll('input')).forEach(function(b) {
                         b.checked = false
                     });
-                    box.dispatchEvent(new Event('change'));
+                    box.dispatchEvent(new Event('change'))
                 });
                 s.querySelector('#cDone').addEventListener('click', function() {
                     newCats = picked(box);
@@ -1282,7 +1496,6 @@
             }
             $('catBtn').addEventListener('click', catModal);
 
-            /* context menu */
             var menuEl = null,
                 menuTarget = null;
             var IE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>';
@@ -1306,7 +1519,7 @@
                 var m = document.createElement('div');
                 m.className = 'menu';
                 m.setAttribute('role', 'menu');
-                m.innerHTML = '<button class="mi" type="button" role="menuitem" data-a="e">' + IE + 'Edit</button><button class="mi danger" type="button" role="menuitem" data-a="d">' + ID + 'Delete</button>';
+                m.innerHTML = '<button class="mi" type="button" data-a="e">' + IE + 'Edit</button><button class="mi danger" type="button" data-a="d">' + ID + 'Delete</button>';
                 document.body.appendChild(m);
                 menuEl = m;
                 m.style.left = Math.max(8, Math.min(x, innerWidth - m.offsetWidth - 8)) + 'px';
@@ -1317,7 +1530,7 @@
                     var a = b.getAttribute('data-a');
                     closeMenu();
                     if (a === 'e') onEdit();
-                    else onDel();
+                    else onDel()
                 });
                 m.querySelector('.mi').focus();
             }
@@ -1336,7 +1549,7 @@
                     editModal(id)
                 }, function() {
                     delModal(id)
-                });
+                })
             });
             $('groups').addEventListener('contextmenu', function(e) {
                 var c = e.target.closest('.gcard');
@@ -1348,7 +1561,7 @@
                     renameGroup(id)
                 }, function() {
                     delGroup(id)
-                });
+                })
             });
             document.addEventListener('mousedown', function(e) {
                 if (menuEl && !menuEl.contains(e.target)) closeMenu()
@@ -1358,16 +1571,16 @@
             var lp = null,
                 lpFired = false;
 
-            function longPress(host, sel2, fn) {
+            function longPress(host, s2, fn) {
                 host.addEventListener('touchstart', function(e) {
-                    var c = e.target.closest(sel2);
+                    var c = e.target.closest(s2);
                     if (!c) return;
                     lpFired = false;
                     var t = e.touches[0];
                     lp = setTimeout(function() {
                         lpFired = true;
                         fn(c, t.clientX, t.clientY)
-                    }, 550);
+                    }, 550)
                 }, {
                     passive: true
                 });
@@ -1404,17 +1617,10 @@
                 })
             });
 
-            /* edit / delete item */
             function editModal(id) {
                 var it = find(id);
                 if (!it) return;
-                var s = openModal(
-                    '<div class="mh"><h2>Edit favorite</h2></div>' +
-                    '<label class="f"><span>Name</span><input id="eName" value="' + esc(it.title) + '" maxlength="60"></label>' +
-                    '<label class="f"><span>Link</span><input id="eUrl" value="' + esc(it.url) + '" spellcheck="false"></label>' +
-                    '<div class="f"><span>Categories <b id="ec" style="font-weight:400"></b></span>' + pickerHTML(it.cats) + '</div>' +
-                    '<div class="merr" id="eErr" style="margin-top:12px"></div>' +
-                    '<div class="row"><button class="btn ghost" type="button" id="eCancel">Cancel</button><button class="btn" type="button" id="eSave">Save</button></div>');
+                var s = openModal('<div class="mh"><h2>Edit favorite</h2></div><label class="f"><span>Name</span><input id="eName" value="' + esc(it.title) + '" maxlength="60"></label><label class="f"><span>Link</span><input id="eUrl" value="' + esc(it.url) + '" spellcheck="false"></label><div class="f"><span>Categories <b id="ec" style="font-weight:400"></b></span>' + pickerHTML(it.cats) + '</div><div class="merr" id="eErr" style="margin-top:12px"></div><div class="row"><button class="btn ghost" type="button" id="eCancel">Cancel</button><button class="btn" type="button" id="eSave">Save</button></div>');
                 var box = s.querySelector('.picker'),
                     name = s.querySelector('#eName');
                 bindPicker(box, function(n) {
@@ -1435,7 +1641,7 @@
                     it.cats = picked(box);
                     save();
                     closeModal();
-                    render();
+                    render()
                 }
                 s.querySelector('#eSave').addEventListener('click', commit);
                 s.querySelector('#eCancel').addEventListener('click', closeModal);
@@ -1447,13 +1653,12 @@
                 });
             }
 
-            function confirmModal(title, body, okLabel, onOk) {
-                var s = openModal('<div class="mh"><h2>' + title + '</h2></div><p>' + body + '</p>' +
-                    '<div class="row"><button class="btn ghost" type="button" id="xCancel">Cancel</button><button class="btn danger" type="button" id="xOk">' + okLabel + '</button></div>');
+            function confirmModal(title, body, ok, onOk) {
+                var s = openModal('<div class="mh"><h2>' + title + '</h2></div><p>' + body + '</p><div class="row"><button class="btn ghost" type="button" id="xCancel">Cancel</button><button class="btn danger" type="button" id="xOk">' + ok + '</button></div>');
                 s.querySelector('#xCancel').addEventListener('click', closeModal);
-                var ok = s.querySelector('#xOk');
-                ok.focus();
-                ok.addEventListener('click', function() {
+                var b = s.querySelector('#xOk');
+                b.focus();
+                b.addEventListener('click', function() {
                     onOk();
                     closeModal()
                 });
@@ -1468,18 +1673,17 @@
                     });
                     delete sel[id];
                     save();
-                    render();
-                });
+                    render()
+                })
             }
 
-            /* group mode */
             function setGrouping(on) {
                 grouping = on;
                 if (!on) sel = {};
                 $('groupMode').classList.toggle('on', on);
                 $('groupMode').setAttribute('aria-pressed', on);
                 closeMenu();
-                if (!$('homeView').hidden) render();
+                if (!$('homeView').hidden) render()
             }
             $('groupMode').addEventListener('click', function() {
                 setGrouping(!grouping)
@@ -1488,9 +1692,8 @@
             function updateFab() {
                 var n = Object.keys(sel).length,
                     f = $('gfab');
-                var was = f.hidden;
                 f.hidden = !(grouping && n > 0);
-                f.textContent = 'Group selected (' + n + ')';
+                f.textContent = 'Group selected (' + n + ')'
             }
             $('grid').addEventListener('click', function(e) {
                 if (!grouping) return;
@@ -1514,14 +1717,10 @@
                     return x.id
                 });
                 if (!ids.length) return;
-                var s = openModal('<div class="mh"><h2>New group</h2><span class="cnt">' + ids.length + (ids.length === 1 ? ' link' : ' links') + '</span></div>' +
-                    '<div class="sellist">' + ids.map(function(id) {
-                        var it = find(id);
-                        return '<div class="selrow">' + icon(it, 's') + '<span>' + esc(it.title) + '</span></div>'
-                    }).join('') + '</div>' +
-                    '<label class="f"><span>Group title</span><input id="gTitle" maxlength="40" placeholder="e.g. Morning reads"></label>' +
-                    '<div class="merr" id="gErr"></div>' +
-                    '<div class="row"><button class="btn ghost" type="button" id="gCancel">Cancel</button><button class="btn" type="button" id="gOk">Create group</button></div>');
+                var s = openModal('<div class="mh"><h2>New group</h2><span class="cnt">' + ids.length + (ids.length === 1 ? ' link' : ' links') + '</span></div><div class="sellist">' + ids.map(function(id) {
+                    var it = find(id);
+                    return '<div class="selrow">' + icon(it, 's') + '<span>' + esc(it.title) + '</span></div>'
+                }).join('') + '</div><label class="f"><span>Group title</span><input id="gTitle" maxlength="40" placeholder="e.g. Morning reads"></label><div class="merr" id="gErr"></div><div class="row"><button class="btn ghost" type="button" id="gCancel">Cancel</button><button class="btn" type="button" id="gOk">Create group</button></div>');
                 var inp = s.querySelector('#gTitle');
                 inp.focus();
 
@@ -1539,7 +1738,7 @@
                     save();
                     closeModal();
                     setGrouping(false);
-                    toast('Group created');
+                    toast('Group created')
                 }
                 s.querySelector('#gOk').addEventListener('click', make);
                 s.querySelector('#gCancel').addEventListener('click', closeModal);
@@ -1551,28 +1750,34 @@
                 });
             });
 
-            /* groups screen */
+            /* Open all: anchors clicked synchronously inside the user gesture; falls back to a manual list if the browser blocks pop-ups */
             function openAll(gid) {
                 var g = groups.filter(function(x) {
                     return x.id === gid
                 })[0];
                 if (!g) return;
-                var blocked = false;
-                g.ids.forEach(function(id) {
-                    var it = find(id);
-                    if (!it) return;
-                    var w = window.open(it.url, '_blank');
-                    if (w) {
-                        try {
-                            w.opener = null
-                        } catch (e) {}
-                    } else blocked = true;
+                var urls = g.ids.map(function(id) {
+                        var it = find(id);
+                        return it && it.url
+                    }).filter(Boolean),
+                    opened = 0;
+                urls.forEach(function(u) {
+                    var w = window.open(u, '_blank');
+                    if (w) opened++
                 });
-                if (blocked) toast('Allow pop-ups for this page to open every link');
+                if (opened < urls.length) {
+                    var s = openModal('<div class="mh"><h2>Your browser blocked some tabs</h2></div><p>Allow pop-ups for this page to open the whole group at once, or open the links here.</p><div class="glist">' + urls.map(function(u) {
+                        var it = items.filter(function(x) {
+                            return x.url === u
+                        })[0];
+                        return '<a class="glink" href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + icon(it, 's') + '<span>' + esc(it.title) + '</span></a>'
+                    }).join('') + '</div><div class="row"><button class="btn" type="button" id="oc">Close</button></div>');
+                    s.querySelector('#oc').addEventListener('click', closeModal);
+                }
             }
             $('groups').addEventListener('click', function(e) {
                 var b = e.target.closest('[data-open]');
-                if (b) openAll(b.getAttribute('data-open'));
+                if (b) openAll(b.getAttribute('data-open'))
             });
 
             function renameGroup(id) {
@@ -1580,8 +1785,7 @@
                     return x.id === id
                 })[0];
                 if (!g) return;
-                var s = openModal('<div class="mh"><h2>Rename group</h2></div><label class="f"><span>Group title</span><input id="rT" maxlength="40" value="' + esc(g.title) + '"></label>' +
-                    '<div class="merr" id="rErr"></div><div class="row"><button class="btn ghost" type="button" id="rC">Cancel</button><button class="btn" type="button" id="rS">Save</button></div>');
+                var s = openModal('<div class="mh"><h2>Rename group</h2></div><label class="f"><span>Group title</span><input id="rT" maxlength="40" value="' + esc(g.title) + '"></label><div class="merr" id="rErr"></div><div class="row"><button class="btn ghost" type="button" id="rC">Cancel</button><button class="btn" type="button" id="rS">Save</button></div>');
                 var inp = s.querySelector('#rT');
                 inp.focus();
                 inp.select();
@@ -1617,10 +1821,177 @@
                         return x.id !== id
                     });
                     save();
-                    renderGroups();
-                });
+                    renderGroups()
+                })
             }
 
+            /* settings */
+            var TH = [
+                ['gold', 'Gold', '#c8921a'],
+                ['love', 'Love', '#e0457b'],
+                ['github', 'GitHub', '#0969da'],
+                ['hacker', 'Hacker', '#00ff66'],
+                ['custom', 'Custom', 'conic-gradient(#e0457b,#e6b13a,#00ff66,#0969da,#e0457b)']
+            ];
+
+            function settingsModal() {
+                var s = openModal('<div class="mh"><h2>Settings</h2></div><h3>Theme</h3><div class="themes">' + TH.map(function(t) {
+                        return '<button type="button" class="th' + (S.theme === t[0] ? ' on' : '') + '" data-t="' + t[0] + '"><i style="background:' + t[2] + '"></i>' + t[1] + '</button>'
+                    }).join('') + '</div>' +
+                    '<div class="cust" id="cust"' + (S.theme === 'custom' ? '' : ' hidden') + '><label>Accent<input type="color" id="cA" value="' + S.custom.accent + '"></label><label>Background<input type="color" id="cB" value="' + S.custom.bg + '"></label></div>' +
+                    '<h3>Custom categories</h3><div class="row l" style="margin-bottom:10px" id="ccList"></div><div style="display:flex;gap:8px"><label class="f" style="flex:1;margin:0"><input id="ccIn" maxlength="24" placeholder="New category"></label><button class="btn" type="button" id="ccAdd">Add</button></div><div class="merr" id="ccErr" style="margin-top:8px"></div>' +
+                    '<h3>Your data</h3><div class="row l"><button class="btn ghost sm" type="button" id="exp">Export backup</button><button class="btn ghost sm" type="button" id="imp">Import backup</button><button class="btn ghost sm" type="button" id="csv">Export CSV</button><button class="btn danger sm" type="button" id="clr">Erase all</button></div>' +
+                    '<input type="file" id="file" accept=".json,application/json" hidden><p style="margin:14px 0 0;font-size:13px">' + items.length + ' favorites, ' + groups.length + ' groups, stored only in this browser.</p>' +
+                    '<div class="row"><button class="btn" type="button" id="sDone">Done</button></div>');
+
+                function cats() {
+                    s.querySelector('#ccList').innerHTML = S.cats.length ? S.cats.map(function(c, i) {
+                        return '<span class="cc">' + esc(c) + '<button type="button" data-i="' + i + '" aria-label="Remove ' + esc(c) + '">×</button></span>'
+                    }).join('') : '<span style="font-size:13px;color:var(--muted)">None yet</span>'
+                }
+                cats();
+                s.querySelector('.themes').addEventListener('click', function(e) {
+                    var b = e.target.closest('.th');
+                    if (!b) return;
+                    S.theme = b.getAttribute('data-t');
+                    arr(s.querySelectorAll('.th')).forEach(function(x) {
+                        x.classList.toggle('on', x === b)
+                    });
+                    s.querySelector('#cust').hidden = S.theme !== 'custom';
+                    applyTheme();
+                    save()
+                });
+                s.querySelector('#cA').addEventListener('input', function(e) {
+                    S.custom.accent = e.target.value;
+                    applyTheme();
+                    save()
+                });
+                s.querySelector('#cB').addEventListener('input', function(e) {
+                    S.custom.bg = e.target.value;
+                    applyTheme();
+                    save()
+                });
+
+                function addCat() {
+                    var v = s.querySelector('#ccIn').value.trim(),
+                        er = s.querySelector('#ccErr');
+                    if (!v) return;
+                    if (allCats().some(function(c) {
+                            return c.toLowerCase() === v.toLowerCase()
+                        })) {
+                        er.textContent = 'That category already exists.';
+                        return
+                    }
+                    S.cats.push(v);
+                    save();
+                    s.querySelector('#ccIn').value = '';
+                    er.textContent = '';
+                    cats()
+                }
+                s.querySelector('#ccAdd').addEventListener('click', addCat);
+                s.querySelector('#ccIn').addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addCat()
+                    }
+                });
+                s.querySelector('#ccList').addEventListener('click', function(e) {
+                    var b = e.target.closest('button');
+                    if (!b) return;
+                    var c = S.cats.splice(+b.getAttribute('data-i'), 1)[0];
+                    items.forEach(function(it) {
+                        it.cats = it.cats.filter(function(x) {
+                            return x !== c
+                        })
+                    });
+                    save();
+                    cats();
+                    render()
+                });
+
+                function dl(name, text, type) {
+                    var a = document.createElement('a');
+                    a.href = URL.createObjectURL(new Blob([text], {
+                        type: type
+                    }));
+                    a.download = name;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove()
+                }
+                s.querySelector('#exp').addEventListener('click', function() {
+                    dl('favorites-backup.json', JSON.stringify({
+                        items: items,
+                        groups: groups,
+                        settings: S
+                    }), 'application/json')
+                });
+                s.querySelector('#csv').addEventListener('click', function() {
+                    dl('favorites.csv', 'title,url,categories\n' + items.map(function(i) {
+                        return [i.title, i.url, i.cats.join('|')].map(function(v) {
+                            return '"' + String(v).replace(/"/g, '""') + '"'
+                        }).join(',')
+                    }).join('\n'), 'text/csv')
+                });
+                s.querySelector('#imp').addEventListener('click', function() {
+                    s.querySelector('#file').click()
+                });
+                s.querySelector('#file').addEventListener('change', function(e) {
+                    var f = e.target.files[0];
+                    if (!f) return;
+                    var r = new FileReader();
+                    r.onload = function() {
+                        try {
+                            var d = JSON.parse(r.result);
+                            if (!d || !Array.isArray(d.items)) throw 0;
+                            var have = {};
+                            items.forEach(function(i) {
+                                have[i.id] = 1
+                            });
+                            var n = 0;
+                            d.items.forEach(function(i) {
+                                if (i && i.id && i.url && !have[i.id]) {
+                                    i.cats = i.cats || [];
+                                    i.host = i.host || hostOf(new URL(i.url));
+                                    i.title = i.title || titleOf(new URL(i.url));
+                                    items.push(i);
+                                    n++
+                                }
+                            });
+                            var gh = {};
+                            groups.forEach(function(g) {
+                                gh[g.id] = 1
+                            });
+                            (d.groups || []).forEach(function(g) {
+                                if (g && g.id && !gh[g.id] && Array.isArray(g.ids)) groups.push(g)
+                            });
+                            var sc = d.settings && d.settings.cats;
+                            if (Array.isArray(sc)) sc.forEach(function(c) {
+                                if (S.cats.indexOf(c) < 0) S.cats.push(c)
+                            });
+                            save();
+                            closeModal();
+                            route();
+                            toast('Imported ' + n + ' new favorites')
+                        } catch (x) {
+                            toast('That file is not a valid backup')
+                        }
+                    };
+                    r.readAsText(f);
+                });
+                s.querySelector('#clr').addEventListener('click', function() {
+                    closeModal();
+                    confirmModal('Erase everything?', 'All favorites, groups and custom categories will be removed. Export a backup first if you may need them.', 'Erase all', function() {
+                        items = [];
+                        groups = [];
+                        S.cats = [];
+                        save();
+                        route()
+                    })
+                });
+                s.querySelector('#sDone').addEventListener('click', closeModal);
+            }
+            $('settings').addEventListener('click', settingsModal);
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     closeMenu();
@@ -1628,7 +1999,6 @@
                     else if (grouping) setGrouping(false)
                 }
             });
-
             catLabel();
             route();
         })();
