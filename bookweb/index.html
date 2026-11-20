@@ -3,9 +3,13 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="Favorites is a private, no-account shelf for the sites you return to. Save links with categories, search instantly, group and reopen them in one click.">
+    <meta name="theme-color" content="#f7f3e8">
+    <meta name="color-scheme" content="light dark">
     <title>Favorites</title>
-    <link rel="icon" type="image/x-icon" href="/favourites.ico">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23c8921a'/%3E%3Cpath d='M32 13l6 12.2 13.4 2-9.7 9.4 2.3 13.4L32 43.6l-12 6.4 2.3-13.4-9.7-9.4 13.4-2z' fill='%23fffdf7'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23c8921a'/%3E%3Cpath d='M32 13l6 12.2 13.4 2-9.7 9.4 2.3 13.4L32 43.6l-12 6.4 2.3-13.4-9.7-9.4 13.4-2z' fill='%23fffdf7'/%3E%3C/svg%3E">
 
     <style>
          :root {
@@ -42,11 +46,56 @@
         
         * {
             box-sizing: border-box;
-            margin: 0
+            margin: 0;
+            -webkit-tap-highlight-color: transparent
+        }
+        /* ---- custom golden thin scrollbars, everywhere ---- */
+        
+        @supports (-moz-appearance:none) {
+            * {
+                scrollbar-width: thin;
+                scrollbar-color: var(--ac) transparent
+            }
+        }
+        
+         ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px
+        }
+        
+         ::-webkit-scrollbar-track {
+            background: transparent
+        }
+        
+         ::-webkit-scrollbar-thumb {
+            background: var(--ac);
+            border-radius: 99px;
+            border: 3px solid transparent;
+            background-clip: padding-box
+        }
+        
+         ::-webkit-scrollbar-thumb:hover {
+            background: var(--ac2);
+            background-clip: padding-box;
+            border: 3px solid transparent
+        }
+        
+         ::-webkit-scrollbar-button {
+            display: none;
+            width: 0;
+            height: 0
+        }
+        
+         ::-webkit-scrollbar-corner {
+            background: transparent
         }
         
         [hidden] {
-            display: none!important
+            display: none !important
+        }
+        
+        html {
+            -webkit-text-size-adjust: 100%
         }
         
         body {
@@ -54,6 +103,7 @@
             color: var(--ink);
             font-family: var(--font);
             min-height: 100vh;
+            min-height: 100dvh;
             transition: background .3s, color .3s;
             -webkit-font-smoothing: antialiased
         }
@@ -70,7 +120,7 @@
             z-index: 1;
             max-width: 1040px;
             margin: 0 auto;
-            padding: 28px 24px 110px
+            padding: 28px 24px calc(110px + env(safe-area-inset-bottom))
         }
         
         #sp {
@@ -115,7 +165,7 @@
             justify-content: space-between;
             align-items: center;
             gap: 12px;
-            margin-bottom: 36px
+            margin-bottom: 30px
         }
         
         .ttl {
@@ -182,6 +232,10 @@
             box-shadow: 0 4px 0 var(--ac2)
         }
         
+        .b.g.on:active {
+            box-shadow: 0 1px 0 var(--ac2)
+        }
+        
         .b.dg {
             background: var(--dg);
             color: #fff;
@@ -224,6 +278,7 @@
         
         .bar {
             display: flex;
+            align-items: center;
             gap: 6px;
             background: var(--sf);
             border: 1px solid var(--ln);
@@ -242,29 +297,70 @@
             background: transparent;
             border: 0;
             outline: 0;
-            padding: 10px 16px
+            padding: 10px 14px;
+            font-size: 16px
         }
         
         .bar input::placeholder {
             color: var(--mut)
         }
         
-        .err {
+        .xb {
+            flex: none;
+            width: 28px;
+            height: 28px;
+            padding: 0;
+            border: 0;
+            border-radius: 50%;
+            background: var(--ln);
+            color: var(--mut);
+            cursor: pointer;
+            display: grid;
+            place-items: center
+        }
+        
+        .xb svg {
+            width: 14px;
+            height: 14px
+        }
+        
+        .catb {
+            position: relative
+        }
+        
+        .badge {
+            position: absolute;
+            top: -7px;
+            right: -4px;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 5px;
+            border-radius: 99px;
+            background: var(--ink);
+            color: var(--bg);
+            font-size: 11px;
+            font-weight: 700;
+            display: grid;
+            place-items: center
+        }
+        
+        .msg {
             min-height: 20px;
-            margin: 12px 0 0 20px;
+            margin: 14px 0 0 20px;
             font-size: 13px;
+            color: var(--mut)
+        }
+        
+        .msg.err {
             color: var(--dg)
         }
         
         .sub {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            margin: 8px 0 20px
+            margin: 6px 0 18px
         }
         
         .chips {
-            flex: 1;
+            width: 100%;
             min-width: 0
         }
         
@@ -272,7 +368,53 @@
             display: flex;
             gap: 8px;
             overflow-x: auto;
-            padding: 4px 4px 10px
+            overflow-y: hidden;
+            padding: 4px 4px 10px;
+            scrollbar-width: none;
+            overscroll-behavior-x: contain;
+            -webkit-overflow-scrolling: touch
+        }
+        
+        .chips-in::-webkit-scrollbar {
+            display: none
+        }
+        /* custom scrollbar for chips: works on touch screens too */
+        
+        .cbar {
+            position: relative;
+            height: 6px;
+            margin: 2px 4px 0;
+            border-radius: 99px;
+            background: var(--ln);
+            touch-action: none;
+            cursor: pointer
+        }
+        
+        .cbar::before {
+            content: "";
+            position: absolute;
+            inset: -9px 0
+        }
+        
+        .cthumb {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            min-width: 28px;
+            border-radius: 99px;
+            background: var(--ac);
+            cursor: grab;
+            transition: background .15s
+        }
+        
+        .cthumb:hover,
+        .cthumb.drag {
+            background: var(--ac2)
+        }
+        
+        .cthumb.drag {
+            cursor: grabbing
         }
         
         .chip {
@@ -480,7 +622,12 @@
             grid-column: 1/-1;
             text-align: center;
             color: var(--mut);
-            padding: 72px 0
+            padding: 72px 12px;
+            line-height: 1.6
+        }
+        
+        .empty b {
+            color: var(--ink)
         }
         
         .mut {
@@ -490,7 +637,7 @@
         
         .bulk {
             position: fixed;
-            bottom: 20px;
+            bottom: calc(20px + env(safe-area-inset-bottom));
             left: 50%;
             transform: translateX(-50%);
             z-index: 40;
@@ -596,7 +743,8 @@
         }
         
         select,
-        .f input {
+        .f input,
+        .pkadd input {
             background: var(--bg);
             border: 1px solid var(--ln);
             border-radius: 12px;
@@ -608,12 +756,14 @@
             width: 100%
         }
         
-        .f input:focus {
+        .f input:focus,
+        .pkadd input:focus {
             border-color: var(--ac)
         }
         
         input.sw {
             appearance: none;
+            -webkit-appearance: none;
             flex: none;
             width: 46px;
             height: 26px;
@@ -622,7 +772,9 @@
             position: relative;
             cursor: pointer;
             box-shadow: 0 3px 0 var(--ed);
-            transition: background .2s
+            transition: background .2s;
+            padding: 0;
+            border: 0
         }
         
         .sw::after {
@@ -703,6 +855,7 @@
             z-index: 60;
             background: var(--sc);
             backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
             display: grid;
             place-items: center;
             padding: 20px
@@ -712,12 +865,17 @@
             width: 100%;
             max-width: 440px;
             max-height: calc(100vh - 40px);
+            max-height: calc(100dvh - 40px);
             overflow-y: auto;
             background: var(--sf);
             border: 1px solid var(--ln);
             border-radius: 24px;
             padding: 26px;
             box-shadow: var(--pop)
+        }
+        
+        .modal.wide {
+            max-width: 600px
         }
         
         .modal h2 {
@@ -728,7 +886,7 @@
         .modal p,
         .modal li {
             color: var(--mut);
-            line-height: 1.55;
+            line-height: 1.6;
             font-size: 15px
         }
         
@@ -740,7 +898,112 @@
         .modal ul {
             padding-left: 18px;
             display: grid;
-            gap: 10px
+            gap: 8px;
+            margin-top: 8px
+        }
+        
+        .modal.wide h2 {
+            margin-bottom: 4px
+        }
+        
+        .mh {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px
+        }
+        
+        .logo {
+            width: 52px;
+            height: 52px;
+            flex: none;
+            border-radius: 16px;
+            background: var(--ac);
+            box-shadow: 0 4px 0 var(--ac2);
+            display: grid;
+            place-items: center;
+            color: var(--ai)
+        }
+        
+        .logo svg {
+            width: 28px;
+            height: 28px;
+            fill: var(--sf);
+            stroke: none
+        }
+        
+        .lead {
+            color: var(--mut);
+            font-size: 15px;
+            line-height: 1.6
+        }
+        
+        .sec {
+            margin-top: 22px;
+            padding-top: 18px;
+            border-top: 1px dashed var(--ln)
+        }
+        
+        .sec h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            margin-bottom: 8px
+        }
+        
+        .num {
+            flex: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--ac);
+            color: var(--ai);
+            display: grid;
+            place-items: center;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 2px 0 var(--ac2)
+        }
+        
+        .ex {
+            display: block;
+            margin: 10px 0;
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: var(--bg);
+            border: 1px solid var(--ln);
+            box-shadow: 0 3px 0 var(--ed);
+            font: 600 13.5px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            color: var(--ink);
+            word-break: break-word
+        }
+        
+        .ex em {
+            font-style: normal;
+            color: var(--ac2)
+        }
+        
+         :root[data-mode=dark] .ex em {
+            color: var(--ac)
+        }
+        
+        .tip {
+            margin-top: 22px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            background: var(--bg);
+            border-left: 4px solid var(--ac)
+        }
+        
+        kbd {
+            font: 600 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            padding: 2px 7px;
+            border-radius: 7px;
+            border: 1px solid var(--ln);
+            background: var(--bg);
+            box-shadow: 0 2px 0 var(--ed);
+            color: var(--ink)
         }
         
         .f {
@@ -753,6 +1016,27 @@
             font-size: 13px;
             color: var(--mut);
             margin: 0 0 6px 4px
+        }
+        
+        .pkgrid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 4px 4px 10px;
+            max-height: min(38vh, 280px);
+            overflow-y: auto
+        }
+        
+        .pkadd {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px
+        }
+        
+        .pkadd input {
+            flex: 1;
+            min-width: 0;
+            font-size: 16px
         }
         
         .row {
@@ -771,7 +1055,7 @@
         
         .toast {
             position: fixed;
-            bottom: 84px;
+            bottom: calc(84px + env(safe-area-inset-bottom));
             left: 50%;
             transform: translateX(-50%);
             z-index: 70;
@@ -781,20 +1065,19 @@
             border-radius: 999px;
             font-size: 14px;
             box-shadow: var(--pop);
-            max-width: 90vw
+            max-width: 90vw;
+            text-align: center
         }
         
         @media(max-width:620px) {
             .wrap {
-                padding: 20px 14px 120px
+                padding: 20px 14px calc(120px + env(safe-area-inset-bottom))
             }
             .lbl {
                 display: none
             }
-            .b:not(.sq):not(.sm):not(.chip) {
-                padding: 0 16px
-            }
-            .b.tl {
+            .b.tl,
+            .b.catb {
                 width: 40px;
                 padding: 0
             }
@@ -838,8 +1121,37 @@
             .cnt {
                 display: none
             }
-            .sub {
-                flex-direction: column
+            .modal {
+                padding: 22px 20px
+            }
+            .groups {
+                grid-template-columns: 1fr
+            }
+        }
+        
+        @media(max-width:430px) {
+            header {
+                flex-wrap: wrap
+            }
+            .ttl {
+                flex: 1 1 100%
+            }
+            .tools {
+                flex: 1 1 100%;
+                justify-content: space-between
+            }
+            .b.tl,
+            .b.sq {
+                width: 44px
+            }
+            .bar input {
+                padding: 10px 8px 10px 12px
+            }
+        }
+        
+        @media(max-width:340px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr)
             }
         }
         
@@ -848,14 +1160,15 @@
                 display: none
             }
             * {
-                animation: none!important;
-                transition: none!important
+                animation: none !important;
+                transition: none !important
             }
         }
     </style>
 </head>
 
 <body>
+    <noscript><p style="padding:40px;text-align:center">Favorites needs JavaScript to run. Please enable it and reload.</p></noscript>
     <div id="sp" aria-hidden="true"></div>
     <div class="wrap">
         <header>
@@ -864,20 +1177,30 @@
                 <h1 id="title">Favorites</h1>
             </div>
             <div class="tools">
-                <button class="b g sq" id="theme" type="button" aria-label="Switch light or dark mode"></button>
-                <button class="b g sq" id="info" type="button" aria-label="How to use"></button>
                 <button class="b g tl" id="rnd" type="button" aria-label="Open a random link"></button>
+                <button class="b g tl" id="selBtn" type="button" aria-pressed="false" aria-label="Select links" hidden></button>
                 <a class="b g tl" href="#groups" id="gl" aria-label="Groups"></a>
+                <button class="b g sq" id="theme" type="button" aria-label="Switch light or dark mode"></button>
                 <a class="b g sq" href="#settings" id="sl" aria-label="Settings"></a>
+                <button class="b g sq" id="info" type="button" aria-label="How to use"></button>
             </div>
         </header>
         <section id="homeView">
-            <div class="bar"><input id="url" type="text" aria-label="Links and categories" autocomplete="off" spellcheck="false"><button class="b" id="save" type="button">Save</button></div>
-            <div class="err" id="err" role="alert"></div>
+            <div class="bar">
+                <input id="url" type="text" aria-label="Search your links, or type a link and categories to save" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go">
+                <button class="xb" id="xclr" type="button" aria-label="Clear" hidden></button>
+                <button class="b g catb" id="catBtn" type="button" aria-label="Choose categories"><span id="catIc"></span><span class="lbl">Category</span><span class="badge" id="catN" hidden>0</span></button>
+                <button class="b" id="save" type="button">Save</button>
+            </div>
+            <div class="msg" id="msg" role="status" aria-live="polite"></div>
             <div class="sub">
                 <div class="chips" id="chips" hidden>
                     <div class="chips-in" id="chipsIn"></div>
-                </div><button class="b g" id="selBtn" type="button" aria-pressed="false" hidden>Select</button></div>
+                    <div class="cbar" id="cbar" hidden>
+                        <div class="cthumb" id="cthumb"></div>
+                    </div>
+                </div>
+            </div>
             <main class="grid" id="grid"></main>
         </section>
         <section id="groupsView" hidden>
@@ -890,9 +1213,10 @@
         (() => {
                 const $ = id => document.getElementById(id),
                     Q = (e, s) => e.querySelector(s),
-                    root = document.documentElement;
+                    root = document.documentElement,
+                    arr = a => Array.isArray(a) ? a : [];
                 const K = {
-                    i: "favorites.v3",
+                    i: "favorites.v4",
                     g: "favorites.groups",
                     s: "favorites.settings",
                     m: "favorites.theme"
@@ -922,7 +1246,7 @@
                         return d
                     }
                 };
-                const SV = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+                const SV = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
                 const I = {
                     moon: '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
                     sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
@@ -931,26 +1255,38 @@
                     grp: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
                     set: '<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>',
                     back: '<path d="M15 6l-6 6 6 6"/>',
-                    ok: '<path d="M5 12.5l4.5 4.5L19 7" stroke-width="3.5"/>'
+                    ok: '<path d="M5 12.5l4.5 4.5L19 7" stroke-width="3.5"/>',
+                    sel: '<rect x="3" y="3" width="18" height="18" rx="5"/><path d="M8 12.5l3 3 5-6"/>',
+                    tag: '<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.2"/>',
+                    x: '<path d="M6 6l12 12M18 6L6 18"/>'
                 };
+                const STAR = '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8l7.2 14.6 16.1 2.3-11.7 11.4 2.8 16L32 44.6l-14.4 7.7 2.8-16L8.7 24.9l16.1-2.3z"/></svg>';
                 $("back").innerHTML = SV(I.back);
                 $("theme").innerHTML = SV(I.moon).replace("<svg", "<svg class=moon") + SV(I.sun).replace("<svg", "<svg class=sun");
                 $("info").innerHTML = SV(I.info);
                 $("rnd").innerHTML = SV(I.rnd) + '<span class="lbl">Random</span>';
+                $("selBtn").innerHTML = SV(I.sel) + '<span class="lbl" id="selLbl">Select</span>';
                 $("gl").innerHTML = SV(I.grp) + '<span class="lbl">Groups</span>';
                 $("sl").innerHTML = SV(I.set);
+                $("xclr").innerHTML = SV(I.x);
+                $("catIc").innerHTML = SV(I.tag);
+                $("catIc").style.display = "inline-flex";
+
                 const D = {
                     spr: true,
                     nudge: true,
                     every: 15,
-                    rnd: "tab"
+                    rnd: "tab",
+                    icons: true
                 };
                 let items = [],
                     groups = [],
                     S = {},
                     mode, filter = "All",
                     sel = {},
-                    selecting = false;
+                    selecting = false,
+                    vw = "home";
+                const picked = new Map();
                 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
                 const esc = s => String(s).replace(/[&<>"']/g, c => ({
                     "&": "&amp;",
@@ -964,64 +1300,141 @@
                     for (const c of s) h = (h * 31 + c.charCodeAt(0)) % 360;
                     return h
                 };
-                const find = id => items.find(i => i.id === id);
+                const find = k => items.find(i => i.key === k);
 
+                /* ---------- links: parse + normalise (web-only data is derived, never stored) ---------- */
                 function parse(raw) {
                     raw = (raw || "").trim();
                     if (!raw || /\s/.test(raw)) return null;
                     if (!/^[a-z][a-z0-9+.-]*:\/\//i.test(raw)) raw = "https://" + raw;
                     try {
-                        const u = new URL(raw);
-                        return /^(https?):$/.test(u.protocol) && u.hostname && (u.hostname.includes(".") || u.hostname === "localhost") ? u : null
+                        const u = new URL(raw),
+                            h = u.hostname;
+                        if (!/^https?:$/.test(u.protocol) || !h) return null;
+                        const okHost = h === "localhost" || /^\d{1,3}(\.\d{1,3}){3}$/.test(h) || /\.[a-z][a-z0-9-]+$/i.test(h);
+                        return okHost ? u : null
                     } catch (e) {
                         return null
                     }
                 }
-                const hostOf = u => u.hostname.replace(/^www\./, "");
 
-                function titleOf(u) {
-                    const h = hostOf(u);
+                function titleOf(h) {
                     if (/^[\d.]+$/.test(h) || !h.includes(".")) return h;
                     const p = h.split(".");
                     let i = p.length - 2;
                     if (p.length > 2 && /^(co|com|org|net|ac|gov|edu|or|ne)$/.test(p[i]) && p[p.length - 1].length === 2) i--;
                     return p[i][0].toUpperCase() + p[i].slice(1)
                 }
-
-                function clean(i) {
-                    if (!i || typeof i !== "object") return null;
-                    const u = parse(i.url);
+                /* "https://www.Neal.fun/" -> {url:"neal.fun", key:"neal.fun", href:"https://neal.fun", host, title} */
+                function norm(raw) {
+                    const u = parse(typeof raw === "string" ? raw : "");
                     if (!u) return null;
-                    const c = Array.isArray(i.cats) ? i.cats : i.cat ? [i.cat] : [];
+                    const host = u.hostname.replace(/^www\./, ""),
+                        rest = host + (u.port ? ":" + u.port : "") + u.pathname.replace(/\/+$/, "") + u.search + u.hash,
+                        http = u.protocol === "http:";
                     return {
-                        id: String(i.id || uid()).replace(/[^\w-]/g, ""),
-                        url: u.href,
-                        host: hostOf(u),
-                        title: String(i.title || titleOf(u)).slice(0, 60),
-                        cats: c.filter(x => typeof x === "string" && x.trim()).map(x => x.trim().slice(0, 24)).slice(0, 5)
+                        url: (http ? "http://" : "") + rest,
+                        key: rest.toLowerCase(),
+                        href: (http ? "http://" : "https://") + rest,
+                        host,
+                        title: titleOf(host)
+                    }
+                }
+                const usedCats = () => {
+                    const m = {};
+                    items.forEach(i => i.cats.forEach(c => m[c.toLowerCase()] = m[c.toLowerCase()] || c));
+                    return Object.values(m).sort((a, b) => a.localeCompare(b))
+                };
+
+                function normCats(a) {
+                    const out = [],
+                        ex = usedCats();
+                    arr(a).forEach(c => {
+                        c = String(c).trim().slice(0, 24);
+                        if (!c) return;
+                        const f = ex.find(e => e.toLowerCase() === c.toLowerCase()) || c;
+                        if (!out.some(o => o.toLowerCase() === f.toLowerCase())) out.push(f)
+                    });
+                    return out.slice(0, 5)
+                }
+                /* single entry point: add a new link, or merge categories into the one that already exists */
+                function upsert(raw, cats, front) {
+                    const n = norm(raw);
+                    if (!n) return null;
+                    cats = normCats(cats);
+                    const ex = find(n.key);
+                    if (ex) {
+                        const b = ex.cats.length;
+                        ex.cats = normCats(ex.cats.concat(cats));
+                        return {
+                            item: ex,
+                            isNew: false,
+                            changed: ex.cats.length > b
+                        }
+                    }
+                    const it = Object.assign(n, {
+                        cats
+                    });
+                    front ? items.unshift(it) : items.push(it);
+                    return {
+                        item: it,
+                        isNew: true,
+                        changed: true
                     }
                 }
 
+                function addGroup(x, legacy) {
+                    if (!x || typeof x !== "object") return false;
+                    const keys = [];
+                    [...arr(x.links || x.urls).map(u => (norm(u) || {}).key), ...arr(x.ids).map(i => (legacy || {})[i])].forEach(k => {
+                        if (k && find(k) && !keys.includes(k)) keys.push(k)
+                    });
+                    if (!keys.length) return false;
+                    const title = String(x.title || "Group").slice(0, 40);
+                    if (groups.some(g => g.title === title && g.keys.length === keys.length && keys.every(k => g.keys.includes(k)))) return false;
+                    groups.push({
+                        id: uid(),
+                        title,
+                        keys
+                    });
+                    return true
+                }
+
                 function loadAll() {
-                    items = (ld(K.i, ld("favorites.v2", [])) || []);
-                    items = (Array.isArray(items) ? items : []).map(clean).filter(Boolean);
-                    const g = ld(K.g, []);
-                    groups = (Array.isArray(g) ? g : []).filter(x => x && x.id && Array.isArray(x.ids)).map(x => ({
-                        id: String(x.id).replace(/[^\w-]/g, ""),
-                        title: String(x.title || "Group").slice(0, 40),
-                        ids: x.ids.map(String)
-                    }));
+                    items = [];
+                    groups = [];
+                    const legacy = {};
+                    let raw = ld(K.i, null);
+                    if (!Array.isArray(raw)) raw = ld("favorites.v3", ld("favorites.v2", []));
+                    arr(raw).forEach(x => {
+                        if (!x || typeof x !== "object") return;
+                        const r = upsert(x.url, x.cats || x.categories || (x.cat ? [x.cat] : []));
+                        if (r && x.id) legacy[x.id] = r.item.key
+                    });
+                    arr(ld(K.g, [])).forEach(g => addGroup(g, legacy));
                     S = Object.assign({}, D, ld(K.s, {}))
                 }
 
                 function save() {
-                    const ok = [st.set(K.i, JSON.stringify(items)), st.set(K.g, JSON.stringify(groups)), st.set(K.s, JSON.stringify(S))].every(Boolean);
+                    const ok = [
+                        st.set(K.i, JSON.stringify(items.map(i => ({
+                            url: i.url,
+                            cats: i.cats
+                        })))),
+                        st.set(K.g, JSON.stringify(groups.map(g => ({
+                            title: g.title,
+                            urls: g.keys.map(k => find(k)).filter(Boolean).map(i => i.url)
+                        })))),
+                        st.set(K.s, JSON.stringify(S))
+                    ].every(Boolean);
                     if (!ok) toast("Couldn’t save. Browser storage is full or blocked.")
                 }
 
                 function toast(m) {
+                    document.querySelectorAll(".toast").forEach(t => t.remove());
                     const t = document.createElement("div");
                     t.className = "toast";
+                    t.setAttribute("role", "status");
                     t.textContent = m;
                     document.body.append(t);
                     setTimeout(() => t.remove(), 3200)
@@ -1030,90 +1443,92 @@
                 function setMode(m) {
                     mode = m;
                     root.dataset.mode = m;
-                    st.set(K.m, m)
+                    st.set(K.m, m);
+                    const tc = document.querySelector('meta[name=theme-color]');
+                    tc && tc.setAttribute("content", m === "dark" ? "#14120c" : "#f7f3e8")
                 }
 
                 function icon(it, c) {
-                    return `<div class="ico ${c||""}" style="background:hsl(${hue(it.host)} 55% 52%)">${esc(it.title[0].toUpperCase())}<img src="https://www.google.com/s2/favicons?sz=64&domain=${encodeURIComponent(it.host)}" alt="" onerror="this.remove()" onload="if(this.naturalWidth<=16)this.remove();else{this.parentNode.style.background='none';this.parentNode.style.color='transparent'}"></div>`
+                    const img = S.icons ? `<img src="https://www.google.com/s2/favicons?sz=64&domain=${encodeURIComponent(it.host)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()" onload="if(this.naturalWidth<=16)this.remove();else{this.parentNode.style.background='none';this.parentNode.style.color='transparent'}">` : "";
+                    return `<div class="ico ${c||""}" style="background:hsl(${hue(it.host)} 55% 52%)">${esc(it.title[0].toUpperCase())}${img}</div>`
                 }
-                const usedCats = () => {
-                    const m = {};
-                    items.forEach(i => i.cats.forEach(c => m[c.toLowerCase()] = m[c.toLowerCase()] || c));
-                    return Object.values(m).sort()
-                };
 
-                function normCats(a) {
-                    const out = [],
-                        ex = usedCats();
-                    a.forEach(c => {
-                        c = c.trim();
-                        if (!c) return;
-                        const f = ex.find(e => e.toLowerCase() === c.toLowerCase()) || c;
-                        if (!out.some(o => o.toLowerCase() === f.toLowerCase())) out.push(f)
-                    });
-                    return out.slice(0, 5)
-                }
-                /* input: "neal.fun fun blog, aeon.co read" -> a link starts an entry, words after it are categories */
+                /* ---------- input: "a.com, b.com fun blog, c.com read" ----------
+                   categories belong to the run of links just before them; links with no categories borrow the next ones */
                 function parseInput(t) {
                     const out = [],
                         bad = [];
-                    let cur = null;
+                    let run = [],
+                        cats = [];
+                    const flush = () => {
+                        run.forEach(r => r.cats = cats.slice());
+                        out.push(...run);
+                        run = [];
+                        cats = []
+                    };
                     for (const tk of t.split(/[\s,;]+/).filter(Boolean)) {
                         const c = tk.replace(/^\[|\]$/g, ""),
-                            u = parse(c);
-                        if (u && (c.includes(".") || /^https?:\/\//i.test(c))) {
-                            cur = {
-                                u,
+                            n = norm(c);
+                        if (n && (c.includes(".") || /^https?:\/\//i.test(c))) {
+                            if (cats.length) flush();
+                            run.push({
+                                n,
                                 cats: []
-                            };
-                            out.push(cur)
-                        } else if (cur && /^[^\/:@.]+$/.test(c)) cur.cats.push(c);
-                        else bad.push(tk)
+                            })
+                        } else if (/^[^\/:@.]+$/.test(c)) {
+                            run.length ? cats.push(c) : bad.push(tk)
+                        } else bad.push(tk)
                     }
+                    flush();
                     return {
                         out,
                         bad
                     }
                 }
 
-                function add() {
-                    const {
-                        out,
-                        bad
-                    } = parseInput($("url").value);
-                    let n = 0,
-                        up = 0;
+                function setMsg(t, err) {
+                    const m = $("msg");
+                    m.textContent = t || "";
+                    m.className = "msg" + (err ? " err" : "")
+                }
+
+                function add(fromEnter) {
+                    const v = $("url").value,
+                        {
+                            out,
+                            bad
+                        } = parseInput(v);
                     if (!out.length) {
-                        $("err").textContent = bad.length ? `Couldn’t read “${bad.join(", ")}”. Start each entry with a link, then add categories: example.com read.` : "Type a link, then any categories: neal.fun fun blog";
+                        if (fromEnter && v.trim()) {
+                            const top = view()[0];
+                            if (top) {
+                                window.open(top.href, "_blank", "noopener");
+                                return
+                            }
+                        }
+                        setMsg(bad.length ? `Couldn’t read “${bad.join(", ")}”. Start with a link, then add categories: example.com read.` : "Type a link, then any categories: neal.fun fun blog", true);
                         return
                     }
-                    out.reverse().forEach(o => {
-                        const cats = normCats(o.cats),
-                            ex = items.find(x => x.url === o.u.href);
-                        if (ex) {
-                            ex.cats = normCats(ex.cats.concat(cats));
-                            up++
-                        } else {
-                            items.unshift({
-                                id: uid(),
-                                url: o.u.href,
-                                host: hostOf(o.u),
-                                title: titleOf(o.u),
-                                cats
-                            });
-                            n++
+                    const pk = [...picked.values()];
+                    let n = 0,
+                        chg = 0,
+                        same = 0,
+                        dup = null;
+                    [...out].reverse().forEach(o => {
+                        const r = upsert(o.n.url, o.cats.concat(pk), true);
+                        if (r.isNew) n++;
+                        else {
+                            dup = r.item.key;
+                            r.changed ? chg++ : same++
                         }
                     });
+                    picked.clear();
+                    updPick();
                     save();
                     filter = "All";
-                    if (bad.length) {
-                        $("err").textContent = `Saved what I could. Couldn’t read “${bad.join(", ")}”. Start each entry with a link, then add categories.`;
-                        $("url").value = bad.join(" ")
-                    } else {
-                        $("err").textContent = "";
-                        $("url").value = ""
-                    }
+                    $("url").value = bad.length ? bad.join(" ") : "";
                     render();
+                    if (bad.length) setMsg(`Saved what I could. Couldn’t read “${bad.join(", ")}”. Start each entry with a link, then add categories.`, true);
                     const f = Q($("grid"), ".card");
                     if (f && n) f.animate([{
                         transform: "scale(.9)",
@@ -1124,108 +1539,834 @@
                     }], {
                         duration: 350
                     });
-                    toast([n && n + (n > 1 ? " links" : " link") + " saved", up && up + " updated"].filter(Boolean).join(", "));
+                    if (dup && !n) {
+                        const c = [...$("grid").children].find(e => e.dataset.id === dup);
+                        if (c) {
+                            c.scrollIntoView({
+                                block: "center",
+                                behavior: "smooth"
+                            });
+                            c.classList.add("nudge");
+                            setTimeout(() => c.classList.remove("nudge"), 1500)
+                        }
+                    }
+                    const pl = (x, w) => x + (x > 1 ? " links " : " link ") + w;
+                    toast([n && pl(n, "saved"), chg && pl(chg, "updated"), same && pl(same, "already saved")].filter(Boolean).join(", "));
                     $("url").focus()
                 }
 
-                function render() {
-                    const used = usedCats();
-                    if (filter !== "All" && !used.includes(filter)) filter = "All";
-                    $("chips").hidden = !used.length;
-                    $("selBtn").hidden = !items.length;
-                    $("chipsIn").innerHTML = ["All", ...used].map(c => `<button type="button" class="b g chip${c===filter?" on":""}" data-c="${esc(c)}" aria-pressed="${c===filter}">${esc(c)}</button>`).join("");
-                    const list = items.filter(x => filter === "All" || x.cats.includes(filter));
-                    $("grid").innerHTML = list.length ? list.map(x => `<a class="card${sel[x.id]?" picked":""}" href="${esc(x.url)}" target="_blank" rel="noopener noreferrer" data-id="${esc(x.id)}">${selecting?`<span class="check">${SV(I.ok)}</span>`:""}${icon(x)}<div class="t">${esc(x.title)}</div><div class="h">${esc(x.host)}</div><div class="tags">${x.cats.slice(0,2).map(c=>`<i>${esc(c)}</i>`).join("")}${x.cats.length>2?`<i>+${x.cats.length-2}</i>`:""}</div></a>`).join(""):'<div class="empty">Your saved links will appear here.</div>';
- $("selBtn").classList.toggle("on",selecting);$("selBtn").setAttribute("aria-pressed",selecting);bulk()}
-function bulk(){const n=Object.keys(sel).length;$("bulk").hidden=!(selecting&&n);$("bn").textContent=n+" selected"}
-function setSel(on){selecting=on;if(!on)sel={};closeMenu();render()}
-function renderGroups(){groups=groups.map(g=>({...g,ids:g.ids.filter(find)})).filter(g=>g.ids.length);
- $("groups").innerHTML=groups.length?groups.map(g=>`<div class="gcard" data-gid="${esc(g.id)}"><div class="ghead"><div><div class="gt">${esc(g.title)}</div><div class="gn">${g.ids.length} ${g.ids.length===1?"link":"links"}</div></div><button class="b sm" type="button" data-open="${esc(g.id)}">Open all</button></div><div class="glist">${g.ids.map(id=>{const it=find(id);return`<a class="glink" href="${esc(it.url)}" target="_blank" rel="noopener noreferrer">${icon(it,"s")}<span>${esc(it.title)}</span></a>`}).join("")}</div></div>`).join(""):'<div class="empty">Groups you create will appear here.</div>'}
-const sw=k=>`<input type="checkbox" class="sw" data-k="${k}"${S[k]?" checked":""}>`;
-const row=(l,c)=>`<label class="set"><span>${l}</span>${c}</label>`;
-function renderSettings(){const cats=usedCats();
- $("settingsView").innerHTML=`<div class="gcard"><h2>Appearance</h2>${row("Dark mode",`<input type="checkbox" class="sw" data-k="mode"${mode==="dark"?" checked":""}>`)}${row("Floating sprinkles",sw("spr"))}</div>
+                /* ---------- search + filter ---------- */
+                const qTokens = () => $("url").value.toLowerCase().split(/[\s,;]+/).filter(Boolean).map(t => t.replace(/^https?:\/\//, "").replace(/^www\./, "")).filter(Boolean);
+
+                function score(it, q) {
+                    let tot = 0;
+                    const t = it.title.toLowerCase(),
+                        k = it.key,
+                        cs = it.cats.map(c => c.toLowerCase());
+                    for (const w of q) {
+                        let s = 0;
+                        if (t.startsWith(w)) s = 100;
+                        else if (k.startsWith(w)) s = 95;
+                        else if (cs.includes(w)) s = 80;
+                        else if (k.includes(w)) s = 60;
+                        else if (cs.some(c => c.startsWith(w))) s = 55;
+                        else if (t.includes(w)) s = 45;
+                        else if (cs.some(c => c.includes(w))) s = 30;
+                        if (!s) return 0;
+                        tot += s
+                    }
+                    return tot
+                }
+
+                function view() {
+                    const q = qTokens();
+                    let l = items.map((x, i) => ({
+                        x,
+                        i
+                    })).filter(o => filter === "All" || o.x.cats.includes(filter));
+                    if (q.length) l = l.map(o => ({
+                        ...o,
+                        s: score(o.x, q)
+                    })).filter(o => o.s > 0).sort((a, b) => b.s - a.s || a.i - b.i);
+                    return l.map(o => o.x)
+                }
+
+                function status(shown) {
+                    const v = $("url").value.trim(),
+                        q = v ? parseInput(v) : {
+                            out: []
+                        },
+                        tot = items.length,
+                        p = [];
+                    $("xclr").hidden = !v;
+                    if (v || filter !== "All") p.push(`Showing ${shown.length} of ${tot} ${tot===1?"link":"links"}`);
+                    if (q.out.length) {
+                        const nw = q.out.filter(o => !find(o.n.key)).length;
+                        p.push(nw ? `Enter to save ${nw} new ${nw===1?"link":"links"}` : "Already saved · Enter to update categories")
+                    } else if (v && shown.length) p.push(`Enter to open ${shown[0].title}`);
+                    setMsg(p.join(" · "))
+                }
+
+                /* ---------- chips scrollbar (touch friendly, golden) ---------- */
+                const ci = $("chipsIn"),
+                    cb = $("cbar"),
+                    ct = $("cthumb");
+
+                function sbar() {
+                    const sw = ci.scrollWidth,
+                        cw = ci.clientWidth,
+                        ov = sw > cw + 1;
+                    cb.hidden = !ov;
+                    if (!ov) return;
+                    const tw = cb.clientWidth,
+                        w = Math.max(28, tw * cw / sw),
+                        mx = tw - w;
+                    ct.style.width = w + "px";
+                    ct.style.transform = `translateX(${mx*(ci.scrollLeft/(sw-cw))}px)`
+                }
+                ci.addEventListener("scroll", sbar, {
+                    passive: true
+                });
+                addEventListener("resize", sbar);
+                if (window.ResizeObserver) new ResizeObserver(sbar).observe(ci);
+                ci.addEventListener("wheel", e => {
+                    if (ci.scrollWidth <= ci.clientWidth || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+                    e.preventDefault();
+                    ci.scrollLeft += e.deltaY
+                }, {
+                    passive: false
+                });
+                let drag = null;
+                cb.addEventListener("pointerdown", e => {
+                    e.preventDefault();
+                    const r = cb.getBoundingClientRect(),
+                        w = ct.offsetWidth,
+                        mx = r.width - w,
+                        rng = ci.scrollWidth - ci.clientWidth;
+                    let off;
+                    if (e.target === ct) off = e.clientX - ct.getBoundingClientRect().left;
+                    else {
+                        off = w / 2;
+                        ci.scrollLeft = (e.clientX - r.left - off) / mx * rng
+                    }
+                    try {
+                        cb.setPointerCapture(e.pointerId)
+                    } catch (x) {}
+                    drag = {
+                        off,
+                        r,
+                        mx,
+                        rng
+                    };
+                    ct.classList.add("drag")
+                });
+                cb.addEventListener("pointermove", e => {
+                    if (drag) ci.scrollLeft = (e.clientX - drag.r.left - drag.off) / drag.mx * drag.rng
+                });
+                ["pointerup", "pointercancel"].forEach(n => cb.addEventListener(n, () => {
+                    drag = null;
+                    ct.classList.remove("drag")
+                }));
+
+                /* ---------- render ---------- */
+                function card(x) {
+                    return `<a class="card${sel[x.key]?" picked":""}" href="${esc(x.href)}" target="_blank" rel="noopener noreferrer" data-id="${esc(x.key)}">${selecting?`<span class="check">${SV(I.ok)}</span>`:""}${icon(x)}<div class="t">${esc(x.title)}</div><div class="h">${esc(x.url)}</div><div class="tags">${x.cats.slice(0,2).map(c=>`<i>${esc(c)}</i>`).join("")}${x.cats.length>2?`<i>+${x.cats.length-2}</i>`:""}</div></a>`
+            }
+
+            function hdr() {
+                $("selBtn").hidden = vw !== "home" || !items.length;
+                $("selBtn").classList.toggle("on", selecting);
+                $("selBtn").setAttribute("aria-pressed", selecting);
+                $("selLbl").textContent = selecting ? "Done" : "Select";
+                $("gl").classList.toggle("on", vw === "groups");
+                $("sl").classList.toggle("on", vw === "settings")
+            }
+
+            function render() {
+                const used = usedCats();
+                if (filter !== "All" && !used.includes(filter)) filter = "All";
+                $("chips").hidden = !used.length;
+                $("chipsIn").innerHTML = ["All", ...used].map(c => `<button type="button" class="b g chip${c===filter?" on":""}" data-c="${esc(c)}" aria-pressed="${c===filter}">${esc(c)}</button>`).join("");
+                const list = view(),
+                    v = $("url").value.trim();
+                $("grid").innerHTML = list.length ? list.map(card).join("") : items.length ? `<div class="empty">Nothing matches${v?` “<b>${esc(v)}</b>”`:""}.<br>${v?"Press Save to add it, or clear the box to see everything.":"Try another category."}</div>` : '<div class="empty"><b>Your shelf is empty.</b><br>Type a link above, like <b>neal.fun fun</b>, and press Save.</div>';
+                hdr();
+                bulk();
+                status(list);
+                requestAnimationFrame(sbar)
+            }
+
+            function bulk() {
+                const n = Object.keys(sel).length;
+                $("bulk").hidden = !(selecting && n);
+                $("bn").textContent = n + " selected"
+            }
+
+            function setSel(on) {
+                selecting = on;
+                if (!on) sel = {};
+                closeMenu();
+                render()
+            }
+
+            function renderGroups() {
+                groups.forEach(g => g.keys = g.keys.filter(find));
+                groups = groups.filter(g => g.keys.length);
+                $("groups").innerHTML = groups.length ? groups.map(g => `<div class="gcard" data-gid="${esc(g.id)}"><div class="ghead"><div><div class="gt">${esc(g.title)}</div><div class="gn">${g.keys.length} ${g.keys.length===1?"link":"links"}</div></div><button class="b sm" type="button" data-open="${esc(g.id)}">Open all</button></div><div class="glist">${g.keys.map(k=>{const it=find(k);return`<a class="glink" href="${esc(it.href)}" target="_blank" rel="noopener noreferrer">${icon(it,"s")}<span>${esc(it.title)}</span></a>`}).join("")}</div></div>`).join("") : '<div class="empty">Groups you create will appear here.<br>Use <b>Select</b> on the home page, pick some links, then tap <b>Group Selected URLs</b>.</div>'
+            }
+            const sw = k => `<input type="checkbox" class="sw" data-k="${k}"${S[k]?" checked":""}>`;
+            const row = (l, c) => `<label class="set"><span>${l}</span>${c}</label>`;
+
+            function renderSettings() {
+                const cats = usedCats();
+                $("settingsView").innerHTML = `<div class="gcard"><h2>Appearance</h2>${row("Dark mode",`<input type="checkbox" class="sw" data-k="mode"${mode==="dark"?" checked":""}>`)}${row("Floating sprinkles",sw("spr"))}${row("Show site icons",sw("icons"))}</div>
  <div class="gcard"><h2>Links</h2>${row("Highlight a random link",sw("nudge"))}${row("Highlight every",`<select data-k="every">${[10,15,30,60].map(n=>`<option value="${n}"${S.every==n?" selected":""}>${n} seconds</option>`).join("")}</select>`)}${row("Random link opens in",`<select data-k="rnd"><option value="tab"${S.rnd==="tab"?" selected":""}>New tab</option><option value="same"${S.rnd==="same"?" selected":""}>This tab</option></select>`)}</div>
  <div class="gcard"><h2>Categories</h2><div>${cats.length?cats.map(c=>`<span class="cc">${esc(c)}<button type="button" data-rm="${esc(c)}" aria-label="Remove category ${esc(c)}">×</button></span>`).join(""):'<span class="mut">Categories you add to links appear here.</span>'}</div></div>
  <div class="gcard"><h2>Data</h2><div class="rw"><button class="b g sm" data-act="exp">Export backup</button><button class="b g sm" data-act="imp">Import backup</button><button class="b g sm" data-act="csv">Export CSV</button><button class="b dg sm" data-act="clr">Erase all</button></div><input type="file" id="file" accept=".json,application/json" hidden><p class="mut">${items.length} ${items.length===1?"link":"links"}, ${groups.length} ${groups.length===1?"group":"groups"}, stored only in this browser.</p></div>
- <div class="gcard"><h2>Help</h2><div class="rw"><button class="b g sm" data-act="how">How to use</button><button class="b g sm" data-act="priv">Privacy policy</button><button class="b g sm" data-act="about">About</button></div></div>`}
-function route(){const h=location.hash.slice(1),v=h==="groups"||h==="settings"?h:"home";
- ["home","groups","settings"].forEach(n=>$(n+"View").hidden=n!==v);$("back").hidden=v==="home";$("title").textContent=v==="home"?"Favorites":v[0].toUpperCase()+v.slice(1);
- closeMenu();if(v!=="home")setSel(false);if(v==="home")render();else if(v==="groups")renderGroups();else renderSettings()}
-addEventListener("hashchange",route);
-/* modal + menu */
-let scrim,lastF,menuEl,menuT;
-function closeModal(){if(scrim){scrim.remove();scrim=null;lastF&&lastF.focus&&lastF.focus()}}
-function openModal(h){closeModal();lastF=document.activeElement;scrim=document.createElement("div");scrim.className="scrim";scrim.innerHTML=`<div class="modal" role="dialog" aria-modal="true">${h}</div>`;document.body.append(scrim);scrim.onmousedown=e=>{if(e.target===scrim)closeModal()};
- scrim.addEventListener("keydown",e=>{if(e.key!=="Tab")return;const f=[...scrim.querySelectorAll("button,input,select,a[href]")].filter(x=>!x.disabled);if(!f.length)return;const a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}});return scrim}
-function confirmModal(t,body,ok,fn){const s=openModal(`<h2>${t}</h2><p>${body}</p><div class="row"><button class="b g" id="xc">Cancel</button><button class="b dg" id="xo">${ok}</button></div>`);Q(s,"#xc").onclick=closeModal;const b=Q(s,"#xo");b.focus();b.onclick=()=>{closeModal();fn()}}
-function closeMenu(){menuEl&&menuEl.remove();menuEl=null;menuT&&menuT.classList.remove("ctx");menuT=null}
-function openMenu(c,x,y,ed,dl){closeMenu();menuT=c;c.classList.add("ctx");const m=document.createElement("div");m.className="menu";m.innerHTML='<button class="mi" data-a="e">Edit</button><button class="mi dg" data-a="d">Delete</button>';document.body.append(m);menuEl=m;
- m.style.left=Math.max(8,Math.min(x,innerWidth-m.offsetWidth-8))+"px";m.style.top=Math.max(8,Math.min(y,innerHeight-m.offsetHeight-8))+"px";m.onclick=e=>{const b=e.target.closest(".mi");if(!b)return;closeMenu();b.dataset.a==="e"?ed():dl()};Q(m,".mi").focus()}
-function ctx(host,s,fn){const go=(c,x,y)=>{const r=c.getBoundingClientRect();fn(c,x||r.left+20,y||r.top+20)};
- host.addEventListener("contextmenu",e=>{const c=e.target.closest(s);if(!c||selecting)return;e.preventDefault();go(c,e.clientX,e.clientY)});
- let t,fired;host.addEventListener("touchstart",e=>{const c=e.target.closest(s);if(!c||selecting)return;fired=false;const p=e.touches[0];t=setTimeout(()=>{fired=true;go(c,p.clientX,p.clientY)},550)},{passive:true});
- ["touchend","touchmove","touchcancel"].forEach(n=>host.addEventListener(n,()=>clearTimeout(t),{passive:true}));
- host.addEventListener("click",e=>{if(fired){e.preventDefault();e.stopPropagation();fired=false}},true)}
-addEventListener("mousedown",e=>{if(menuEl&&!menuEl.contains(e.target))closeMenu()});addEventListener("scroll",closeMenu,true);addEventListener("resize",closeMenu);
-ctx($("grid"),".card",(c,x,y)=>{const id=c.dataset.id;openMenu(c,x,y,()=>editModal(id),()=>delModal(id))});
-ctx($("groups"),".gcard",(c,x,y)=>{const id=c.dataset.gid;openMenu(c,x,y,()=>renameGroup(id),()=>delGroup(id))});
-function editModal(id){const it=find(id);if(!it)return;const s=openModal(`<h2>Edit link</h2><label class="f"><span>Name</span><input id="eN" maxlength="60" value="${esc(it.title)}"></label><label class="f"><span>Link</span><input id="eU" value="${esc(it.url)}" spellcheck="false"></label><label class="f"><span>Categories, separated by spaces (up to 5)</span><input id="eC" value="${esc(it.cats.join(" "))}"></label><div class="merr" id="eE"></div><div class="row"><button class="b g" id="eX">Cancel</button><button class="b" id="eS">Save</button></div>`);
- const n=Q(s,"#eN");n.focus();n.select();
- const ok=()=>{const u=parse(Q(s,"#eU").value);if(!u){Q(s,"#eE").textContent="That link doesn’t look right. Try something like example.com.";return}it.url=u.href;it.host=hostOf(u);it.title=n.value.trim()||titleOf(u);it.cats=normCats(Q(s,"#eC").value.split(/[\s,]+/));save();closeModal();render()};
- Q(s,"#eS").onclick=ok;Q(s,"#eX").onclick=closeModal;s.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.tagName==="INPUT"){e.preventDefault();ok()}})}
-function delModal(id){const it=find(id);if(it)confirmModal("Delete this link?",`<b>${esc(it.title)}</b> will be removed from your favorites and any groups.`,"Delete",()=>{items=items.filter(x=>x.id!==id);delete sel[id];save();render()})}
-function titleModal(h,val,btn,fn){const s=openModal(`<h2>${h}</h2><label class="f"><span>Group title</span><input id="gT" maxlength="40" value="${esc(val)}" placeholder="e.g. Morning reads"></label><div class="merr" id="gE"></div><div class="row"><button class="b g" id="gX">Cancel</button><button class="b" id="gO">${btn}</button></div>`);const i=Q(s,"#gT");i.focus();i.select();
- const ok=()=>{const t=i.value.trim();if(!t){Q(s,"#gE").textContent="Give your group a title.";return}closeModal();fn(t)};Q(s,"#gO").onclick=ok;Q(s,"#gX").onclick=closeModal;i.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();ok()}}}
-const gby=id=>groups.find(g=>g.id===id);
-function renameGroup(id){const g=gby(id);if(g)titleModal("Rename group",g.title,"Save",t=>{g.title=t;save();renderGroups()})}
-function delGroup(id){const g=gby(id);if(g)confirmModal("Delete this group?",`<b>${esc(g.title)}</b> will be removed. Your links stay in Favorites.`,"Delete",()=>{groups=groups.filter(x=>x.id!==id);save();renderGroups()})}
-function openAll(id){const g=gby(id);if(!g)return;const urls=g.ids.map(i=>find(i)).filter(Boolean);let n=0;
- urls.forEach(it=>{const w=window.open(it.url,"_blank");if(w){w.opener=null;n++}});
- if(n<urls.length){const s=openModal(`<h2>Your browser blocked some tabs</h2><p>Allow pop-ups for this page to open the whole group at once, or open the links here.</p><div class="glist" style="margin-top:14px">${urls.map(it=>`<a class="glink" href="${esc(it.url)}" target="_blank" rel="noopener noreferrer">${icon(it,"s")}<span>${esc(it.title)}</span></a>`).join("")}</div><div class="row"><button class="b" id="oc">Close</button></div>`);Q(s,"#oc").onclick=closeModal}}
-$("groups").addEventListener("click",e=>{const b=e.target.closest("[data-open]");if(b)openAll(b.dataset.open)});
-/* grid + select mode */
-$("grid").addEventListener("click",e=>{if(!selecting)return;const c=e.target.closest(".card");if(!c)return;e.preventDefault();const id=c.dataset.id;sel[id]?delete sel[id]:sel[id]=1;c.classList.toggle("picked",!!sel[id]);bulk()});
-$("grid").addEventListener("auxclick",e=>{if(selecting)e.preventDefault()});
-$("selBtn").onclick=()=>setSel(!selecting);
-$("bDel").onclick=()=>{const ids=Object.keys(sel);confirmModal(`Delete ${ids.length} ${ids.length===1?"link":"links"}?`,"They’ll be removed from Favorites and any groups.","Delete",()=>{items=items.filter(x=>!sel[x.id]);save();setSel(false)})};
-$("bGrp").onclick=()=>{const ids=items.filter(x=>sel[x.id]).map(x=>x.id);titleModal("New group","","Create group",t=>{groups.unshift({id:uid(),title:t,ids});save();setSel(false);toast("Group created")})};
-$("chipsIn").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;filter=b.dataset.c;render();const on=Q($("chipsIn"),".on");on&&on.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"})});
-$("save").onclick=add;$("url").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();add()}});$("url").addEventListener("input",()=>$("err").textContent="");
-/* header */
-$("theme").onclick=()=>{setMode(mode==="dark"?"light":"dark");if(location.hash==="#settings")renderSettings()};
-$("rnd").onclick=()=>{if(!items.length)return toast("Save a link first, then try again.");const it=items[Math.random()*items.length|0];S.rnd==="same"?location.href=it.url:window.open(it.url,"_blank","noopener")};
-const how=()=>openModal(`<h2>How to use</h2><ul><li><b>Add links.</b> Type a link, then any categories after it: <b>neal.fun fun blog</b>. Missing categories are created for you.</li><li><b>Add many at once.</b> Separate entries with commas: <b>neal.fun fun, aeon.co read</b>.</li><li><b>Select.</b> Tap Select, pick cards, then delete them or group them. Groups open all their links together.</li><li><b>Random.</b> The shuffle button opens one of your saved links.</li><li><b>Edit.</b> Right-click or press and hold a card to edit or delete it.</li></ul><div class="row"><button class="b" id="hx">Got it</button></div>`);
-$("info").onclick=()=>{const s=how();const b=Q(s,"#hx");b.onclick=closeModal;b.focus()};
-function note(h,p){const s=openModal(`<h2>${h}</h2><p>${p}</p><div class="row"><button class="b" id="nx">Close</button></div>`);const b=Q(s,"#nx");b.onclick=closeModal;b.focus()}
-/* settings */
-const dl=(n,t,ty)=>{const u=URL.createObjectURL(new Blob([t],{type:ty})),a=document.createElement("a");a.href=u;a.download=n;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1e3)};
-const sv=$("settingsView");
-sv.addEventListener("change",e=>{const t=e.target,k=t.dataset.k;if(t.id==="file"){const f=t.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||!Array.isArray(d.items))throw 0;
-  const add=d.items.map(clean).filter(x=>x&&!find(x.id)&&!items.some(y=>y.url===x.url));const gs=(Array.isArray(d.groups)?d.groups:[]).filter(g=>g&&g.id&&Array.isArray(g.ids)&&!gby(String(g.id))).map(g=>({id:String(g.id).replace(/[^\w-]/g,""),title:String(g.title||"Group").slice(0,40),ids:g.ids.map(String)}));
-  items.push(...add);groups.push(...gs);save();renderSettings();toast(`Imported ${add.length} new ${add.length===1?"link":"links"}`)}catch(x){toast("That file isn’t a valid backup.")}};r.readAsText(f);return}
- if(!k)return;if(k==="mode")setMode(t.checked?"dark":"light");else S[k]=t.type==="checkbox"?t.checked:k==="every"?+t.value:t.value;save();applyS()});
-sv.addEventListener("click",e=>{const rm=e.target.closest("[data-rm]");if(rm){const c=rm.dataset.rm;items.forEach(i=>i.cats=i.cats.filter(x=>x!==c));save();renderSettings();return}
- const a=e.target.closest("[data-act]");if(!a)return;const k=a.dataset.act;
- if(k==="how")$("info").click();
- else if(k==="priv")note("Privacy policy","Your links, groups and settings are stored only in this browser. Nothing is sent to a server. To show site icons, each saved site’s domain is requested from Google’s favicon service, which can see those domains. Export a backup before clearing your browser data.");
- else if(k==="about")note("About","Favorites is a private shelf for the sites you return to. Save links with categories, group them, and reopen them in one click.");
- else if(k==="exp")dl("favorites-backup.json",JSON.stringify({items,groups}),"application/json");
- else if(k==="csv")dl("favorites.csv","title,url,categories\n"+items.map(i=>[i.title,i.url,i.cats.join("|")].map(v=>{v=String(v);if(/^[=+\-@\t\r]/.test(v))v="'"+v;return'"'+v.replace(/"/g,'""')+'"'}).join(",")).join("\n"),"text/csv");
- else if(k==="imp")Q(sv,"#file").click();
- else if(k==="clr")confirmModal("Erase everything?","All links, groups and categories will be removed. Export a backup first if you may need them.","Erase all",()=>{items=[];groups=[];save();renderSettings()})});
-/* sprinkles, nudge, typewriter */
-for(let i=0;i<26;i++){const s=document.createElement("i");s.style.cssText=`left:${Math.random()*100}%;--d:${16+Math.random()*20}s;--r:${Math.random()*360}deg;animation-delay:-${Math.random()*30}s;opacity:${.25+Math.random()*.35}`;$("sp").append(s)}
-let nt;function applyS(){$("sp").hidden=!S.spr;clearInterval(nt);if(!S.nudge)return;
- nt=setInterval(()=>{if(document.hidden||selecting||location.hash||scrim||menuEl)return;const c=[...$("grid").querySelectorAll(".card")].filter(e=>{const r=e.getBoundingClientRect();return r.bottom>0&&r.top<innerHeight});if(!c.length)return;const e=c[Math.random()*c.length|0];e.classList.remove("nudge");void e.offsetWidth;e.classList.add("nudge");setTimeout(()=>e.classList.remove("nudge"),1500)},S.every*1000)}
-const EX=["neal.fun fun","aeon.co ncase.me read, github.com dev","figma.com design tools"];let ei=0,ci=0,dn=false,cur=true;
-const draw=()=>$("url").placeholder=EX[ei].slice(0,ci)+(cur?"|":" ");
-setInterval(()=>{cur=!cur;draw()},530);
-(function tick(){const w=EX[ei];if(!dn){ci++;draw();if(ci>=w.length){dn=true;return setTimeout(tick,1700)}return setTimeout(tick,75)}ci--;draw();if(ci<=0){dn=false;ei=(ei+1)%EX.length;return setTimeout(tick,450)}setTimeout(tick,35)})();
-addEventListener("storage",e=>{if(e.key&&Object.values(K).includes(e.key)){loadAll();setMode(st.get(K.m)||mode);applyS();route()}});
-addEventListener("keydown",e=>{if(e.key==="Escape"){closeMenu();if(scrim)closeModal();else if(selecting)setSel(false)}});
-loadAll();setMode(st.get(K.m)||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light"));applyS();route();
-})();
+ <div class="gcard"><h2>Help</h2><div class="rw"><button class="b g sm" data-act="how">How to use</button><button class="b g sm" data-act="priv">Privacy policy</button><button class="b g sm" data-act="about">About</button></div></div>`
+            }
+
+            function route() {
+                const h = location.hash.slice(1);
+                vw = h === "groups" || h === "settings" ? h : "home";
+                ["home", "groups", "settings"].forEach(n => $(n + "View").hidden = n !== vw);
+                $("back").hidden = vw === "home";
+                $("title").textContent = vw === "home" ? "Favorites" : vw[0].toUpperCase() + vw.slice(1);
+                closeMenu();
+                if (vw !== "home") setSel(false);
+                if (vw === "home") render();
+                else {
+                    hdr();
+                    vw === "groups" ? renderGroups() : renderSettings()
+                }
+                window.scrollTo(0, 0)
+            }
+            addEventListener("hashchange", route);
+
+            /* ---------- modal + menu ---------- */
+            let scrim, lastF, menuEl, menuT;
+
+            function closeModal() {
+                if (scrim) {
+                    scrim.remove();
+                    scrim = null;
+                    lastF && lastF.focus && lastF.focus()
+                }
+            }
+
+            function openModal(h, cls) {
+                closeModal();
+                lastF = document.activeElement;
+                scrim = document.createElement("div");
+                scrim.className = "scrim";
+                scrim.innerHTML = `<div class="modal ${cls||""}" role="dialog" aria-modal="true">${h}</div>`;
+                document.body.append(scrim);
+                scrim.onmousedown = e => {
+                    if (e.target === scrim) closeModal()
+                };
+                scrim.addEventListener("keydown", e => {
+                    if (e.key !== "Tab") return;
+                    const f = [...scrim.querySelectorAll("button,input,select,a[href]")].filter(x => !x.disabled);
+                    if (!f.length) return;
+                    const a = f[0],
+                        z = f[f.length - 1];
+                    if (e.shiftKey && document.activeElement === a) {
+                        e.preventDefault();
+                        z.focus()
+                    } else if (!e.shiftKey && document.activeElement === z) {
+                        e.preventDefault();
+                        a.focus()
+                    }
+                });
+                return scrim
+            }
+
+            function confirmModal(t, body, ok, fn) {
+                const s = openModal(`<h2>${t}</h2><p>${body}</p><div class="row"><button class="b g" id="xc">Cancel</button><button class="b dg" id="xo">${ok}</button></div>`);
+                Q(s, "#xc").onclick = closeModal;
+                const b = Q(s, "#xo");
+                b.focus();
+                b.onclick = () => {
+                    closeModal();
+                    fn()
+                }
+            }
+
+            function closeMenu() {
+                menuEl && menuEl.remove();
+                menuEl = null;
+                menuT && menuT.classList.remove("ctx");
+                menuT = null
+            }
+
+            function openMenu(c, x, y, ed, dl) {
+                closeMenu();
+                menuT = c;
+                c.classList.add("ctx");
+                const m = document.createElement("div");
+                m.className = "menu";
+                m.innerHTML = '<button class="mi" data-a="e">Edit</button><button class="mi dg" data-a="d">Delete</button>';
+                document.body.append(m);
+                menuEl = m;
+                m.style.left = Math.max(8, Math.min(x, innerWidth - m.offsetWidth - 8)) + "px";
+                m.style.top = Math.max(8, Math.min(y, innerHeight - m.offsetHeight - 8)) + "px";
+                m.onclick = e => {
+                    const b = e.target.closest(".mi");
+                    if (!b) return;
+                    closeMenu();
+                    b.dataset.a === "e" ? ed() : dl()
+                };
+                Q(m, ".mi").focus()
+            }
+
+            function ctx(host, s, fn) {
+                const go = (c, x, y) => {
+                    const r = c.getBoundingClientRect();
+                    fn(c, x || r.left + 20, y || r.top + 20)
+                };
+                host.addEventListener("contextmenu", e => {
+                    const c = e.target.closest(s);
+                    if (!c || selecting) return;
+                    e.preventDefault();
+                    go(c, e.clientX, e.clientY)
+                });
+                let t, fired;
+                host.addEventListener("touchstart", e => {
+                    const c = e.target.closest(s);
+                    if (!c || selecting) return;
+                    fired = false;
+                    const p = e.touches[0];
+                    t = setTimeout(() => {
+                        fired = true;
+                        go(c, p.clientX, p.clientY)
+                    }, 550)
+                }, {
+                    passive: true
+                });
+                ["touchend", "touchmove", "touchcancel"].forEach(n => host.addEventListener(n, () => clearTimeout(t), {
+                    passive: true
+                }));
+                host.addEventListener("click", e => {
+                    if (fired) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        fired = false
+                    }
+                }, true)
+            }
+            addEventListener("mousedown", e => {
+                if (menuEl && !menuEl.contains(e.target)) closeMenu()
+            });
+            addEventListener("scroll", closeMenu, true);
+            addEventListener("resize", closeMenu);
+            ctx($("grid"), ".card", (c, x, y) => {
+                const id = c.dataset.id;
+                openMenu(c, x, y, () => editModal(id), () => delModal(id))
+            });
+            ctx($("groups"), ".gcard", (c, x, y) => {
+                const id = c.dataset.gid;
+                openMenu(c, x, y, () => renameGroup(id), () => delGroup(id))
+            });
+
+            /* ---------- category picker (3D chips, no typing needed) ---------- */
+            function mountPicker(host, map, onChange) {
+                const all = () => {
+                    const m = new Map();
+                    usedCats().forEach(c => m.set(c.toLowerCase(), c));
+                    map.forEach((v, k) => m.set(k, v));
+                    return [...m.values()].sort((a, b) => a.localeCompare(b))
+                };
+                host.innerHTML = '<div class="pkgrid"></div><div class="pkadd"><input maxlength="24" placeholder="New category…" aria-label="New category" autocapitalize="off"><button type="button" class="b sm">Add</button></div>';
+                const grid = Q(host, ".pkgrid"),
+                    inp = Q(host, "input");
+                const draw = () => {
+                    const top = grid.scrollTop,
+                        g = all();
+                    grid.innerHTML = g.length ? g.map(c => `<button type="button" class="b g chip pk${map.has(c.toLowerCase())?" on":""}" data-c="${esc(c)}" aria-pressed="${map.has(c.toLowerCase())}">${esc(c)}</button>`).join("") : '<span class="mut">No categories yet. Create your first one below.</span>';
+                    grid.scrollTop = top;
+                    onChange && onChange()
+                };
+                grid.onclick = e => {
+                    const b = e.target.closest(".pk");
+                    if (!b) return;
+                    const c = b.dataset.c,
+                        l = c.toLowerCase();
+                    map.has(l) ? map.delete(l) : map.set(l, c);
+                    draw()
+                };
+                const addNew = () => {
+                    const ex = usedCats();
+                    inp.value.split(/[\s,;]+/).filter(Boolean).forEach(c => {
+                        c = c.slice(0, 24);
+                        const l = c.toLowerCase();
+                        if (!map.has(l)) map.set(l, ex.find(e => e.toLowerCase() === l) || c)
+                    });
+                    inp.value = "";
+                    draw();
+                    inp.focus()
+                };
+                Q(host, ".pkadd .b").onclick = addNew;
+                inp.onkeydown = e => {
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        addNew()
+                    }
+                };
+                draw();
+                return draw
+            }
+
+            function updPick() {
+                $("catN").textContent = picked.size;
+                $("catN").hidden = !picked.size;
+                $("catBtn").classList.toggle("on", !!picked.size)
+            }
+
+            function catModal() {
+                const s = openModal('<h2>Choose categories</h2><p>Tap to select. Your picks are added to every link you save next (up to 5 per link). You can still type categories after a link too.</p><div id="pkH" style="margin-top:14px"></div><div class="row"><button class="b g" id="pkC">Clear</button><button class="b" id="pkD">Done</button></div>');
+                const draw = mountPicker(Q(s, "#pkH"), picked, updPick);
+                Q(s, "#pkC").onclick = () => {
+                    picked.clear();
+                    draw()
+                };
+                const d = Q(s, "#pkD");
+                d.onclick = closeModal;
+                d.focus()
+            }
+
+            /* ---------- edit / delete / groups ---------- */
+            function editModal(key) {
+                const it = find(key);
+                if (!it) return;
+                const m = new Map(it.cats.map(c => [c.toLowerCase(), c]));
+                const s = openModal(`<h2>Edit link</h2><label class="f"><span>Link</span><input id="eU" value="${esc(it.url)}" spellcheck="false" autocapitalize="off"></label><div class="f"><span>Categories (up to 5)</span><div id="eP"></div></div><div class="merr" id="eE"></div><div class="row"><button class="b g" id="eX">Cancel</button><button class="b" id="eS">Save</button></div>`);
+                mountPicker(Q(s, "#eP"), m);
+                const ok = () => {
+                    const n = norm(Q(s, "#eU").value);
+                    if (!n) {
+                        Q(s, "#eE").textContent = "That link doesn’t look right. Try something like example.com.";
+                        return
+                    }
+                    const o = find(n.key);
+                    if (o && o !== it) {
+                        Q(s, "#eE").textContent = "That link is already saved.";
+                        return
+                    }
+                    const old = it.key;
+                    Object.assign(it, n, {
+                        cats: normCats([...m.values()])
+                    });
+                    if (old !== it.key) {
+                        groups.forEach(g => g.keys = g.keys.map(k => k === old ? it.key : k));
+                        if (sel[old]) {
+                            delete sel[old];
+                            sel[it.key] = 1
+                        }
+                    }
+                    save();
+                    closeModal();
+                    render()
+                };
+                Q(s, "#eS").onclick = ok;
+                Q(s, "#eX").onclick = closeModal;
+                s.addEventListener("keydown", e => {
+                    if (e.key === "Enter" && e.target.tagName === "INPUT") {
+                        e.preventDefault();
+                        ok()
+                    }
+                })
+            }
+
+            function dropKeys(ks) {
+                items = items.filter(x => !ks.includes(x.key));
+                groups.forEach(g => g.keys = g.keys.filter(k => !ks.includes(k)));
+                groups = groups.filter(g => g.keys.length);
+                ks.forEach(k => delete sel[k]);
+                save()
+            }
+
+            function delModal(key) {
+                const it = find(key);
+                if (it) confirmModal("Delete this link?", `<b>${esc(it.title)}</b> will be removed from your favorites and any groups.`, "Delete", () => {
+                    dropKeys([key]);
+                    render()
+                })
+            }
+
+            function titleModal(h, val, btn, fn) {
+                const s = openModal(`<h2>${h}</h2><label class="f"><span>Group title</span><input id="gT" maxlength="40" value="${esc(val)}" placeholder="e.g. Morning reads"></label><div class="merr" id="gE"></div><div class="row"><button class="b g" id="gX">Cancel</button><button class="b" id="gO">${btn}</button></div>`);
+                const i = Q(s, "#gT");
+                i.focus();
+                i.select();
+                const ok = () => {
+                    const t = i.value.trim();
+                    if (!t) {
+                        Q(s, "#gE").textContent = "Give your group a title.";
+                        return
+                    }
+                    closeModal();
+                    fn(t)
+                };
+                Q(s, "#gO").onclick = ok;
+                Q(s, "#gX").onclick = closeModal;
+                i.onkeydown = e => {
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                        ok()
+                    }
+                }
+            }
+            const gby = id => groups.find(g => g.id === id);
+
+            function renameGroup(id) {
+                const g = gby(id);
+                if (g) titleModal("Rename group", g.title, "Save", t => {
+                    g.title = t;
+                    save();
+                    renderGroups()
+                })
+            }
+
+            function delGroup(id) {
+                const g = gby(id);
+                if (g) confirmModal("Delete this group?", `<b>${esc(g.title)}</b> will be removed. Your links stay in Favorites.`, "Delete", () => {
+                    groups = groups.filter(x => x.id !== id);
+                    save();
+                    renderGroups()
+                })
+            }
+
+            function openAll(id) {
+                const g = gby(id);
+                if (!g) return;
+                const urls = g.keys.map(find).filter(Boolean);
+                let n = 0;
+                urls.forEach(it => {
+                    const w = window.open(it.href, "_blank");
+                    if (w) {
+                        w.opener = null;
+                        n++
+                    }
+                });
+                if (n < urls.length) {
+                    const s = openModal(`<h2>Your browser blocked some tabs</h2><p>Allow pop-ups for this page to open the whole group at once, or open the links here.</p><div class="glist" style="margin-top:14px">${urls.map(it=>`<a class="glink" href="${esc(it.href)}" target="_blank" rel="noopener noreferrer">${icon(it,"s")}<span>${esc(it.title)}</span></a>`).join("")}</div><div class="row"><button class="b" id="oc">Close</button></div>`);
+                    Q(s, "#oc").onclick = closeModal
+                }
+            }
+            $("groups").addEventListener("click", e => {
+                const b = e.target.closest("[data-open]");
+                if (b) openAll(b.dataset.open)
+            });
+
+            /* ---------- grid, select mode, chips ---------- */
+            $("grid").addEventListener("click", e => {
+                if (!selecting) return;
+                const c = e.target.closest(".card");
+                if (!c) return;
+                e.preventDefault();
+                const id = c.dataset.id;
+                sel[id] ? delete sel[id] : sel[id] = 1;
+                c.classList.toggle("picked", !!sel[id]);
+                bulk()
+            });
+            $("grid").addEventListener("auxclick", e => {
+                if (selecting) e.preventDefault()
+            });
+            $("selBtn").onclick = () => setSel(!selecting);
+            $("bDel").onclick = () => {
+                const ids = Object.keys(sel);
+                confirmModal(`Delete ${ids.length} ${ids.length===1?"link":"links"}?`, "They’ll be removed from Favorites and any groups.", "Delete", () => {
+                    dropKeys(ids);
+                    setSel(false)
+                })
+            };
+            $("bGrp").onclick = () => {
+                const keys = items.filter(x => sel[x.key]).map(x => x.key);
+                titleModal("New group", "", "Create group", t => {
+                    groups.unshift({
+                        id: uid(),
+                        title: t,
+                        keys
+                    });
+                    save();
+                    setSel(false);
+                    toast("Group created")
+                })
+            };
+            $("chipsIn").addEventListener("click", e => {
+                const b = e.target.closest(".chip");
+                if (!b) return;
+                filter = b.dataset.c;
+                render();
+                const on = Q($("chipsIn"), ".on");
+                on && on.scrollIntoView({
+                    inline: "center",
+                    block: "nearest",
+                    behavior: "smooth"
+                })
+            });
+            let raf = 0;
+            $("save").onclick = () => add(false);
+            $("catBtn").onclick = catModal;
+            $("xclr").onclick = () => {
+                $("url").value = "";
+                render();
+                $("url").focus()
+            };
+            $("url").addEventListener("keydown", e => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    add(true)
+                }
+            });
+            $("url").addEventListener("input", () => {
+                if (raf) return;
+                raf = requestAnimationFrame(() => {
+                    raf = 0;
+                    render()
+                })
+            });
+
+            /* ---------- header ---------- */
+            $("theme").onclick = () => {
+                setMode(mode === "dark" ? "light" : "dark");
+                if (vw === "settings") renderSettings()
+            };
+            $("rnd").onclick = () => {
+                if (!items.length) return toast("Save a link first, then try again.");
+                const it = items[Math.random() * items.length | 0];
+                S.rnd === "same" ? location.href = it.href : window.open(it.href, "_blank", "noopener")
+            };
+
+            /* ---------- guide, privacy, about ---------- */
+            const step = (n, t, b) => `<div class="sec"><h3><span class="num">${n}</span>${t}</h3>${b}</div>`;
+            const done = (s) => {
+                const b = Q(s, "#hx");
+                b.onclick = closeModal;
+                b.focus()
+            };
+            function howModal() {
+                done(openModal(`<div class="mh"><div class="logo">${STAR}</div><div><h2>How to use Favorites</h2><p class="lead">A calm, private shelf for the sites you return to. Everything starts in the box at the top.</p></div></div>
+${step(1,"Save a link",`<p>Type a link, then any categories after it. Press <kbd>Enter</kbd> or tap <b>Save</b>. You never need to type <b>https://</b> or <b>www.</b></p><code class="ex">neal.fun <em>fun blog</em></code>`)}
+${step(2,"Save many at once",`<p>Separate links with spaces or commas. Categories belong to the links just before them, and a link with no category shares the next one.</p><code class="ex">neal.fun, ncase.me <em>fun</em></code><p>Both links get <b>fun</b>. Here each link has its own:</p><code class="ex">aeon.co <em>read</em>, github.com <em>dev code</em></code>`)}
+${step(3,"Pick categories without typing",`<p>Tap the <b>Category</b> button next to Save, then tap the chips you want. Create new ones right there. Your picks are added to every link you save next, and a small badge shows how many are active.</p>`)}
+${step(4,"Search as you type",`<p>The same box is also a search. Your saved links filter instantly by name, website or category, with the best matches first. Type two words to narrow further. Press <kbd>Enter</kbd> to open the top result, tap <b>×</b> to clear, or press <kbd>/</kbd> from anywhere to jump back to the box.</p>`)}
+${step(5,"Browse by category",`<p>Category chips sit under the box. Swipe them, scroll the mouse wheel over them, or drag the golden bar to see them all.</p>`)}
+${step(6,"Select, group, delete",`<p>Tap <b>Select</b> in the top bar, tick some cards, then delete them or turn them into a <b>group</b>. Groups live on the Groups page, where <b>Open all</b> launches every link at once.</p>`)}
+${step(7,"Edit and delete",`<p>Right-click a card (or press and hold on a phone) to edit its link and categories, or delete it. Groups work the same way for renaming.</p>`)}
+${step(8,"Random, backup, restore",`<p><b>Random</b> opens one of your saved links, perfect when you don’t know what to read. In <b>Settings</b>, export a backup file and import it anywhere: it holds only your links, categories and groups, and importing never creates duplicates.</p>`)}
+<div class="tip"><p><b>No duplicates, ever.</b> Saving a link you already have simply adds any new categories to it. Variations like <b>www.</b>, <b>https://</b> or a trailing slash count as the same link.</p></div>
+<div class="row"><button class="b" id="hx">Got it</button></div>`, "wide"))
+            }
+
+            function privModal() {
+                done(openModal(`<div class="mh"><div class="logo">${STAR}</div><div><h2>Privacy policy</h2><p class="lead">The short version: your shelf is yours. No account, no server, no tracking.</p></div></div>
+<div class="sec"><h3>What is stored</h3><p>Your links, categories, groups and preferences (such as dark mode) are saved in this browser’s local storage on this device. They are never uploaded to us or anyone else.</p></div>
+<div class="sec"><h3>What we never do</h3><ul><li>No sign-up, no accounts, no email addresses.</li><li>No analytics, advertising, cookies or fingerprinting.</li><li>No reading of your browsing history. Favorites only knows what you type into it.</li></ul></div>
+<div class="sec"><h3>The one outside request</h3><p>To show each site’s icon, the domain of every saved site (for example <b>neal.fun</b>) is requested from Google’s favicon service, so Google can see those domains along with ordinary network details like your IP address. Your categories, groups and full link paths are not sent. Prefer zero outside requests? Turn off <b>Show site icons</b> in Settings and letter badges are used instead.</p></div>
+<div class="sec"><h3>When you open a link</h3><p>Links open in a new tab without passing referrer information. From that moment the website you visit applies its own privacy policy.</p></div>
+<div class="sec"><h3>You are in control</h3><ul><li><b>Export</b> a backup or CSV at any time, in a simple readable format.</li><li><b>Erase all</b> in Settings removes everything instantly.</li><li>Clearing your browser data, or using a private window, also clears your shelf. Export a backup first.</li><li>Nothing syncs between devices. Use export and import to move your shelf.</li></ul></div>
+<div class="tip"><p>If this policy ever changes, the update ships with the app and this page will describe it.</p></div>
+<div class="row"><button class="b" id="hx">Close</button></div>`, "wide"))
+            }
+
+            function aboutModal() {
+                done(openModal(`<div class="mh"><div class="logo">${STAR}</div><div><h2>Favorites</h2><p class="lead">Version 1.0 · A private shelf for the sites you love.</p></div></div>
+<p>Favorites is a small, fast home for the places you keep coming back to: the blog you read with coffee, the tool you use every week, the playground you show friends. No clutter, no feeds, no accounts, just your links, beautifully kept.</p>
+<div class="sec"><h3>What it does</h3><ul><li><b>Save fast.</b> Paste or type links with categories in one line, or pick categories with a tap.</li><li><b>Find instantly.</b> The box doubles as a live search, ranked by relevance.</li><li><b>Stay organised.</b> Categories, groups, and one-click “Open all”.</li><li><b>Work everywhere.</b> Phone, tablet or desktop, light or dark.</li><li><b>Own your data.</b> Everything stays in your browser, with simple export and import.</li></ul></div>
+<div class="sec"><h3>Good to know</h3><p>Favorites works offline once loaded. Only site icons need a connection, and they fall back to letter badges when unavailable.</p></div>
+<div class="row"><button class="b" id="hx">Close</button></div>`, ""))
+            }
+            $("info").onclick = howModal;
+
+            /* ---------- settings + data ---------- */
+            const dl = (n, t, ty) => {
+                const u = URL.createObjectURL(new Blob([t], {
+                        type: ty
+                    })),
+                    a = document.createElement("a");
+                a.href = u;
+                a.download = n;
+                document.body.append(a);
+                a.click();
+                a.remove();
+                setTimeout(() => URL.revokeObjectURL(u), 1e3)
+            };
+            const sv = $("settingsView");
+            sv.addEventListener("change", e => {
+                const t = e.target,
+                    k = t.dataset.k;
+                if (t.id === "file") {
+                    const f = t.files[0];
+                    if (!f) return;
+                    const r = new FileReader();
+                    r.onload = () => {
+                        try {
+                            const d = JSON.parse(r.result),
+                                list = Array.isArray(d) ? d : arr(d && (d.links || d.items));
+                            if (!list.length && !arr(d && d.groups).length) throw 0;
+                            const legacy = {};
+                            let nw = 0,
+                                up = 0;
+                            list.forEach(x => {
+                                const o = typeof x === "string" ? {
+                                    url: x
+                                } : x;
+                                if (!o || typeof o !== "object") return;
+                                const u2 = upsert(o.url, o.categories || o.cats || (o.cat ? [o.cat] : []));
+                                if (!u2) return;
+                                if (o.id) legacy[o.id] = u2.item.key;
+                                if (u2.isNew) nw++;
+                                else if (u2.changed) up++
+                            });
+                            arr(d && d.groups).forEach(g => addGroup(g, legacy));
+                            save();
+                            renderSettings();
+                            toast(`Imported ${nw} new ${nw===1?"link":"links"}${up?`, updated ${up}`:""}`)
+                        } catch (x) {
+                            toast("That file isn’t a valid backup.")
+                        }
+                    };
+                    r.readAsText(f);
+                    t.value = "";
+                    return
+                }
+                if (!k) return;
+                if (k === "mode") setMode(t.checked ? "dark" : "light");
+                else S[k] = t.type === "checkbox" ? t.checked : k === "every" ? +t.value : t.value;
+                save();
+                applyS()
+            });
+            sv.addEventListener("click", e => {
+                const rm = e.target.closest("[data-rm]");
+                if (rm) {
+                    const c = rm.dataset.rm;
+                    items.forEach(i => i.cats = i.cats.filter(x => x !== c));
+                    picked.delete(c.toLowerCase());
+                    updPick();
+                    save();
+                    renderSettings();
+                    return
+                }
+                const a = e.target.closest("[data-act]");
+                if (!a) return;
+                const k = a.dataset.act;
+                if (k === "how") howModal();
+                else if (k === "priv") privModal();
+                else if (k === "about") aboutModal();
+                else if (k === "exp") dl("favorites-backup.json", JSON.stringify({
+                    links: items.map(i => i.cats.length ? {
+                        url: i.url,
+                        categories: i.cats
+                    } : {
+                        url: i.url
+                    }),
+                    groups: groups.map(g => ({
+                        title: g.title,
+                        links: g.keys.map(find).filter(Boolean).map(i => i.url)
+                    }))
+                }, null, 2), "application/json");
+                else if (k === "csv") dl("favorites.csv", "url,categories\n" + items.map(i => [i.url, i.cats.join("|")].map(v => {
+                    v = String(v);
+                    if (/^[=+\-@\t\r]/.test(v)) v = "'" + v;
+                    return '"' + v.replace(/"/g, '""') + '"'
+                }).join(",")).join("\n"), "text/csv");
+                else if (k === "imp") Q(sv, "#file").click();
+                else if (k === "clr") confirmModal("Erase everything?", "All links, groups and categories will be removed. Export a backup first if you may need them.", "Erase all", () => {
+                    items = [];
+                    groups = [];
+                    picked.clear();
+                    updPick();
+                    save();
+                    renderSettings()
+                })
+            });
+
+            /* ---------- sprinkles, nudge, typewriter placeholder ---------- */
+            for (let i = 0; i < 26; i++) {
+                const s = document.createElement("i");
+                s.style.cssText = `left:${Math.random()*100}%;--d:${16+Math.random()*20}s;--r:${Math.random()*360}deg;animation-delay:-${Math.random()*30}s;opacity:${.25+Math.random()*.35}`;
+                $("sp").append(s)
+            }
+            let nt;
+
+            function applyS() {
+                $("sp").hidden = !S.spr;
+                clearInterval(nt);
+                if (!S.nudge) return;
+                nt = setInterval(() => {
+                    if (document.hidden || selecting || location.hash || scrim || menuEl) return;
+                    const c = [...$("grid").querySelectorAll(".card")].filter(e => {
+                        const r = e.getBoundingClientRect();
+                        return r.bottom > 0 && r.top < innerHeight
+                    });
+                    if (!c.length) return;
+                    const e = c[Math.random() * c.length | 0];
+                    e.classList.remove("nudge");
+                    void e.offsetWidth;
+                    e.classList.add("nudge");
+                    setTimeout(() => e.classList.remove("nudge"), 1500)
+                }, S.every * 1000)
+            }
+            const EX = ["Search, or add: neal.fun fun", "neal.fun, ncase.me fun", "aeon.co read, github.com dev", "figma.com design tools"];
+            let ei = 0,
+                ci2 = 0,
+                dn = false,
+                cur = true;
+            const draw = () => $("url").placeholder = EX[ei].slice(0, ci2) + (cur ? "|" : " ");
+            setInterval(() => {
+                cur = !cur;
+                draw()
+            }, 530);
+            (function tick() {
+                const w = EX[ei];
+                if (!dn) {
+                    ci2++;
+                    draw();
+                    if (ci2 >= w.length) {
+                        dn = true;
+                        return setTimeout(tick, 1700)
+                    }
+                    return setTimeout(tick, 75)
+                }
+                ci2--;
+                draw();
+                if (ci2 <= 0) {
+                    dn = false;
+                    ei = (ei + 1) % EX.length;
+                    return setTimeout(tick, 450)
+                }
+                setTimeout(tick, 35)
+            })();
+            addEventListener("storage", e => {
+                if (e.key && Object.values(K).includes(e.key)) {
+                    loadAll();
+                    setMode(st.get(K.m) || mode);
+                    applyS();
+                    route()
+                }
+            });
+            addEventListener("keydown", e => {
+                if (e.key === "Escape") {
+                    if (scrim) closeModal();
+                    else if (menuEl) closeMenu();
+                    else if (selecting) setSel(false);
+                    else if (document.activeElement === $("url") && $("url").value) {
+                        $("url").value = "";
+                        render()
+                    }
+                } else if (e.key === "/" && vw === "home" && !scrim && !/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName)) {
+                    e.preventDefault();
+                    $("url").focus()
+                }
+            });
+            loadAll();
+            setMode(st.get(K.m) || (matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light"));
+            applyS();
+            updPick();
+            route();
+        })();
     </script>
 </body>
 
